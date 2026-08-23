@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #0f172a;
+  background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes cartSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-slate-50 text-slate-900 antialiased;
+  }
+
+  img {
+    @apply block max-w-full;
+  }
+
+  a {
+    @apply no-underline;
+  }
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.cart-item {
+  animation: cartSlideIn 0.35s ease-out both;
+}
+
+.cart-summary {
+  animation: cartSlideIn 0.42s ease-out both;
+}
