@@ -32,8 +32,21 @@ export const getHomepageProducts = async (
   });
 };
 
+export const searchProducts = async (
+  keyword: string,
+  page = 1,
+  size = 20,
+  accessToken?: string,
+): Promise<TaobaoProductsResponse> => {
+  return request<TaobaoProductsResponse>(`/products/search`, {
+    params: { keyword, page, size },
+    headers: buildHeaders(accessToken),
+  });
+};
+
 export default {
   getThemeProducts,
   getProductDetail,
   getHomepageProducts,
+  searchProducts,
 };

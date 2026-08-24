@@ -21,7 +21,7 @@ export const ProductSkeleton = ({
         key={index}
         className="min-w-[180px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
       >
-        <div className={`${shimmerClass} h-40 w-full`} />
+        <div className={`${shimmerClass} h-60 w-full`} />
 
         <div className="space-y-3 p-3">
           <div className={`${shimmerClass} h-3 w-1/3 rounded-full`} />

@@ -1,6 +1,7 @@
 export type TaobaoProduct = {
   sourceItemId?: string;
   title?: string;
+  titleOriginal?: string;
   image?: string;
   images?: string[];
   categoryName?: string;
@@ -28,4 +29,8 @@ export type TaobaoHomeResponse = {
 
 export type TaobaoProductsResponse = {
   items?: TaobaoProduct[];
+  total?: number;
+  page?: number;
+  size?: number;
+  keyword?: string;
 };

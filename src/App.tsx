@@ -5,6 +5,7 @@ import { AppShell } from "./components/app-shell/AppShell";
 import HomePage from "./pages/Home/HomePage";
 import { CartPage, type CartLineItem } from "./pages/Cart/CartPage";
 import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
+import ProductsPage from "./pages/Products/ProductsPage";
 
 function CartRoute() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ function App() {
     <AppShell cartCount={3}>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<ProductsPage />} />
         <Route path="/cart" element={<CartRoute />} />
         <Route path="/products/:sourceItemId" element={<ProductDetailPage />} />
         <Route path="*" element={<HomePage />} />

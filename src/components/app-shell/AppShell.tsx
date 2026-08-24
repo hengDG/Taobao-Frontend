@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import {
   Bell,
@@ -15,10 +11,9 @@ import {
   ScanQrCode,
 } from "lucide-react";
 
-import {
-  AppSidebar,
-  type SidebarItem,
-} from "./AppSidebar";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { AppSidebar, type SidebarItem } from "./AppSidebar";
 
 import {
   LanguageProvider,
@@ -79,32 +74,45 @@ type AppShellProps = {
   cartCount?: number;
 };
 
-export function AppShell({
-  children,
-  cartCount = 0,
-}: AppShellProps) {
-  const [showUtilityBar, setShowUtilityBar] =
-    useState(true);
+export function AppShell({ children, cartCount = 0 }: AppShellProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showUtilityBar, setShowUtilityBar] = useState(true);
 
-  const [language, setLanguage] =
-    useState<Language>(() => {
-      const savedLanguage =
-        window.localStorage.getItem("app-language");
+  const [searchText, setSearchText] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("keyword") ?? "";
+  });
 
-      return savedLanguage === "km"
-        ? "km"
-        : "en";
-    });
+  const [language, setLanguage] = useState<Language>(() => {
+    const savedLanguage = window.localStorage.getItem("app-language");
+
+    return savedLanguage === "km" ? "km" : "en";
+  });
 
   /*
    * Save selected language
    */
   useEffect(() => {
-    window.localStorage.setItem(
-      "app-language",
-      language,
-    );
+    window.localStorage.setItem("app-language", language);
   }, [language]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const keyword = params.get("keyword") ?? "";
+    setSearchText(keyword);
+  }, [location.search]);
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const keyword = searchText.trim();
+
+    if (!keyword) {
+      return;
+    }
+
+    navigate(`/products?keyword=${encodeURIComponent(keyword)}&page=1&size=20`);
+  };
 
   /*
    * Hide top utility bar while scrolling
@@ -116,27 +124,18 @@ export function AppShell({
 
     updateBarVisibility();
 
-    window.addEventListener(
-      "scroll",
-      updateBarVisibility,
-      {
-        passive: true,
-      },
-    );
+    window.addEventListener("scroll", updateBarVisibility, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        updateBarVisibility,
-      );
+      window.removeEventListener("scroll", updateBarVisibility);
     };
   }, []);
 
-  const currentLanguage =
-    languageMeta[language];
+  const currentLanguage = languageMeta[language];
 
-  const nextLanguage: Language =
-    language === "en" ? "km" : "en";
+  const nextLanguage: Language = language === "en" ? "km" : "en";
 
   return (
     <LanguageProvider
@@ -148,10 +147,7 @@ export function AppShell({
       <div className="min-h-screen bg-[#fafafa] text-slate-800">
         {/* Sidebar */}
 
-        <AppSidebar
-          items={sidebarItems}
-          cartCount={cartCount}
-        />
+        <AppSidebar items={sidebarItems} cartCount={cartCount} />
 
         {/* Header */}
 
@@ -162,31 +158,25 @@ export function AppShell({
             className={[
               "overflow-hidden border-b border-gray-200 bg-slate-50 transition-all duration-300 ease-out",
 
-              showUtilityBar
-                ? "max-h-10 opacity-100"
-                : "max-h-0 opacity-0",
+              showUtilityBar ? "max-h-10 opacity-100" : "max-h-0 opacity-0",
             ].join(" ")}
           >
             <div
               className={[
                 "mx-auto flex w-[98%] items-center justify-between gap-3 text-xs text-slate-500 transition-all duration-300",
 
-                showUtilityBar
-                  ? "py-2"
-                  : "py-0",
+                showUtilityBar ? "py-2" : "py-0",
               ].join(" ")}
             >
               {/* Left */}
 
               <div className="flex items-center gap-4 whitespace-nowrap">
                 <span className="hidden items-center gap-1.5 md:inline-flex">
-                  Welcome to E-Taobao from VTS
-                  Company, Lyheng
+                  Welcome to E-Taobao from VTS Company, Lyheng
                 </span>
 
                 <span className="hidden items-center gap-1.5 md:inline-flex">
                   <HelpCircle className="size-3.5" />
-
                   Support
                 </span>
               </div>
@@ -196,7 +186,6 @@ export function AppShell({
               <div className="hidden items-center gap-4 whitespace-nowrap sm:flex">
                 <span className="inline-flex items-center gap-1.5">
                   <Phone className="size-4" />
-
                   Contact Us
                 </span>
 
@@ -204,33 +193,25 @@ export function AppShell({
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setLanguage(nextLanguage)
-                  }
+                  onClick={() => setLanguage(nextLanguage)}
                   className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2 py-1 text-xs text-slate-700 transition hover:bg-slate-100"
                   aria-label={`Switch language to ${
-                    languageMeta[nextLanguage]
-                      .label
+                    languageMeta[nextLanguage].label
                   }`}
                 >
                   <img
-                    src={
-                      currentLanguage.flagSrc
-                    }
+                    src={currentLanguage.flagSrc}
                     alt={currentLanguage.alt}
                     width={18}
                     height={12}
                     className="rounded-xs"
                   />
 
-                  <span>
-                    {currentLanguage.label}
-                  </span>
+                  <span>{currentLanguage.label}</span>
                 </button>
 
                 <span className="inline-flex items-center gap-1.5">
                   <Smartphone className="size-3.5" />
-
                   Get App
                 </span>
               </div>
@@ -253,7 +234,10 @@ export function AppShell({
 
               {/* Search */}
 
-              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-slate-100 px-3 py-3 sm:px-4">
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-slate-100 px-3 py-3 sm:px-4"
+              >
                 <ScanQrCode className="mr-2 size-5 shrink-0" />
 
                 <span className="mr-2 h-6 w-px bg-slate-300" />
@@ -262,10 +246,19 @@ export function AppShell({
 
                 <input
                   type="text"
+                  value={searchText}
+                  onChange={(event) => setSearchText(event.target.value)}
                   placeholder="Search products, brands, categories"
                   className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
                 />
-              </div>
+
+                <button
+                  type="submit"
+                  className="hidden rounded-lg bg-[#194891] px-3 py-1.5 text-xs font-medium text-white md:inline-flex"
+                >
+                  Search
+                </button>
+              </form>
 
               {/* Search Image */}
 
@@ -303,9 +296,7 @@ export function AppShell({
 
         {/* Page Content */}
 
-        <main className="pt-28 pb-20 lg:pl-20 lg:pb-0">
-          {children}
-        </main>
+        <main className="pt-28 pb-20 lg:pl-20 lg:pb-0">{children}</main>
       </div>
     </LanguageProvider>
   );

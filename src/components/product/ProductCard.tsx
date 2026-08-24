@@ -1,73 +1,149 @@
-import type { ProductCard as ProductCardType } from "@/types/product";
-import {
-  getLocalizedText,
-  type Language,
-} from "@/contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
-type ProductCardProps = {
-  product: ProductCardType;
-  language: Language;
-  onViewDetail?: (product: ProductCardType) => void;
+import { getLocalizedText, type Language } from "@/contexts/LanguageContext";
+import type { ProductCard as LocalizedProduct } from "@/types/product";
+import type { TaobaoProduct } from "@/types/taobao.types";
+
+export type ProductCardData = LocalizedProduct | TaobaoProduct;
+
+type ProductCardProps<T extends ProductCardData = ProductCardData> = {
+  product: T;
+  language?: Language;
+  onViewDetail?: (product: T) => void;
+  onSelect?: (product: T) => void;
+  className?: string;
 };
 
-export function ProductCard({
-  product,
-  language,
-  onViewDetail,
-}: ProductCardProps) {
-  const title = getLocalizedText(product.title, language);
-  const shopName = getLocalizedText(product.shopName, language);
-  const section = getLocalizedText(product.section, language);
+const formatTaobaoPrice = (cents?: number | null) => {
+  if (typeof cents !== "number") {
+    return "Price on request";
+  }
 
-  const benefit = product.benefit
-    ? getLocalizedText(product.benefit, language)
-    : null;
+  return new Intl.NumberFormat("zh-CN", {
+    style: "currency",
+    currency: "CNY",
+    minimumFractionDigits: 2,
+  }).format(cents / 100);
+};
+
+const isTaobaoProduct = (
+  product: ProductCardData,
+): product is TaobaoProduct => {
+  return (
+    "image" in product || "sourceItemId" in product || "categoryName" in product
+  );
+};
+
+export function ProductCard<T extends ProductCardData = ProductCardData>({
+  product,
+  language = "en",
+  onViewDetail,
+  onSelect,
+  className = "",
+}: ProductCardProps<T>) {
+  const navigate = useNavigate();
+
+  const title = isTaobaoProduct(product)
+    ? (product.titleOriginal ?? product.title ?? "Untitled product")
+    : getLocalizedText(product.title, language);
+
+  const shopName = isTaobaoProduct(product)
+    ? (product.shopName ?? "")
+    : getLocalizedText(product.shopName, language);
+
+  const badgeText = isTaobaoProduct(product)
+    ? (product.categoryName ?? product.soldLabel ?? "New")
+    : getLocalizedText(product.section, language);
+
+  const priceText = isTaobaoProduct(product)
+    ? formatTaobaoPrice(
+        product.couponCents ?? product.listCents ?? product.priceCents,
+      )
+    : product.priceText;
+
+  const imageUrl = isTaobaoProduct(product)
+    ? product.image || "https://placehold.co/600x600/edf2f7/475569?text=Product"
+    : product.imageUrl;
+
+  const handleSelect = () => {
+    if (onViewDetail) {
+      onViewDetail(product);
+      return;
+    }
+
+    if (onSelect) {
+      onSelect(product);
+      return;
+    }
+
+    const productId = isTaobaoProduct(product)
+      ? product.sourceItemId
+      : product.id;
+
+    if (productId) {
+      navigate(`/products/${productId}`);
+    }
+  };
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-[#f5e9e3] bg-white/80 shadow-[0_8px_28px_rgba(0,0,0,0.08)] backdrop-blur-[2px] transition-transform duration-300 hover:-translate-y-1">
-      <button
-        type="button"
-        onClick={() => onViewDetail?.(product)}
-        className="block w-full cursor-pointer overflow-hidden p-0 text-left"
-        aria-label={`View details for ${title}`}
-      >
-        {product.imageUrl ? (
-          <img
-            src={product.imageUrl}
-            alt={title}
-            loading="lazy"
-            className="w-full object-cover"
-          />
-        ) : (
-          <div className="h-40 w-full bg-[#ece9e4]" />
-        )}
-      </button>
+    <article
+      onClick={handleSelect}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleSelect();
+        }
+      }}
+      className={[
+        "group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <div className="aspect-[4/4.2] overflow-hidden bg-slate-100">
+        <img
+          src={imageUrl}
+          alt={title || "Product image"}
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
+      </div>
 
-      <div className="space-y-2 p-3">
-        <p className="line-clamp-2 text-sm leading-5 font-semibold">
+      <div className="space-y-3 p-4">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">
+          {badgeText || "Category"}
+        </p>
+
+        <h3 className="min-h-[42px] text-sm font-semibold leading-5 text-slate-800">
           {title}
-        </p>
+        </h3>
 
-        <p className="text-xs text-zinc-500">
-          {shopName}
-        </p>
+        {shopName && <div className="text-xs text-slate-500">{shopName}</div>}
 
-        <div className="flex items-center justify-between gap-5">
-          <span className="text-base font-bold text-[#d61f00]">
-            {product.priceText}
-          </span>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-lg font-bold text-[#194891]">{priceText}</div>
+            {isTaobaoProduct(product) &&
+              product.listCents &&
+              product.listCents > (product.couponCents ?? 0) && (
+                <div className="text-[11px] text-slate-400 line-through">
+                  {formatTaobaoPrice(product.listCents)}
+                </div>
+              )}
+          </div>
 
-          <span className="rounded-full bg-[#f2efe8] px-2 py-1 text-[11px] text-zinc-600">
-            {section}
-          </span>
+          {isTaobaoProduct(product) && product.soldLabel && (
+            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">
+              {product.soldLabel}
+            </span>
+          )}
         </div>
-
-        {benefit && (
-          <p className="rounded-md bg-[#fff3ed] px-2 py-1 text-[11px] text-[#b7481f]">
-            {benefit}
-          </p>
-        )}
       </div>
     </article>
   );
 }
+
+export default ProductCard;

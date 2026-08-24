@@ -17,7 +17,7 @@ const formatCurrency = (cents: number) => {
 function ProductDetailView({
   product,
   gallery,
-  onBack,
+  onBack: _onBack,
   onSelectProduct,
   onAddToCart,
 }: {
@@ -167,16 +167,7 @@ function ProductDetailView({
 
   return (
     <div className="mx-auto max-w-8xl px-10 py-6">
-      <div className="mb-5 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-        >
-          <span aria-hidden="true">←</span>
-          Back
-        </button>
-      </div>
+      <div className="mb-5 flex items-center justify-between"></div>
 
       <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">
         <div className="space-y-5 md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -213,7 +204,7 @@ function ProductDetailView({
                 <img
                   src={selectedImage || product.imageUrl}
                   alt={product.title.en}
-                  className="h-[520px] w-full object-cover"
+                  className="h-[750px] w-full object-cover"
                 />
               </div>
             </div>
