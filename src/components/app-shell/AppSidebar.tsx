@@ -40,6 +40,7 @@ export function AppSidebar({
         <div className="mb-6 grid size-10 place-items-center">
           <img
             src="https://play-lh.googleusercontent.com/5uVmNR71LD6-LHspJgdI4JGymI3qovFxlVtYHdPbSrJRPiRHyQkIxwYd_1bZqR8u5-5KJs3DE6NKJGMj6xSS"
+            // src="/public/vtslogo.jpg"
             alt="Logo"
             width={40}
             height={40}

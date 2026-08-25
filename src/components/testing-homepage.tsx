@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-
+import Masonry from "react-masonry-css";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ProductSkeleton } from "@/components/ui/ProductSkeleton";
+import { ProductCardSkeleton, ProductSkeleton } from "@/components/ui/ProductSkeleton";
 import { getHomepageProducts } from "@/services/product/product.service";
 import type { TaobaoHomeRow } from "@/types/taobao.types";
 
@@ -27,7 +27,13 @@ const HomepageSectionList = () => {
 
     void fetchHomepage();
   }, []);
-
+  const breakpoints = {
+    default: 6,
+    1280: 5,
+    1024: 4,
+    768: 3,
+    640: 2,
+  };
   return (
     <div className="mt-5 px-3 sm:px-5">
       <div className="mb-4">
@@ -40,7 +46,7 @@ const HomepageSectionList = () => {
 
       {loading ? (
         <div className="grid gap-5">
-          <ProductSkeleton count={10} columns={5} />
+          <ProductCardSkeleton count={10} />
         </div>
       ) : (
         <div className="grid gap-7">
@@ -55,14 +61,18 @@ const HomepageSectionList = () => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+              <Masonry
+                breakpointCols={breakpoints}
+                className="flex -ml-4"
+                columnClassName="pl-4"
+              >
                 {(row.items ?? []).slice(0, 10).map((product) => (
                   <ProductCard
                     key={product.sourceItemId ?? product.title}
                     product={product}
                   />
                 ))}
-              </div>
+              </Masonry>
             </div>
           ))}
         </div>

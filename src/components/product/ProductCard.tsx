@@ -1,17 +1,25 @@
 import { useNavigate } from "react-router-dom";
 
 import { getLocalizedText, type Language } from "@/contexts/LanguageContext";
+
 import type { ProductCard as LocalizedProduct } from "@/types/product";
+
 import type { TaobaoProduct } from "@/types/taobao.types";
 
 export type ProductCardData = LocalizedProduct | TaobaoProduct;
 
 type ProductCardProps<T extends ProductCardData = ProductCardData> = {
   product: T;
+
   language?: Language;
+
   onViewDetail?: (product: T) => void;
+
   onSelect?: (product: T) => void;
+
   className?: string;
+
+  priority?: boolean;
 };
 
 const formatTaobaoPrice = (cents?: number | null) => {
@@ -40,6 +48,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
   onViewDetail,
   onSelect,
   className = "",
+  priority = false,
 }: ProductCardProps<T>) {
   const navigate = useNavigate();
 
@@ -85,6 +94,12 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
     }
   };
 
+  const hasDiscount =
+    isTaobaoProduct(product) &&
+    typeof product.listCents === "number" &&
+    typeof product.couponCents === "number" &&
+    product.couponCents < product.listCents;
+
   return (
     <article
       onClick={handleSelect}
@@ -93,53 +108,129 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
+
           handleSelect();
         }
       }}
       className={[
-        "group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        /*
+         * IMPORTANT
+         *
+         * break-inside-avoid:
+         * prevents masonry columns from
+         * cutting a card in half.
+         *
+         * h-auto:
+         * card follows its own content.
+         *
+         * inline-block + w-full:
+         * works well with CSS columns.
+         */
+        "group mb-4 inline-block h-auto w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
+
         className,
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <div className="aspect-[4/4.2] overflow-hidden bg-slate-100">
+      {/* IMAGE */}
+      {/* <div className="relative w-full overflow-hidden bg-slate-100">
+        <img
+          src={imageUrl}
+          alt={
+            title ||
+            "Product image"
+          }
+          loading="lazy"
+          className="
+            block
+            h-auto
+            w-full
+            object-contain
+            transition-transform
+            duration-500
+            group-hover:scale-[1.02]
+          "
+        />
+
+        
+        {hasDiscount ? (
+          <span className="absolute top-2 left-2 rounded-lg bg-[#ff5000] px-2 py-1 text-[10px] font-bold text-white shadow-sm">
+            Discount
+          </span>
+        ) : null}
+      </div> */}
+
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-100">
         <img
           src={imageUrl}
           alt={title || "Product image"}
-          loading="lazy"
-          className="h-full w-full object-cover"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
+          className="
+      absolute
+      inset-0
+      h-full
+      w-full
+      object-cover
+      transition-transform
+      duration-300
+      group-hover:scale-[1.02]
+    "
         />
+
+        {hasDiscount && (
+          <span className="absolute top-2 left-2 rounded-lg bg-[#ff5000] px-2 py-1 text-[10px] font-bold text-white">
+            Discount
+          </span>
+        )}
       </div>
 
-      <div className="space-y-3 p-4">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">
-          {badgeText || "Category"}
-        </p>
+      {/* CONTENT */}
+      <div className="space-y-2.5 p-3 sm:p-4">
+        {/* Category */}
+        {badgeText ? (
+          <p className="text-[11px] font-medium tracking-[0.06em] text-slate-500">
+            {badgeText}
+          </p>
+        ) : null}
 
-        <h3 className="min-h-[42px] text-sm font-semibold leading-5 text-slate-800">
+        {/* TITLE
+            No min-height.
+            Long title = taller card.
+            Short title = shorter card.
+        */}
+        <h3 className="text-sm leading-5 font-semibold text-slate-800">
+          <img
+            src="/taobao icon.png"
+            alt="Taobao"
+            className="mr-1 inline-block h-5 w-5 align-text-bottom object-contain"
+          />
+
           {title}
         </h3>
 
-        {shopName && <div className="text-xs text-slate-500">{shopName}</div>}
+        {/* Shop */}
+        {shopName ? <p className="text-xs text-slate-500">{shopName}</p> : null}
 
-        <div className="flex items-center justify-between gap-3">
+        {/* Bottom */}
+        <div className="flex items-end justify-between gap-3">
           <div>
             <div className="text-lg font-bold text-[#194891]">{priceText}</div>
-            {isTaobaoProduct(product) &&
-              product.listCents &&
-              product.listCents > (product.couponCents ?? 0) && (
-                <div className="text-[11px] text-slate-400 line-through">
-                  {formatTaobaoPrice(product.listCents)}
-                </div>
-              )}
+
+            {hasDiscount && isTaobaoProduct(product) ? (
+              <div className="mt-0.5 text-[11px] text-slate-400 line-through">
+                {formatTaobaoPrice(product.listCents)}
+              </div>
+            ) : null}
           </div>
 
-          {isTaobaoProduct(product) && product.soldLabel && (
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">
+          {isTaobaoProduct(product) && product.soldLabel ? (
+            <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">
               {product.soldLabel}
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </article>

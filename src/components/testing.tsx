@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-
+import Masonry from "react-masonry-css";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductSkeleton } from "@/components/ui/ProductSkeleton";
 import { getThemeProducts } from "@/services/product/product.service";
 import type { TaobaoProduct } from "@/types/taobao.types";
+import { ProductCardSkeleton } from "./ui/ProductCardSkeleton";
 
 const TestingComponent = () => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
@@ -25,7 +26,13 @@ const TestingComponent = () => {
 
     void loadData();
   }, []);
-
+  const breakpoints = {
+    default: 6,
+    1280: 5,
+    1024: 4,
+    768: 3,
+    640: 2,
+  };
   return (
     <div className="p-4">
       <div className="mb-5">
@@ -36,20 +43,25 @@ const TestingComponent = () => {
 
       {loading && (
         <div className="mt-3">
-          <ProductSkeleton count={5} columns={5} />
+          <ProductCardSkeleton count={12} />
         </div>
       )}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <Masonry
+          breakpointCols={breakpoints}
+          className="flex -ml-4"
+          columnClassName="pl-4"
+        >
+          {" "}
           {products.map((product) => (
             <ProductCard
               key={product.sourceItemId ?? product.title}
               product={product}
             />
           ))}
-        </div>
+        </Masonry>
       )}
     </div>
   );

@@ -8,6 +8,11 @@ import HomepageSectionList from "@/components/testing-homepage";
 export default function HomePage() {
   return (
     <>
+    <img
+      src="/public/image copy.png"
+      alt="Logo"
+      className="rounded-xl"
+    />
       <HomeHero />
 
       <HomeMarketplacePanel />
