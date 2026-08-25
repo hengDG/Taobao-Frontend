@@ -126,7 +126,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
          * inline-block + w-full:
          * works well with CSS columns.
          */
-        "group mb-4 inline-block h-auto w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        "group mb-3 inline-block h-auto w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
 
         className,
       ]
@@ -201,15 +201,30 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
             Long title = taller card.
             Short title = shorter card.
         */}
-        <h3 className="text-sm leading-5 font-semibold text-slate-800">
-          <img
-            src="/taobao icon.png"
-            alt="Taobao"
-            className="mr-1 inline-block h-5 w-5 align-text-bottom object-contain"
-          />
+        <h3
+  className="
+    line-clamp-2
+    text-sm
+    leading-5
+    font-semibold
+    text-slate-800
+  "
+>
+  <img
+    src="/taobao icon.png"
+    alt="Taobao"
+    className="
+      mr-1
+      inline-block
+      h-5
+      w-5
+      align-text-bottom
+      object-contain
+    "
+  />
 
-          {title}
-        </h3>
+  {title}
+</h3>
 
         {/* Shop */}
         {shopName ? <p className="text-xs text-slate-500">{shopName}</p> : null}

@@ -26,30 +26,17 @@ type AppSidebarProps = {
   cartCount?: number;
 };
 
-export function AppSidebar({
-  items,
-  cartCount = 0,
-}: AppSidebarProps) {
+export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
   const location = useLocation();
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-20 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4">
-        {/* Logo */}
-        <div className="mb-6 grid size-10 place-items-center">
-          <img
-            src="https://play-lh.googleusercontent.com/5uVmNR71LD6-LHspJgdI4JGymI3qovFxlVtYHdPbSrJRPiRHyQkIxwYd_1bZqR8u5-5KJs3DE6NKJGMj6xSS"
-            // src="/public/vtslogo.jpg"
-            alt="Logo"
-            width={40}
-            height={40}
-            className="rounded-xl"
-          />
-        </div>
+      <aside className="fixed left-0 top-1/2 z-40 hidden w-20 h-[40vh] transform -translate-y-1/2 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4 lg:rounded-r-xl lg:shadow-lg lg:pointer-events-auto">
+        {/* left intentionally blank: logo moved to header for desktop */}
 
         {/* Navigation */}
-        <nav className="flex w-full flex-1 flex-col items-center gap-2">
+        <nav className="flex w-full flex-1 flex-col justify-center items-center gap-2">
           {items.map((item) => {
             const isActive = location.pathname === item.href;
             const isCart = item.icon === "cart";

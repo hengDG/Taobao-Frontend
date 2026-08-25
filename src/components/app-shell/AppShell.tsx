@@ -137,6 +137,9 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
   const nextLanguage: Language = language === "en" ? "km" : "en";
 
+  // Compact header state when user scrolls down
+  const isCompact = !showUtilityBar;
+
   return (
     <LanguageProvider
       value={{
@@ -151,12 +154,12 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Header */}
 
-        <header className="fixed top-0 right-0 left-0 z-20 border-b border-gray-200 bg-white/95 backdrop-blur lg:left-20">
+        <header className="fixed px-20 top-0 right-0 left-0 z-20 border-b border-gray-200/20 bg-white/60 backdrop-blur-md">
           {/* Utility Bar */}
 
           <div
             className={[
-              "overflow-hidden border-b border-gray-200 bg-slate-50 transition-all duration-300 ease-out",
+              "overflow-hidden border-b border-gray-200 bg-transparent transition-all duration-300 ease-out",
 
               showUtilityBar ? "max-h-10 opacity-100" : "max-h-0 opacity-0",
             ].join(" ")}
@@ -224,13 +227,23 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
             <div className="mx-auto flex w-[95%] items-center gap-2 sm:gap-3">
               {/* Mobile Logo */}
 
+              {/* Mobile Logo */}
+
               <img
-                src="https://play-lh.googleusercontent.com/5uVmNR71LD6-LHspJgdI4JGymI3qovFxlVtYHdPbSrJRPiRHyQkIxwYd_1bZqR8u5-5KJs3DE6NKJGMj6xSS"
-                // src="/public/vtslogo.jpg"
+                src="/vtslogo.jpg"
                 alt="Logo"
-                width={40}
-                height={40}
-                className="shrink-0 rounded-xl lg:hidden"
+                width={64}
+                height={64}
+                className="shrink-0 rounded-xl lg:hidden transition-all duration-200"
+              />
+
+              {/* Desktop Logo (moved from sidebar) */}
+              <img
+                src="/vtslogo.jpg"
+                alt="Logo"
+                width={isCompact ? 106 : 156}
+                height={isCompact ? 106 : 156}
+                className="hidden shrink-0 rounded-xl lg:inline-flex lg:mr-4 transition-all duration-200"
               />
 
               {/* Search */}
@@ -297,7 +310,9 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Page Content */}
 
-        <main className="pt-28 pb-20 lg:pl-20 lg:pb-0">{children}</main>
+        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full lg:px-4 xl:px-30">
+          {children}
+        </main>
       </div>
     </LanguageProvider>
   );

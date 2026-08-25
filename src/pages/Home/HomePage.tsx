@@ -1,5 +1,6 @@
-import { HomeHero } from "@/components/home/HomeHero";
 
+import { HomeHero } from "@/components/home/HomeHero";
+import { HomeMarketplaceDashboard } from "@/components/home/HomeHeroNew";
 import { HomeMarketplacePanel } from "@/components/home/HomeMarketplacePanel";
 
 import TestingComponent from "@/components/testing";
@@ -8,14 +9,10 @@ import HomepageSectionList from "@/components/testing-homepage";
 export default function HomePage() {
   return (
     <>
-    <img
-      src="/public/image copy.png"
-      alt="Logo"
-      className="rounded-xl"
-    />
-      <HomeHero />
+      <HomeMarketplaceDashboard />
+      {/* <HomeHero /> */}
 
-      <HomeMarketplacePanel />
+      {/* <HomeMarketplacePanel /> */}
 
       {/* <ProductGrid products={products} /> */}
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const Config = {
-  baseURL: "http://192.168.0.10:3168/api",
+  baseURL: "http://localhost:3168/api",
   productionMode: false,
 };
 
