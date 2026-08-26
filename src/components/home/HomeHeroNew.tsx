@@ -14,7 +14,8 @@ export function HomeMarketplaceDashboard() {
   return (
     <section className="mx-auto w-full mt-15 space-y-2  px-4">
       {/* TOP AREA */}
-      <div className="grid gap-2 lg:grid-cols-12">
+      <div className="grid gap-2 lg:grid-cols-10">
+        {" "}
         {/* USER CARD */}
         <div
           className="
@@ -24,8 +25,7 @@ export function HomeMarketplaceDashboard() {
     bg-[#fff7f2]
     p-4
     shadow-sm
-    lg:col-span-3
-  "
+lg:col-span-2  "
         >
           {/* USER INFO */}
           <div className="flex items-center gap-3">
@@ -79,11 +79,7 @@ export function HomeMarketplaceDashboard() {
         text-gray-400
       "
               >
-                <span>
-                  Followed
-                  <br />
-                  Stores
-                </span>
+                <span>Followed</span>
 
                 <span>
                   Shipping
@@ -342,9 +338,7 @@ export function HomeMarketplaceDashboard() {
             ))}
           </div>
         </div>
-
         {/* TRACK ORDER */}
-
         <div
           className="
     rounded-2xl
@@ -353,8 +347,7 @@ export function HomeMarketplaceDashboard() {
     bg-white
     p-5
     shadow-sm
-    lg:col-span-3
-  "
+lg:col-span-2  "
         >
           {/* HEADER */}
 
@@ -495,85 +488,166 @@ export function HomeMarketplaceDashboard() {
             ))}
           </div>
         </div>
-
-        {/* TOP STORES */}
+        {/* TOP STORE + SMALL CARDS */}
         <div
           className="
-          rounded-2xl
-          bg-white
-          p-5
-          shadow-sm
-          lg:col-span-3
-        "
+    lg:col-span-4
+    space-y-2
+  "
         >
+          {/* TOP STORE */}
           <div
             className="
-            flex
-            justify-between
-          "
+      rounded-2xl
+      bg-white
+      p-5
+      shadow-sm
+    "
           >
-            <h3 className="font-bold">Top Stores</h3>
+            <div
+              className="
+        flex
+        justify-between
+      "
+            >
+              <h3 className="font-bold">Top Stores</h3>
 
-            <span className="text-xs text-gray-400">View All</span>
+              <span className="text-xs text-gray-400">View All</span>
+            </div>
+
+            <div
+              className="
+        mt-5
+        grid
+        grid-cols-5
+        gap-2
+      "
+            >
+              {[
+                "Xiaomi",
+                "Apple",
+                "Nike",
+                "Uniqlo",
+                "Adidas",
+                "Huawei",
+                "Lenovo",
+                "OPPO",
+                "Samsung",
+                "Sony",
+              ].map((store) => (
+                <div key={store} className="text-center">
+                  <div
+                    className="
+              mx-auto
+              h-10
+              w-10
+              rounded-xl
+              bg-gray-100
+            "
+                  />
+
+                  <p
+                    className="
+              mt-2
+              text-xs
+              font-semibold
+            "
+                  >
+                    {store}
+                  </p>
+
+                  {/* <span
+                    className="
+              text-[10px]
+              text-gray-400
+            "
+                  >
+                    Official Store
+                  </span> */}
+                </div>
+              ))}
+            </div>
           </div>
 
+          {/* SMALL CARDS */}
           <div
             className="
-            mt-5
-            grid
-            grid-cols-4
-            gap-4
-          "
+      grid
+      grid-cols-2
+      gap-2
+    "
           >
-            {[
-              "Xiaomi",
-              "Apple",
-              "Nike",
-              "Uniqlo",
-              "Adidas",
-              "Huawei",
-              "Lenovo",
-              "OPPO",
-            ].map((store) => (
-              <div
-                key={store}
+            {/* COUPON */}
+            <div
+              className="
+        rounded-2xl
+        bg-gradient-to-br
+        from-orange-50
+        to-orange-100
+        p-4
+        shadow-sm
+      "
+            >
+              <div className="text-xl">🎟️</div>
+
+              <h4
                 className="
-                  text-center
-                "
+          mt-2
+          text-sm
+          font-bold
+          text-gray-800
+        "
               >
-                <div
-                  className="
-                  mx-auto
-                  h-10
-                  w-10
-                  rounded-xl
-                  bg-gray-100
-                "
-                />
+                Coupon
+              </h4>
 
-                <p
-                  className="
-                  mt-2
-                  text-xs
-                  font-semibold
-                "
-                >
-                  {store}
-                </p>
+              <p
+                className="
+          mt-1
+          text-[11px]
+          text-gray-500
+        "
+              >
+                Get discount coupons
+              </p>
+            </div>
 
-                <span
-                  className="
-                  text-[10px]
-                  text-gray-400
-                "
-                >
-                  Official Store
-                </span>
-              </div>
-            ))}
+            {/* LIVE */}
+            <div
+              className="
+        rounded-2xl
+        bg-gradient-to-br
+        from-red-50
+        to-pink-100
+        p-4
+        shadow-sm
+      "
+            >
+              <div className="text-xl">📺</div>
+
+              <h4
+                className="
+          mt-2
+          text-sm
+          font-bold
+          text-gray-800
+        "
+              >
+                Live
+              </h4>
+
+              <p
+                className="
+          mt-1
+          text-[11px]
+          text-gray-500
+        "
+              >
+                Watch shopping live
+              </p>
+            </div>
           </div>
         </div>
-
         {/* AD */}
         <div
           className="
@@ -585,8 +659,7 @@ export function HomeMarketplaceDashboard() {
           to-orange-600
           p-5
           text-white
-          lg:col-span-3
-        "
+lg:col-span-2        "
         >
           <span
             className="
@@ -695,7 +768,7 @@ export function HomeMarketplaceDashboard() {
             className="
         group
         flex
-        h-11
+        h-9
         shrink-0
         items-center
         gap-2
@@ -703,7 +776,7 @@ export function HomeMarketplaceDashboard() {
         border
         border-gray-100
         bg-white
-        px-4
+        px-2
         text-xs
         font-semibold
         text-gray-700

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { searchProducts } from "@/services/product/product.service";
+import productService from "@/services/product/product.service";
 import type {
   TaobaoProduct,
   TaobaoProductsResponse,
@@ -50,11 +50,8 @@ export function useInfiniteProducts(
         setLoading(true);
         setError(null);
 
-        const response: TaobaoProductsResponse = await searchProducts(
-          trimmed,
-          page,
-          size,
-        );
+        const response: TaobaoProductsResponse =
+          await productService.searchProducts(trimmed, page, size);
         const items = response.items ?? [];
 
         setProducts((prev) => (page === 1 ? items : [...prev, ...items]));

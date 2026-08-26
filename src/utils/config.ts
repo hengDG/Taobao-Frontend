@@ -1,8 +1,8 @@
-const base = "/api";
+// const base = "/api";
 
-const Config = {
-  baseURL: base,
-  baseURLHR: base,
-};
+// const Config = {
+//   baseURL: base,
+//   baseURLHR: base,
+// };
 
-export default Config;
+// export default Config;

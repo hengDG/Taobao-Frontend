@@ -156,12 +156,10 @@ type ProductCardSkeletonProps = {
   className?: string;
 };
 
-
 export function ProductCardSkeleton({
   count = 12,
   className = "",
 }: ProductCardSkeletonProps) {
-
   return (
     <div
       className={`
@@ -180,43 +178,27 @@ export function ProductCardSkeleton({
         ${className}
       `}
     >
-
       {Array.from({ length: count }).map((_, index) => (
-
-        <ProductCardSkeletonCard
-          key={`skeleton-${index}`}
-          index={index}
-        />
-
+        <ProductCardSkeletonCard key={`skeleton-${index}`} index={index} />
       ))}
-
     </div>
   );
 }
-
-
-
-
 
 type ProductCardSkeletonCardProps = {
   index?: number;
 };
 
-
 export function ProductCardSkeletonCard({
   index = 0,
 }: ProductCardSkeletonCardProps) {
-
-
   const hasLongTitle = index % 3 === 0;
-  const hasShopName = index % 2 === 0;
   const hasDiscount = index % 3 === 1;
 
-
   return (
-
     <div
       className="
+        group
         overflow-hidden
         rounded-2xl
         border
@@ -225,123 +207,98 @@ export function ProductCardSkeletonCard({
         shadow-sm
       "
     >
-
-
       {/* IMAGE */}
-
       <div
         className="
-          aspect-square
+          relative
+          aspect-[4/5]
           w-full
           animate-pulse
           bg-slate-200
         "
       />
 
-
-
       {/* CONTENT */}
 
       <div
         className="
-          space-y-3
+          space-y-2.5
           p-3
-          sm:p-4
+          sm:p-2
         "
       >
-
-
-        {/* Category */}
+        {/* TITLE WITH ICON */}
 
         <div
           className="
-            h-3
-            w-16
-            animate-pulse
-            rounded
-            bg-slate-200
+            flex
+            items-center
+            gap-1
           "
-        />
-
-
-
-        {/* Title */}
-
-        <div className="space-y-2">
+        >
+          {/* taobao icon */}
 
           <div
             className="
-              h-4
+              h-5
+              w-5
+              shrink-0
+              animate-pulse
+              rounded-full
+              bg-slate-200
+            "
+          />
+
+          <div
+            className="
+              h-3
               w-full
               animate-pulse
               rounded
               bg-slate-200
             "
           />
+        </div>
 
+        <div
+          className="
+            h-3
+            w-4/5
+            animate-pulse
+            rounded
+            bg-slate-200
+          "
+        />
 
+        {hasLongTitle && (
           <div
             className="
-              h-4
-              w-4/5
-              animate-pulse
-              rounded
-              bg-slate-200
-            "
-          />
-
-
-          {hasLongTitle && (
-
-            <div
-              className="
-                h-4
+                h-3
                 w-1/2
                 animate-pulse
                 rounded
                 bg-slate-200
               "
-            />
-
-          )}
-
-        </div>
-
-
-
-
-        {/* Shop */}
-
-        {hasShopName && (
-
-          <div
-            className="
-              h-3
-              w-24
-              animate-pulse
-              rounded
-              bg-slate-200
-            "
           />
-
         )}
 
-
-
-
-
-        {/* Price */}
+        {/* BOTTOM PRICE AREA */}
 
         <div
           className="
             flex
-            items-center
+            items-end
             justify-between
+            gap-3
             pt-2
           "
         >
-
-          <div className="space-y-2">
+          <div
+            className="
+              space-y-2
+            "
+          >
+            {/* price */}
 
             <div
               className="
@@ -353,25 +310,20 @@ export function ProductCardSkeletonCard({
               "
             />
 
-
             {hasDiscount && (
-
               <div
                 className="
-                  h-3
-                  w-14
-                  animate-pulse
-                  rounded
-                  bg-slate-200
-                "
+                    h-3
+                    w-14
+                    animate-pulse
+                    rounded
+                    bg-slate-200
+                  "
               />
-
             )}
-
           </div>
 
-
-
+          {/* sold badge */}
 
           <div
             className="
@@ -382,15 +334,8 @@ export function ProductCardSkeletonCard({
               bg-slate-200
             "
           />
-
-
         </div>
-
-
       </div>
-
-
     </div>
-
   );
 }

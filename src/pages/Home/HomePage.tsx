@@ -33,7 +33,7 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("explore")}
           className={`
-            rounded-full
+            rounded-xl
             px-5
             py-2
             text-sm
@@ -54,7 +54,7 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("theme")}
           className={`
-            rounded-full
+            rounded-xl
             px-5
             py-2
             text-sm
@@ -75,7 +75,7 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("homepage")}
           className={`
-            rounded-full
+            rounded-xl
             px-5
             py-2
             text-sm
@@ -106,12 +106,6 @@ export default function HomePage() {
     </>
   );
 }
-
-
-
-
-
-
 
 // import { useState } from "react";
 

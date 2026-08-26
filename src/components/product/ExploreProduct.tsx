@@ -1,12 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ProductCard } from "@/components/product/ProductCard";
 
-import type { TaobaoProduct } from "@/types/taobao.types";
-
 import productService from "@/services/product/product.service";
 
+import type { TaobaoProduct } from "@/types/taobao.types";
+
 import { ProductCardSkeletonCard } from "../ui/ProductCardSkeleton";
+
+const PRODUCT_GRID = `
+grid
+grid-cols-2
+gap-2
+sm:grid-cols-3
+md:grid-cols-4
+lg:grid-cols-5
+xl:grid-cols-6
+2xl:grid-cols-7
+`;
 
 const ExploreProduct = () => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
@@ -21,16 +32,18 @@ const ExploreProduct = () => {
 
   const [hasMore, setHasMore] = useState(false);
 
-  // scroll trigger
+  const loadingRef = useRef(false);
+
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const fetchProducts = async (nextCursor?: string | null) => {
-    // prevent duplicate request
-    if (loadingMore) {
+  const fetchProducts = useCallback(async (nextCursor?: string | null) => {
+    if (loadingRef.current) {
       return;
     }
 
     try {
+      loadingRef.current = true;
+
       if (nextCursor) {
         setLoadingMore(true);
       } else {
@@ -43,63 +56,63 @@ const ExploreProduct = () => {
         nextCursor ?? undefined,
       );
 
-      console.log("EXPLORE RESPONSE:", response);
-
       const newProducts = response.products ?? [];
 
-      // KEEP OLD DATA
       setProducts((prev) =>
         nextCursor ? [...prev, ...newProducts] : newProducts,
       );
 
-      // UPDATE CURSOR
       setCursor(response.nextCursor ?? null);
 
       setHasMore(Boolean(response.hasMore));
     } catch (err) {
-      console.error("EXPLORE ERROR:", err);
+      console.error("Explore products error:", err);
 
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch explore products",
-      );
+      setError(err instanceof Error ? err.message : "Failed to load products");
     } finally {
+      loadingRef.current = false;
+
       setLoading(false);
 
       setLoadingMore(false);
     }
-  };
-
-  // first load
-  useEffect(() => {
-    void fetchProducts();
   }, []);
 
-  // infinite scroll
+  // initial loading
+
   useEffect(() => {
+    void fetchProducts();
+  }, [fetchProducts]);
+
+  // infinite scroll
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+
+    if (!element) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
 
-        if (entry.isIntersecting && hasMore && cursor && !loadingMore) {
+        if (entry.isIntersecting && hasMore && cursor) {
           void fetchProducts(cursor);
         }
       },
 
       {
-        threshold: 1,
+        threshold: 0.5,
       },
     );
 
-    const element = loadMoreRef.current;
-
-    if (element) {
-      observer.observe(element);
-    }
+    observer.observe(element);
 
     return () => {
       observer.disconnect();
     };
-  }, [cursor, hasMore, loadingMore]);
+  }, [cursor, hasMore, fetchProducts]);
 
   return (
     <div
@@ -111,48 +124,32 @@ const ExploreProduct = () => {
         py-2
       "
     >
-      {/* FIRST LOADING */}
-
       {loading && products.length === 0 && (
-        <div
-          className="
-              grid
-              grid-cols-2
-              gap-2
-              sm:grid-cols-3
-              md:grid-cols-4
-              lg:grid-cols-5
-              xl:grid-cols-6
-              2xl:grid-cols-7
-            "
-        >
+        <div className={PRODUCT_GRID}>
           {Array.from({
             length: 12,
           }).map((_, index) => (
             <ProductCardSkeletonCard
-              key={`explore-skeleton-${index}`}
+              key={`explore-loading-${index}`}
               index={index}
             />
           ))}
         </div>
       )}
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && (
+        <p
+          className="
+            text-red-500
+            "
+        >
+          {error}
+        </p>
+      )}
 
       {!error && products.length > 0 && (
         <>
-          <div
-            className="
-                grid
-                grid-cols-2
-                gap-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                xl:grid-cols-6
-                2xl:grid-cols-7
-              "
-          >
+          <div className={PRODUCT_GRID}>
             {products.map((product) => (
               <ProductCard
                 key={product.sourceItemId ?? product.title}
@@ -165,15 +162,20 @@ const ExploreProduct = () => {
                 length: 10,
               }).map((_, index) => (
                 <ProductCardSkeletonCard
-                  key={`loading-more-${index}`}
+                  key={`load-more-${index}`}
                   index={index}
                 />
               ))}
           </div>
 
-          {/* SCROLL DETECTOR */}
-
-          <div ref={loadMoreRef} className="h-10" />
+          {hasMore && (
+            <div
+              ref={loadMoreRef}
+              className="
+                h-10
+                "
+            />
+          )}
         </>
       )}
     </div>

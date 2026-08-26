@@ -1,45 +1,63 @@
 import { useEffect, useState } from "react";
 
 import { ProductCard } from "@/components/product/ProductCard";
-import type { TaobaoProduct } from "@/types/taobao.types";
-import { ProductCardSkeleton } from "./ui/ProductCardSkeleton";
+import { ProductCardSkeleton } from "@/components/ui/ProductCardSkeleton";
+
 import productService from "@/services/product/product.service";
 
-const TestingComponent = () => {
+import type { TaobaoProduct } from "@/types/taobao.types";
+
+const ThemeProductsSection = () => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const fetchProducts = async () => {
       try {
         setLoading(true);
 
+        setError(null);
+
         const response = await productService.getThemeProducts("11647");
 
-        setProducts(response.items ?? []);
+        if (mounted) {
+          setProducts(response.items ?? []);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Theme products error:", err);
 
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch products",
-        );
+        if (mounted) {
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch products",
+          );
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchProducts();
+    void fetchProducts();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
-    <div
+    <section
       className="
         mx-auto
         w-full
         max-w-8xl
         px-4
-        py-2
+        py-4
       "
     >
       <div className="mb-5">
@@ -50,26 +68,34 @@ const TestingComponent = () => {
             text-slate-800
           "
         >
-          Theme Products Test
+          Theme Products
         </h3>
       </div>
 
       {loading && <ProductCardSkeleton count={12} />}
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && (
+        <p
+          className="
+              text-red-500
+            "
+        >
+          {error}
+        </p>
+      )}
 
-      {!loading && !error && (
+      {!loading && !error && products.length > 0 && (
         <div
           className="
-            grid
-            grid-cols-2
-            gap-2
-            sm:grid-cols-3
-            md:grid-cols-4
-            lg:grid-cols-5
-            xl:grid-cols-6
-            2xl:grid-cols-7
-          "
+              grid
+              grid-cols-2
+              gap-3
+              sm:grid-cols-3
+              md:grid-cols-4
+              lg:grid-cols-5
+              xl:grid-cols-6
+              2xl:grid-cols-7
+            "
         >
           {products.map((product) => (
             <ProductCard
@@ -79,8 +105,12 @@ const TestingComponent = () => {
           ))}
         </div>
       )}
-    </div>
+
+      {!loading && !error && products.length === 0 && (
+        <p className="text-slate-500">No products found.</p>
+      )}
+    </section>
   );
 };
 
-export default TestingComponent;
+export default ThemeProductsSection;
