@@ -7,7 +7,7 @@ const httpCommon = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 15000,
+  timeout: 35000,
 });
 
 httpCommon.interceptors.response.use(

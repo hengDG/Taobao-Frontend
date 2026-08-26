@@ -13,6 +13,12 @@ export type TaobaoProduct = {
   description?: string;
 };
 
+export type ExploreProductsResponse = {
+  products?: TaobaoProduct[];
+  nextCursor?: string | null;
+  hasMore?: boolean;
+};
+
 export type TaobaoProductDetailResponse = TaobaoProduct;
 
 export type TaobaoHomeRow = {

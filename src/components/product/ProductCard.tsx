@@ -188,13 +188,13 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       </div>
 
       {/* CONTENT */}
-      <div className="space-y-2.5 p-3 sm:p-4">
+      <div className="space-y-2.5 p-3 sm:p-2">
         {/* Category */}
-        {badgeText ? (
+        {/* {badgeText ? (
           <p className="text-[11px] font-medium tracking-[0.06em] text-slate-500">
             {badgeText}
           </p>
-        ) : null}
+        ) : null} */}
 
         {/* TITLE
             No min-height.
@@ -202,18 +202,18 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
             Short title = shorter card.
         */}
         <h3
-  className="
+          className="
     line-clamp-2
     text-sm
     leading-5
     font-semibold
     text-slate-800
   "
->
-  <img
-    src="/taobao icon.png"
-    alt="Taobao"
-    className="
+        >
+          <img
+            src="/taobao icon.png"
+            alt="Taobao"
+            className="
       mr-1
       inline-block
       h-5
@@ -221,17 +221,17 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       align-text-bottom
       object-contain
     "
-  />
+          />
 
-  {title}
-</h3>
+          {title}
+        </h3>
 
         {/* Shop */}
-        {shopName ? <p className="text-xs text-slate-500">{shopName}</p> : null}
+        {/* {shopName ? <p className="text-xs text-slate-500">{shopName}</p> : null} */}
 
         {/* Bottom */}
         <div className="flex items-end justify-between gap-3">
-          <div>
+          <div className="flex  items-center  gap-2">
             <div className="text-lg font-bold text-[#194891]">{priceText}</div>
 
             {hasDiscount && isTaobaoProduct(product) ? (

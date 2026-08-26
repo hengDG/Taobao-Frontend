@@ -738,7 +738,7 @@ export function HomeMarketplaceDashboard() {
 
       {/* RECOMMENDATION TAB */}
 
-      <div
+      {/* <div
         className="
     flex
     justify-center
@@ -746,7 +746,6 @@ export function HomeMarketplaceDashboard() {
     py-0
   "
       >
-        {/* Guess You Like */}
 
         <button
           className="
@@ -770,7 +769,6 @@ export function HomeMarketplaceDashboard() {
           Explore
         </button>
 
-        {/* Following */}
 
         <button
           className="
@@ -809,7 +807,7 @@ export function HomeMarketplaceDashboard() {
             New
           </span>
         </button>
-      </div>
+      </div> */}
     </section>
   );
 }

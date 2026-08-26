@@ -11,7 +11,7 @@ export const createApiClient = (baseURL = Config.baseURL) =>
     headers: {
       "Content-Type": "application/json",
     },
-    timeout: 15000,
+    timeout: 35000,
   });
 
 export const httpCommon = createApiClient();

@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
 import type { ProductCard as ProductCardType } from "@/types/product";
 import TestingComponent from "@/components/testing";
+import productService from "@/services/product/product.service";
+import ExploreProduct from "@/components/product/ExploreProduct";
 
 const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("zh-CN", {
@@ -31,6 +33,7 @@ function ProductDetailView({
   ) => void;
 }) {
   const imageRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const galleryList = useMemo(
     () => (product.gallery?.length ? product.gallery : gallery).filter(Boolean),
     [gallery, product.gallery],
@@ -76,6 +79,20 @@ function ProductDetailView({
     product.id,
     product.imageUrl,
   ]);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+    // also ensure window is at top for route navigation
+    try {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    } catch (e) {
+      // ignore for SSR or non-window environments
+    }
+  }, [product.id]);
 
   const currentSku = useMemo(() => {
     const skuList = product.skus ?? [];
@@ -166,11 +183,14 @@ function ProductDetailView({
   console.log("product detail page render");
 
   return (
-    <div className="mx-auto max-w-8xl px-10 py-6">
+    <div className="mx-auto max-w-8xl px-10 mt-10 py-6">
       <div className="mb-5 flex items-center justify-between"></div>
 
       <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">
-        <div className="space-y-5 md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div
+          ref={contentRef}
+          className="space-y-5 md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        >
           <div className="space-y-4">
             <div className="flex gap-3">
               <div className="flex w-20 flex-col gap-3">
@@ -475,15 +495,10 @@ export default function ProductDetailPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/products/${sourceItemId}`, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data = (await response.json()) as {
+        const data = (await productService.getProductDetail(
+          sourceItemId,
+          undefined,
+        )) as {
           itemId?: string;
           title?: string;
           description?: string;
@@ -590,13 +605,23 @@ export default function ProductDetailPage() {
     return () => controller.abort();
   }, [sourceItemId]);
 
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    } catch (e) {
+      // ignore in non-window environments
+    }
+  }, [sourceItemId]);
+
   if (loading) {
     return <ProductDetailSkeleton />;
   }
 
   if (error || !product) {
     return (
-      <div className="mx-auto max-w-2xl p-10 text-center">
+      <div className="mx-auto max-w-2xl p-10 mt-5 text-center">
         <p className="text-lg font-semibold text-red-600">
           {error ?? "Product not found."}
         </p>
@@ -624,7 +649,8 @@ export default function ProductDetailPage() {
           console.log("add to cart:", selectedProduct);
         }}
       />
-      <TestingComponent />
+      {/* <TestingComponent /> */}
+      <ExploreProduct />
 
       {/* {rawData ? (
         <div className="mx-auto max-w-6xl px-10 pb-10">
