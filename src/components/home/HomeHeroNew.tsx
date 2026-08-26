@@ -134,7 +134,7 @@ lg:col-span-2  "
           text-lg
         "
                 >
-                  {item.icon}
+                  {/* {item.icon} */}
                 </div>
 
                 <p

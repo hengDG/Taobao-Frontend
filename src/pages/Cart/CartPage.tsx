@@ -428,7 +428,7 @@ export function CartPage({
    */
   if (items.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
+      <main className="mx-auto w-full max-w-5xl  px-4 py-10 sm:px-6">
         <h1 className="text-2xl font-semibold text-[#1b2f4e]">
           {title}
         </h1>
@@ -456,7 +456,7 @@ export function CartPage({
    * CART
    */
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 pt-4 pb-28 sm:px-6 lg:py-8">
+    <main className="mx-auto w-full max-w-7xl px-4 pt-4 mt-10 pb-28 sm:px-6 lg:py-8">
       <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6">
         {/* LEFT */}
 

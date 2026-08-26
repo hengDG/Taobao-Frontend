@@ -126,7 +126,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
          * inline-block + w-full:
          * works well with CSS columns.
          */
-        "group mb-3 inline-block h-auto w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        "group mb-3 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
 
         className,
       ]

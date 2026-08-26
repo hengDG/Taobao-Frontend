@@ -497,7 +497,7 @@ export default function ProductDetailPage() {
 
         const data = (await productService.getProductDetail(
           sourceItemId,
-          undefined,
+          // undefined,
         )) as {
           itemId?: string;
           title?: string;
