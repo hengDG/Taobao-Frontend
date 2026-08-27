@@ -132,7 +132,7 @@ export function ProductCardSkeletonCard({
 
         {/* BOTTOM PRICE AREA */}
 
-        <div
+        {/* <div
           className="
             flex
             items-end
@@ -146,7 +146,7 @@ export function ProductCardSkeletonCard({
               space-y-2
             "
           >
-            {/* price */}
+           
 
             <div
               className="
@@ -171,7 +171,7 @@ export function ProductCardSkeletonCard({
             )}
           </div>
 
-          {/* sold badge */}
+         
 
           <div
             className="
@@ -182,7 +182,7 @@ export function ProductCardSkeletonCard({
               bg-slate-200
             "
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

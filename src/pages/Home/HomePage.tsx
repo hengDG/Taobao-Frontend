@@ -39,6 +39,7 @@ export default function HomePage() {
             text-sm
             font-semibold
             transition
+            cursor-pointer
 
             ${
               activeTab === "explore"
@@ -59,8 +60,9 @@ export default function HomePage() {
             py-2
             text-sm
             font-semibold
+            font-semibold
             transition
-
+            cursor-pointer
             ${
               activeTab === "theme"
                 ? "bg-[#ff6a00] text-white"
@@ -81,7 +83,7 @@ export default function HomePage() {
             text-sm
             font-semibold
             transition
-
+            cursor-pointer
             ${
               activeTab === "homepage"
                 ? "bg-[#ff6a00] text-white"

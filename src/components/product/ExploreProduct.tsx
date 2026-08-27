@@ -120,7 +120,7 @@ const ExploreProduct = () => {
         mx-auto
         w-full
         max-w-8xl
-        px-4
+        px-0
         py-2
       "
     >

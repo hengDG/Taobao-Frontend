@@ -5,6 +5,8 @@ import useInfiniteProducts from "@/hooks/useInfiniteProducts";
 
 import type { TaobaoProduct } from "@/types/taobao.types";
 
+import { ProductLinkSearchResult } from "../../components/product/ProductLinkSearchResult";
+
 import {
   ProductCardSkeleton,
   ProductCardSkeletonCard,
@@ -14,16 +16,19 @@ export default function ProductsPage() {
   const [searchParams] = useSearchParams();
 
   const keyword = searchParams.get("keyword") ?? "";
+  const url = searchParams.get("url") ?? "";
 
   const size = Number(searchParams.get("size") ?? "20");
 
   const {
     products: items,
+    exactProduct,
+    similarProducts,
     loading,
     error,
     hasMore,
     setObserverRef,
-  } = useInfiniteProducts(keyword, size);
+  } = useInfiniteProducts(keyword, size, url);
 
   return (
     <div
@@ -73,11 +78,15 @@ export default function ProductsPage() {
               text-slate-900
             "
           >
-            {keyword ? `Results for "${keyword}"` : "Search products"}
+            {keyword
+              ? `Results for "${keyword}"`
+              : url
+                ? "Results from product link"
+                : "Search products"}
           </h1>
         </div>
 
-        {!loading && !error && keyword && (
+        {!loading && !error && (keyword || url) && (
           <div
             className="
               text-sm
@@ -111,6 +120,11 @@ export default function ProductsPage() {
 
       {loading && items.length === 0 ? (
         <ProductCardSkeleton count={12} />
+      ) : url ? (
+        <ProductLinkSearchResult
+          exactProduct={exactProduct}
+          similarProducts={similarProducts}
+        />
       ) : items.length > 0 ? (
         <>
           {/* PRODUCT GRID */}
@@ -185,7 +199,9 @@ export default function ProductsPage() {
         >
           {keyword
             ? "No items matched your keyword."
-            : "Use the search bar to look up products."}
+            : url
+              ? "No product matched this link."
+              : "Use the search bar to look up products."}
         </div>
       )}
     </div>

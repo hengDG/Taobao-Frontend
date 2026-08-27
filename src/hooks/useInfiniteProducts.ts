@@ -4,10 +4,13 @@ import productService from "@/services/product/product.service";
 import type {
   TaobaoProduct,
   TaobaoProductsResponse,
+  TaobaoExactProduct,
 } from "@/types/taobao.types";
 
 type UseInfiniteProductsResult = {
   products: TaobaoProduct[];
+  exactProduct: TaobaoProduct | null;
+  similarProducts: TaobaoProduct[];
   loading: boolean;
   error: string | null;
   hasMore: boolean;
@@ -17,29 +20,58 @@ type UseInfiniteProductsResult = {
   loadMore: () => void;
 };
 
+const mapExactProductToTaobaoProduct = (
+  exact: TaobaoExactProduct | undefined,
+): TaobaoProduct | null => {
+  if (!exact) {
+    return null;
+  }
+
+  const normalizedId = exact.sourceItemId ?? exact.itemId;
+
+  return {
+    itemId: exact.itemId ?? normalizedId,
+    sourceItemId: normalizedId,
+    title: exact.title,
+    titleOriginal: exact.titleOriginal,
+    image: exact.image,
+    shopName: exact.shopName ?? undefined,
+    couponCents: exact.couponCents ?? null,
+    listCents: exact.listCents ?? null,
+    priceCents: exact.listCents ?? null,
+  };
+};
+
 export function useInfiniteProducts(
   keyword: string,
   size = 20,
+  url?: string,
 ): UseInfiniteProductsResult {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
+  const [exactProduct, setExactProduct] = useState<TaobaoProduct | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<TaobaoProduct[]>([]);
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
-  // reset when keyword or size changes
   useEffect(() => {
     setProducts([]);
+    setExactProduct(null);
+    setSimilarProducts([]);
     setPage(1);
     setHasMore(true);
     setError(null);
-  }, [keyword, size]);
+  }, [keyword, size, url]);
 
-  // fetch page
   useEffect(() => {
     const fetchPage = async () => {
-      const trimmed = keyword.trim();
-      if (!trimmed) {
+      const trimmedKeyword = keyword.trim();
+      const trimmedUrl = url?.trim() ?? "";
+      const isLinkSearch = Boolean(trimmedUrl);
+      const query = isLinkSearch ? trimmedUrl : trimmedKeyword;
+
+      if (!query) {
         setProducts([]);
         setHasMore(false);
         setLoading(false);
@@ -50,18 +82,39 @@ export function useInfiniteProducts(
         setLoading(true);
         setError(null);
 
-        const response: TaobaoProductsResponse =
-          await productService.searchProducts(trimmed, page, size);
-        const items = response.items ?? [];
+        const response: TaobaoProductsResponse = isLinkSearch
+          ? await productService.searchByLink(query)
+          : await productService.searchProducts(query, page, size);
 
-        setProducts((prev) => (page === 1 ? items : [...prev, ...items]));
+        if (isLinkSearch) {
+          const mappedExact = mapExactProductToTaobaoProduct(response.exact);
+          const mappedSimilar = (response.similar ?? []).map((item) => ({
+            itemId: item.itemId ?? item.sourceItemId,
+            sourceItemId: item.sourceItemId ?? item.itemId,
+            title: item.title,
+            titleOriginal: item.titleOriginal,
+            image: item.image,
+            shopName: item.shopName ?? undefined,
+            couponCents: item.couponCents ?? null,
+            listCents: item.listCents ?? null,
+            priceCents: item.listCents ?? null,
+          }));
 
-        // If API gives total use it, otherwise infer from page length
-        if (typeof response.total === "number") {
-          const totalPages = Math.max(1, Math.ceil(response.total / size));
-          setHasMore(page < totalPages);
+          setExactProduct(mappedExact ?? null);
+          setSimilarProducts(mappedSimilar);
+          setProducts(mappedExact ? [mappedExact] : []);
+          setHasMore(false);
         } else {
-          setHasMore(items.length === size);
+          const items = response.items ?? [];
+
+          setProducts((prev) => (page === 1 ? items : [...prev, ...items]));
+
+          if (typeof response.total === "number") {
+            const totalPages = Math.max(1, Math.ceil(response.total / size));
+            setHasMore(page < totalPages);
+          } else {
+            setHasMore(items.length === size);
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
@@ -72,7 +125,7 @@ export function useInfiniteProducts(
 
     fetchPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyword, page, size]);
+  }, [keyword, page, size, url]);
 
   const loadMore = useCallback(() => {
     setPage((p) => p + 1);
@@ -101,7 +154,16 @@ export function useInfiniteProducts(
     [loadMore, loading, hasMore],
   );
 
-  return { products, loading, error, hasMore, setObserverRef, loadMore };
+  return {
+    products,
+    exactProduct,
+    similarProducts,
+    loading,
+    error,
+    hasMore,
+    setObserverRef,
+    loadMore,
+  };
 }
 
 export default useInfiniteProducts;

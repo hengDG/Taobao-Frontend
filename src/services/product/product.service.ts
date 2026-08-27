@@ -1,4 +1,3 @@
-
 import apiClient from "../api/client";
 
 import type {
@@ -6,6 +5,7 @@ import type {
   TaobaoProductsResponse,
   TaobaoProductDetailResponse,
   ExploreProductsResponse,
+  ByLinkProductResponse,
 } from "@/types/taobao.types";
 
 export const productService = {
@@ -39,6 +39,16 @@ export const productService = {
         keyword,
         page,
         size,
+      },
+    });
+
+    return data;
+  },
+
+  async searchByLink(url: string): Promise<ByLinkProductResponse> {
+    const { data } = await apiClient.get("/products/by-link", {
+      params: {
+        url,
       },
     });
 

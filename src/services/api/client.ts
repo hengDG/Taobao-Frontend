@@ -8,7 +8,7 @@ const apiClient = axios.create({
     "http://192.168.0.10:3168/api",
     // "http://localhost:3168/api",
 
-  timeout:20000,
+  timeout:50000,
 
 });
 

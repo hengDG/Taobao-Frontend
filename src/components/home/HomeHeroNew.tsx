@@ -12,20 +12,20 @@ import {
 import { Fragment } from "react";
 export function HomeMarketplaceDashboard() {
   return (
-    <section className="mx-auto w-full mt-15 space-y-2  px-4">
+    <section className="mx-auto w-full mt-15 space-y-2  px-0">
       {/* TOP AREA */}
       <div className="grid gap-2 lg:grid-cols-10">
         {" "}
         {/* USER CARD */}
         <div
           className="
-    rounded-2xl
-    border
-    border-[#f2e6df]
-    bg-[#fff7f2]
-    p-4
-    shadow-sm
-lg:col-span-2  "
+            rounded-2xl
+            border
+            border-[#f2e6df]
+            bg-[#fff7f2]
+            p-4
+            shadow-sm
+        lg:col-span-2  "
         >
           {/* USER INFO */}
           <div className="flex items-center gap-3">
@@ -52,7 +52,7 @@ lg:col-span-2  "
           text-[#222]
         "
                 >
-                  tb155730102167
+                  tb15573010
                 </h3>
 
                 <span
@@ -81,11 +81,7 @@ lg:col-span-2  "
               >
                 <span>Followed</span>
 
-                <span>
-                  Shipping
-                  <br />
-                  Address
-                </span>
+                <span>Shipping</span>
               </div>
             </div>
           </div>
@@ -96,7 +92,7 @@ lg:col-span-2  "
             className="
       mt-5
       grid
-      grid-cols-5
+      grid-cols-4
       gap-2
       text-center
     "
@@ -122,11 +118,11 @@ lg:col-span-2  "
                 label: "Receive",
                 // icon: "🚚",
               },
-              {
-                number: "0",
-                label: "Review",
-                // icon: "⭐",
-              },
+              // {
+              //   number: "0",
+              //   label: "Review",
+              //   // icon: "⭐",
+              // },
             ].map((item) => (
               <div key={item.label}>
                 <div
@@ -162,7 +158,7 @@ lg:col-span-2  "
 
           {/* WALLET */}
 
-          <div
+          {/* <div
             className="
       mt-5
       rounded-xl
@@ -203,79 +199,6 @@ lg:col-span-2  "
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* EXPIRING ALERT */}
-
-          {/* <div
-            className="
-      mt-4
-      flex
-      items-center
-      justify-between
-      rounded-xl
-      bg-white
-      p-3
-      text-xs
-    "
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className="
-        text-red-500
-      "
-              >
-                🎁
-              </span>
-
-              <span>
-                <b className="text-red-500">$0.43</b> packet expires in 5h
-              </span>
-            </div>
-
-            <ChevronRight size={15} className="text-gray-400" />
-          </div> */}
-
-          {/* PRICE ALERT */}
-
-          {/* <div
-            className="
-      mt-3
-      flex
-      gap-3
-      rounded-xl
-      bg-white
-      p-3
-    "
-          >
-            <div
-              className="
-        h-10
-        w-10
-        rounded-lg
-        bg-gray-100
-      "
-            />
-
-            <div>
-              <p
-                className="
-        text-xs
-        font-semibold
-      "
-              >
-                Price Drop Alert
-              </p>
-
-              <p
-                className="
-        text-[11px]
-        text-gray-400
-      "
-              >
-                Some items you liked are now on sale!
-              </p>
             </div>
           </div> */}
 
@@ -523,18 +446,7 @@ lg:col-span-2  "
         gap-2
       "
             >
-              {[
-                "Xiaomi",
-                "Apple",
-                "Nike",
-                "Uniqlo",
-                "Adidas",
-                "Huawei",
-                "Lenovo",
-                "OPPO",
-                "Samsung",
-                "Sony",
-              ].map((store) => (
+              {["Xiaomi", "Apple", "Nike", "Uniqlo", "Adidas"].map((store) => (
                 <div key={store} className="text-center">
                   <div
                     className="

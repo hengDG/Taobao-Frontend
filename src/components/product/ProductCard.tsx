@@ -5,6 +5,7 @@ import { getLocalizedText, type Language } from "@/contexts/LanguageContext";
 import type { ProductCard as LocalizedProduct } from "@/types/product";
 
 import type { TaobaoProduct } from "@/types/taobao.types";
+import { Search } from "lucide-react";
 
 export type ProductCardData = LocalizedProduct | TaobaoProduct;
 
@@ -126,7 +127,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
          * inline-block + w-full:
          * works well with CSS columns.
          */
-        "group mb-3 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        "group mb-0 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
 
         className,
       ]
@@ -185,10 +186,23 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
             Discount
           </span>
         )}
+
+        <button
+          type="button"
+          aria-label="Search product"
+          onClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            handleSelect();
+          }}
+          className="absolute right-2 top-2 cursor-pointer z-10 inline-flex h-5 w-5 items-center justify-center rounded-full border border-white/80 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#194891]"
+        >
+          <Search className="inline-block h-3 w-3" />
+        </button>
       </div>
 
       {/* CONTENT */}
-      <div className="space-y-2.5 p-3 sm:p-2">
+      <div className="space-y-2.5 p-3 sm:p-2 ">
         {/* Category */}
         {/* {badgeText ? (
           <p className="text-[11px] font-medium tracking-[0.06em] text-slate-500">
@@ -204,7 +218,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
         <h3
           className="
     line-clamp-2
-    text-sm
+    text-[13px]
     leading-5
     font-semibold
     text-slate-800
@@ -216,8 +230,8 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
             className="
       mr-1
       inline-block
-      h-5
-      w-5
+      h-4
+      w-4
       align-text-bottom
       object-contain
     "
@@ -231,8 +245,10 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
 
         {/* Bottom */}
         <div className="flex items-end justify-between gap-3">
-          <div className="flex  items-center  gap-2">
-            <div className="text-lg font-bold text-[#194891]">{priceText}</div>
+          <div className="flex  items-center  gap-1">
+            <div className="text-[16px] font-bold text-[#194891]">
+              {priceText}
+            </div>
 
             {hasDiscount && isTaobaoProduct(product) ? (
               <div className="mt-0.5 text-[11px] text-slate-400 line-through">
@@ -241,11 +257,13 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
             ) : null}
           </div>
 
-          {isTaobaoProduct(product) && product.soldLabel ? (
-            <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">
-              {product.soldLabel}
-            </span>
-          ) : null}
+          <div className="flex items-center gap-2">
+            {isTaobaoProduct(product) && product.soldLabel ? (
+              <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">
+                {product.soldLabel}
+              </span>
+            ) : null}
+          </div>
         </div>
       </div>
     </article>

@@ -19,6 +19,7 @@ import {
   LanguageProvider,
   type Language,
 } from "../../contexts/LanguageContext";
+import { extractProductUrl } from "@/utils/extractProductUrl";
 
 const sidebarItems: SidebarItem[] = [
   {
@@ -81,7 +82,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
   const [searchText, setSearchText] = useState(() => {
     const params = new URLSearchParams(location.search);
-    return params.get("keyword") ?? "";
+    return params.get("keyword") ?? params.get("url") ?? "";
   });
 
   const [language, setLanguage] = useState<Language>(() => {
@@ -99,19 +100,31 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const keyword = params.get("keyword") ?? "";
+    const keyword = params.get("keyword") ?? params.get("url") ?? "";
     setSearchText(keyword);
   }, [location.search]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const keyword = searchText.trim();
+    const value = searchText.trim();
 
-    if (!keyword) {
+    if (!value) {
       return;
     }
 
-    navigate(`/products?keyword=${encodeURIComponent(keyword)}&page=1&size=20`);
+    const extractedUrl = extractProductUrl(value);
+    const params = new URLSearchParams({
+      page: "1",
+      size: "20",
+    });
+
+    if (extractedUrl) {
+      params.set("url", extractedUrl);
+    } else {
+      params.set("keyword", value);
+    }
+
+    navigate(`/products?${params.toString()}`);
   };
 
   /*
@@ -262,7 +275,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                   type="text"
                   value={searchText}
                   onChange={(event) => setSearchText(event.target.value)}
-                  placeholder="Search products, brands, categories"
+                  placeholder="Search products,links of the product"
                   className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
                 />
 
@@ -278,7 +291,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
               <button
                 type="button"
-                className="group relative flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/20 bg-gradient-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] px-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(25,72,145,0.28)] transition-all duration-300 hover:-translate-y-0.5 md:px-4"
+                className="group relative flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/20 bg-linear-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] px-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(25,72,145,0.28)] transition-all duration-300 hover:-translate-y-0.5 md:px-4"
               >
                 <Camera className="relative z-10 size-5" />
 
@@ -310,7 +323,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Page Content */}
 
-        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full lg:px-4 xl:px-30">
+        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-25">
           {children}
         </main>
       </div>

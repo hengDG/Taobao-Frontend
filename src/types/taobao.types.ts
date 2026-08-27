@@ -1,4 +1,5 @@
 export type TaobaoProduct = {
+  itemId?: string;
   sourceItemId?: string;
   title?: string;
   titleOriginal?: string;
@@ -11,6 +12,30 @@ export type TaobaoProduct = {
   priceCents?: number | null;
   shopName?: string;
   description?: string;
+  inStock?: boolean;
+};
+
+export type TaobaoExactProduct = {
+  itemId?: string;
+  source?: string;
+  sourceItemId?: string;
+  supplyProductId?: string | null;
+  title?: string;
+  titleOriginal?: string;
+  image?: string;
+  shopName?: string | null;
+  shopRating?: number | null;
+  shippingOrigin?: string | null;
+  listCents?: number | null;
+  couponCents?: number | null;
+  inStock?: boolean;
+};
+
+export type ByLinkProductResponse = {
+  itemId?: string;
+  exact?: TaobaoExactProduct;
+  detailUrl?: string;
+  similar?: TaobaoProduct[];
 };
 
 export type ExploreProductsResponse = {
@@ -39,4 +64,8 @@ export type TaobaoProductsResponse = {
   page?: number;
   size?: number;
   keyword?: string;
+  itemId?: string;
+  exact?: TaobaoExactProduct;
+  detailUrl?: string;
+  similar?: TaobaoProduct[];
 };
