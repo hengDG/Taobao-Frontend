@@ -22,7 +22,7 @@ export default function HomePage() {
       <div
         className="
           mx-auto
-          mt-6
+          mt-3
           flex
           max-w-8xl
           justify-center
@@ -98,7 +98,7 @@ export default function HomePage() {
 
       {/* CONTENT */}
 
-      <div className="mt-5">
+      <div className="mt-2">
         {activeTab === "explore" && <ExploreProduct />}
 
         {activeTab === "theme" && <TestingComponent />}

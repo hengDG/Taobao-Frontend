@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
 import type { ProductCard as ProductCardType } from "@/types/product";
-import TestingComponent from "@/components/testing";
 import productService from "@/services/product/product.service";
 import ExploreProduct from "@/components/product/ExploreProduct";
 
@@ -183,7 +182,7 @@ function ProductDetailView({
   console.log("product detail page render");
 
   return (
-    <div className="mx-auto max-w-8xl px-10 mt-10 py-6">
+    <div className="mx-auto max-w-8xl px-10 mt-0 py-6">
       <div className="mb-5 flex items-center justify-between"></div>
 
       <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">

@@ -32,7 +32,7 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-1/2 z-40 hidden w-20 h-[40vh] transform -translate-y-1/2 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4 lg:rounded-r-xl lg:shadow-lg lg:pointer-events-auto">
+      <aside className="fixed left-0 top-1/2 z-40 hidden w-17 h-[32vh] transform -translate-y-1/2 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4 lg:rounded-r-xl lg:shadow-lg lg:pointer-events-auto">
         {/* left intentionally blank: logo moved to header for desktop */}
 
         {/* Navigation */}

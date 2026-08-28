@@ -6,6 +6,7 @@ import HomePage from "./pages/Home/HomePage";
 import { CartPage, type CartLineItem } from "./pages/Cart/CartPage";
 import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
 import ProductsPage from "./pages/Products/ProductsPage";
+import SimilarProductsPage from "./pages/Products/SimilarProductsPage";
 
 function CartRoute() {
   const navigate = useNavigate();
@@ -48,6 +49,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/cart" element={<CartRoute />} />
+        <Route
+          path="/products/:sourceItemId/similar"
+          element={<SimilarProductsPage />}
+        />
         <Route path="/products/:sourceItemId" element={<ProductDetailPage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>

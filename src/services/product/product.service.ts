@@ -29,6 +29,23 @@ export const productService = {
     return data;
   },
 
+  async getSimilarProducts(
+    productId: string,
+    limit: number = 20,
+  ): Promise<TaobaoProductsResponse> {
+    const { data } = await apiClient.get(`/products/${productId}/similar`, {
+      params: {
+        limit,
+      },
+    });
+
+    if (Array.isArray(data)) {
+      return { items: data };
+    }
+
+    return data;
+  },
+
   async searchProducts(
     keyword: string,
     page: number = 1,

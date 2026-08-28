@@ -57,20 +57,9 @@ const ThemeProductsSection = () => {
         w-full
         max-w-8xl
         px-4
-        py-4
+        py-2
       "
     >
-      <div className="mb-5">
-        <h3
-          className="
-            text-2xl
-            font-semibold
-            text-slate-800
-          "
-        >
-          Theme Products
-        </h3>
-      </div>
 
       {loading && <ProductCardSkeleton count={12} />}
 

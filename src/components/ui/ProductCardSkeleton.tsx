@@ -1,4 +1,3 @@
-
 type ProductCardSkeletonProps = {
   count?: number;
   className?: string;
@@ -41,7 +40,6 @@ export function ProductCardSkeletonCard({
   index = 0,
 }: ProductCardSkeletonCardProps) {
   const hasLongTitle = index % 3 === 0;
-  const hasDiscount = index % 3 === 1;
 
   return (
     <div
@@ -59,7 +57,7 @@ export function ProductCardSkeletonCard({
       <div
         className="
           relative
-          aspect-[4/5]
+          aspect-[4/4]
           w-full
           animate-pulse
           bg-slate-200

@@ -160,7 +160,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
         setLanguage,
       }}
     >
-      <div className="min-h-screen bg-[#fafafa] text-slate-800">
+      <div className="min-h-screen bg-[#ffffff] text-slate-800">
         {/* Sidebar */}
 
         <AppSidebar items={sidebarItems} cartCount={cartCount} />
@@ -172,7 +172,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
           <div
             className={[
-              "overflow-hidden border-b border-gray-200 bg-transparent transition-all duration-300 ease-out",
+              "overflow-hidden  border-gray-200 bg-transparent transition-all duration-300 ease-out",
 
               showUtilityBar ? "max-h-10 opacity-100" : "max-h-0 opacity-0",
             ].join(" ")}
@@ -236,7 +236,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
           {/* Main Header */}
 
-          <div className="py-3">
+          <div className="py-1 ">
             <div className="mx-auto flex w-[95%] items-center gap-2 sm:gap-3">
               {/* Mobile Logo */}
 
@@ -254,8 +254,8 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
               <img
                 src="/vtslogo.jpg"
                 alt="Logo"
-                width={isCompact ? 106 : 156}
-                height={isCompact ? 106 : 156}
+                width={isCompact ? 106 : 116}
+                height={isCompact ? 106 : 116}
                 className="hidden shrink-0 rounded-xl lg:inline-flex lg:mr-4 transition-all duration-200"
               />
 
@@ -323,7 +323,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Page Content */}
 
-        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-25">
+        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-35">
           {children}
         </main>
       </div>

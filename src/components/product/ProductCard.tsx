@@ -57,14 +57,6 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
     ? (product.titleOriginal ?? product.title ?? "Untitled product")
     : getLocalizedText(product.title, language);
 
-  const shopName = isTaobaoProduct(product)
-    ? (product.shopName ?? "")
-    : getLocalizedText(product.shopName, language);
-
-  const badgeText = isTaobaoProduct(product)
-    ? (product.categoryName ?? product.soldLabel ?? "New")
-    : getLocalizedText(product.section, language);
-
   const priceText = isTaobaoProduct(product)
     ? formatTaobaoPrice(
         product.couponCents ?? product.listCents ?? product.priceCents,
@@ -127,7 +119,8 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
          * inline-block + w-full:
          * works well with CSS columns.
          */
-        "group mb-0 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        "group mb-0 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-100 bg-white align-top  transition duration-300   focus:outline-none focus:ring-2 focus:ring-[#194891]",
+        // "group mb-0 inline-block h-full w-full break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white align-top  transition duration-300   focus:outline-none focus:ring-2 focus:ring-[#194891]",
 
         className,
       ]
@@ -162,7 +155,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
         ) : null}
       </div> */}
 
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-100">
+      <div className="relative aspect-[4/4] w-full overflow-hidden bg-white">
         <img
           src={imageUrl}
           alt={title || "Product image"}
@@ -189,15 +182,28 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
 
         <button
           type="button"
-          aria-label="Search product"
+          aria-label="Search similar products"
+          title="Search similar products"
           onClick={(event) => {
             event.stopPropagation();
             event.preventDefault();
-            handleSelect();
+
+            const productId = isTaobaoProduct(product)
+              ? (product.sourceItemId ?? product.itemId)
+              : product.id;
+
+            if (productId) {
+              navigate(`/products/${encodeURIComponent(productId)}/similar`);
+            }
           }}
-          className="absolute right-2 top-2 cursor-pointer z-10 inline-flex h-5 w-5 items-center justify-center rounded-full border border-white/80 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#194891]"
+          className="group/search absolute right-2 top-2 z-10 inline-flex items-center overflow-hidden rounded-full border border-white/80 bg-white/90 text-slate-600 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-white active:scale-95 focus:outline-none cursor-pointer focus:ring-2 focus:ring-[#194891]"
         >
-          <Search className="inline-block h-3 w-3" />
+          <span className="flex h-7 w-7 items-center justify-center transition-transform duration-200 group-hover/search:scale-110">
+            <Search className="inline-block h-3.5 w-3.5" />
+          </span>
+          <span className="max-w-0 cursor-pointer overflow-hidden whitespace-nowrap text-[10px] font-semibold tracking-[0.12em] text-[#194891] opacity-0 transition-all duration-200 ease-out group-hover/search:max-w-[84px] group-hover/search:opacity-100 group-hover/search:pr-2.5">
+            Search
+          </span>
         </button>
       </div>
 
@@ -217,7 +223,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
         */}
         <h3
           className="
-    line-clamp-2
+    line-clamp-1
     text-[13px]
     leading-5
     font-semibold
