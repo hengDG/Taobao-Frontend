@@ -274,56 +274,128 @@ function ProductDetailView({
         </div>
 
         <div className="flex flex-col pt-2 md:sticky md:top-6 md:max-h-[calc(100vh-3rem)] md:self-start">
-          <div className="space-y-5 overflow-y-auto pb-5 pr-1">
+          <div className="shrink-0 border-b border-slate-200 bg-white pb-3">
             <div className="flex items-center gap-2 text-xs text-slate-500">
-              {/* <span className="rounded-full bg-[#f2f5f9] px-2 py-1">
-                {product.categoryName ?? product.section.en}
-              </span>
-              <span>•</span> */}
               <div className="flex items-center gap-1.5">
                 <Store className="h-3.5 w-3.5 text-slate-500" />
                 <span>{product.shopName.en}</span>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <h1 className="text-[2rem] font-bold leading-[1.12] text-slate-900">
+            <div className="mt-3 space-y-3">
+              <h1 className="text-xl font-bold leading-[1.32] text-slate-900">
                 {product.title.en}
               </h1>
-
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                <span className="rounded-full bg-[#fff0e6] px-2 py-1 font-semibold text-[#ff6a00]">
-                  {product.benefit?.en ?? "Best seller"}
-                </span>
-                <span className="rounded-full bg-[#f3f7ff] px-2 py-1 text-[#194891]">
-                  {product.available === false ? "Out of stock" : "In stock"}
-                </span>
-              </div>
             </div>
 
-            <div className="rounded-2xl bg-[#fff8f4] p-4 shadow-inner">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-slate-500 line-through">
-                  {formatCurrency(listPrice)}
-                </span>
-                {discountPercent > 0 ? (
-                  <span className="rounded-full bg-[#ffefe7] px-2 py-1 text-[11px] font-semibold text-[#ff6a00]">
-                    {discountPercent}% off
+            {/* Card price */}
+            <div
+              className="
+    relative
+    mt-3
+    overflow-hidden
+    rounded-xl
+    bg-gradient-to-r
+from-[#c00021]
+to-[#ff002b]
+    px-4
+    py-3
+    shadow-md
+  "
+            >
+              <div
+                className="
+      absolute
+      -right-8
+      -top-8
+      h-24
+      w-24
+      rounded-full
+      bg-white/10
+      blur-2xl
+    "
+              />
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className="
+          text-xs
+          font-medium
+          text-white/60
+          line-through
+        "
+                  >
+                    {formatCurrency(listPrice)}
                   </span>
-                ) : null}
-              </div>
-              <div className="mt-2 flex items-end gap-3">
-                <p className="text-4xl font-extrabold tracking-tight text-[#ff5000]">
-                  {formatCurrency(salePrice || listPrice)}
-                </p>
-                <span className="mb-1 text-sm text-slate-500">
-                  {product.totalQuantity
-                    ? `${product.totalQuantity} items`
-                    : "Ready to ship"}
-                </span>
+                </div>
+
+                {discountPercent > 0 && (
+                  <span
+                    className="
+            absolute
+            -right-1
+            top-1/2
+            -translate-y-1/2
+            rotate-[0deg]
+            text-[3rem]
+            font-black
+            leading-none
+            tracking-[-0.01em]
+            text-[#ffee32]
+            font-stretch-150%
+          "
+                  >
+                    -{discountPercent}%
+                  </span>
+                )}
+
+                <div
+                  className="
+        mt-1
+        flex
+        items-end
+        gap-2
+      "
+                >
+                  <p
+                    className="
+          text-3xl
+          font-black
+          tracking-tight
+          text-white
+        "
+                  >
+                    {formatCurrency(salePrice || listPrice)}
+                  </p>
+
+                  {/* <div
+                    className="
+          rounded-lg
+          bg-white/15
+          px-2.5
+          py-1
+          backdrop-blur-sm
+        "
+                  >
+                    <p
+                      className="
+            text-xs
+            font-semibold
+            text-white
+          "
+                    >
+                      {product.totalQuantity
+                        ? `${product.totalQuantity} items`
+                        : "Ready"}
+                    </p>
+                  </div> */}
+                </div>
               </div>
             </div>
+          </div>
 
+          <div className="flex-1 space-y-5 overflow-y-auto pb-5 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {colorOption ? (
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-slate-800">
@@ -383,13 +455,13 @@ function ProductDetailView({
                             : "border-slate-200 bg-white text-slate-700"
                         }`}
                       >
-                        {valueImage ? (
+                        {/* {valueImage ? (
                           <img
                             src={valueImage}
                             alt={value.name}
                             className="h-7 w-7 rounded-sm object-cover"
                           />
-                        ) : null}
+                        ) : null} */}
                         <span>{value.name}</span>
                       </button>
                     );
@@ -487,7 +559,7 @@ function ProductDetailView({
             y: [
               flyState.startY,
               flyState.startY - 80,
-              flyState.startY + flyState.deltaY * 0.90,
+              flyState.startY + flyState.deltaY * 0.9,
               flyState.startY + flyState.deltaY,
             ],
             scale: [1, 0.95, 0.35, 0.15],
@@ -815,19 +887,6 @@ export default function ProductDetailPage({
       />
       {/* <TestingComponent /> */}
       <ExploreProduct />
-
-      {/* {rawData ? (
-        <div className="mx-auto max-w-6xl px-10 pb-10">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="mb-3 text-lg font-semibold text-slate-800">
-              API response data
-            </h2>
-            <pre className="overflow-x-auto rounded-xl bg-slate-900 p-4 text-xs text-slate-100">
-              {JSON.stringify(rawData, null, 2)}
-            </pre>
-          </div>
-        </div>
-      ) : null} */}
     </>
   );
 }
