@@ -37,10 +37,7 @@ type ProductCardSkeletonCardProps = {
 };
 
 export function ProductCardSkeletonCard({
-  index = 0,
 }: ProductCardSkeletonCardProps) {
-  const hasLongTitle = index % 3 === 0;
-
   return (
     <div
       className="

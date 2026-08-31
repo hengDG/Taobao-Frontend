@@ -440,10 +440,6 @@ to-[#ff002b]
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {sizeOption.values.map((value) => {
-                    const valueImage = optionValueImageMap.get(
-                      `${sizeOption.propId}:${value.valueId}`,
-                    );
-
                     return (
                       <button
                         key={value.valueId}
