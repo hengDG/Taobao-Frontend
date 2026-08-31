@@ -87,11 +87,18 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
     }
   };
 
+  const listCents = isTaobaoProduct(product) ? product.listCents : null;
+  const couponCents = isTaobaoProduct(product) ? product.couponCents : null;
+
   const hasDiscount =
-    isTaobaoProduct(product) &&
-    typeof product.listCents === "number" &&
-    typeof product.couponCents === "number" &&
-    product.couponCents < product.listCents;
+    typeof listCents === "number" &&
+    typeof couponCents === "number" &&
+    listCents > 0 &&
+    couponCents < listCents;
+
+  const discountPercent = hasDiscount
+    ? Math.max(1, Math.round(((listCents - couponCents) / listCents) * 100))
+    : 0;
 
   return (
     <article
@@ -174,9 +181,9 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
     "
         />
 
-        {hasDiscount && (
-          <span className="absolute top-2 left-2 rounded-lg bg-[#ff5000] px-2 py-1 text-[10px] font-bold text-white">
-            Discount
+        {hasDiscount && discountPercent > 0 && (
+          <span className="absolute left-2 top-2 rounded-lg bg-red-500/80 px-2 py-1 text-[10px] font-bold text-white shadow-sm backdrop-blur-[1px]">
+            {discountPercent}% off
           </span>
         )}
 

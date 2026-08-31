@@ -1,6 +1,55 @@
-import { Star, Eye, ShoppingBag, Package } from "lucide-react";
-import { Fragment } from "react";
+import { Star, Eye, ShoppingBag } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+
+import { products } from "@/data/products";
+
+type Slide = {
+  id: string;
+  title: string;
+  subtitle: string;
+  bgClass: string;
+  image?: string;
+};
+
+const slides: Slide[] = [
+  {
+    id: "slide-1",
+    title: "NIKE Official Flagship ",
+    subtitle: "The selected type is ready",
+    bgClass: "bg-gradient-to-r from-[#37b97f] to-[#5ec47c]",
+    image: products[0]?.imageUrl,
+  },
+  {
+    id: "slide-2",
+    title: "Top Home Living Picks",
+    subtitle: "Trusted quality and fast shipping",
+    bgClass: "bg-gradient-to-r from-[#3b82d6] to-[#5d8df0]",
+    image: products[1]?.imageUrl,
+  },
+  {
+    id: "slide-3",
+    title: "Beauty & Daily ",
+    subtitle: "Hot products updated every day",
+    bgClass: "bg-gradient-to-r from-[#6c63ff] to-[#8c7dff]",
+    image: products[6]?.imageUrl,
+  },
+];
+
 export function HomeMarketplaceDashboard() {
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+  useEffect(() => {
+    if (!slides.length) return;
+
+    const timer = window.setInterval(() => {
+      setActiveSlideIndex((prev) => (prev + 1) % slides.length);
+    }, 3500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const activeSlide = slides[activeSlideIndex] ?? slides[0];
+
   return (
     <section className="mx-auto w-full mt-5 space-y-2  px-0">
       {/* TOP AREA */}
@@ -9,7 +58,7 @@ export function HomeMarketplaceDashboard() {
         {/* USER + TRACK COMBINED CARD */}
         <div
           className="
-    lg:col-span-4
+    lg:col-span-5
     rounded-2xl
     border
     border-gray-100
@@ -21,7 +70,7 @@ export function HomeMarketplaceDashboard() {
           <div
             className="
       grid
-      grid-cols-2
+      grid-cols-[35%_65%]
       gap-4
     "
           >
@@ -51,9 +100,7 @@ export function HomeMarketplaceDashboard() {
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#222]">
-                      tb15573010
-                    </h3>
+                    <h3 className="text-sm font-bold text-[#222]">VTS-55734</h3>
 
                     <span
                       className="
@@ -71,8 +118,8 @@ export function HomeMarketplaceDashboard() {
                   </div>
 
                   <div className="mt-1 flex gap-3 text-[11px] text-gray-400">
-                    <span>Followed</span>
-                    <span>Shipping</span>
+                    <span>Premium User</span>
+                    {/* <span>Shipping</span> */}
                   </div>
                 </div>
               </div>
@@ -82,7 +129,7 @@ export function HomeMarketplaceDashboard() {
                 className="
           mt-5
           grid
-          grid-cols-4
+          grid-cols-3
           gap-2
           text-center
         "
@@ -99,10 +146,6 @@ export function HomeMarketplaceDashboard() {
                   {
                     number: "0",
                     label: "To Ship",
-                  },
-                  {
-                    number: "0",
-                    label: "Receive",
                   },
                 ].map((item) => (
                   <div key={item.label}>
@@ -122,7 +165,7 @@ export function HomeMarketplaceDashboard() {
                 className="
           mt-5
           grid
-          grid-cols-4
+          grid-cols-3
           gap-2
         "
               >
@@ -138,10 +181,6 @@ export function HomeMarketplaceDashboard() {
                   {
                     icon: <Eye size={15} />,
                     label: "Viewed",
-                  },
-                  {
-                    icon: <Package size={15} />,
-                    label: "Footprint",
                   },
                 ].map((item) => (
                   <div
@@ -163,7 +202,10 @@ export function HomeMarketplaceDashboard() {
             </div>
 
             {/* TRACK SECTION */}
-            <div>
+            <div
+              className="w-full 
+           pr-5"
+            >
               <div
                 className="
           mb-5
@@ -180,16 +222,16 @@ export function HomeMarketplaceDashboard() {
               <div className="space-y-5">
                 {[
                   {
-                    image: "https://picsum.photos/100",
+                    image: products[0]?.imageUrl,
                     step: 1,
                   },
                   {
-                    image: "https://picsum.photos/101",
+                    image: products[1]?.imageUrl,
                     step: 2,
                   },
                   {
-                    image: "https://picsum.photos/102",
-                    step: 4,
+                    image: products[6]?.imageUrl,
+                    step: 5,
                   },
                 ].map((order, index) => (
                   <div
@@ -209,10 +251,11 @@ export function HomeMarketplaceDashboard() {
                 object-cover
               "
                     />
+                    {/* update tracking  to paid store china shipping cambodia delivered */}
 
                     <div className="flex-1">
                       <div className="flex items-center">
-                        {[1, 2, 3, 4].map((step, i) => (
+                        {[1, 2, 3, 4, 5, 6].map((step, i) => (
                           <Fragment key={step}>
                             <div
                               className={`
@@ -223,7 +266,7 @@ export function HomeMarketplaceDashboard() {
                       `}
                             />
 
-                            {i < 3 && (
+                            {i < 5 && (
                               <div
                                 className={`
                           h-[2px]
@@ -241,13 +284,16 @@ export function HomeMarketplaceDashboard() {
                   mt-2
                   flex
                   justify-between
+                  gap-1
                   text-[10px]
                   text-gray-400
                 "
                       >
                         <span>Paid</span>
                         <span>Store</span>
-                        <span>Ship</span>
+                        <span>China</span>
+                        <span>Shipping</span>
+                        <span>Cambodia</span>
                         <span>Done</span>
                       </div>
                     </div>
@@ -260,7 +306,7 @@ export function HomeMarketplaceDashboard() {
         {/* TOP STORE + SMALL CARDS */}
         <div
           className="
-    lg:col-span-4
+    lg:col-span-3
     space-y-2
   "
         >
@@ -407,165 +453,115 @@ export function HomeMarketplaceDashboard() {
           </div>
         </div>
         {/* AD */}
-        <div
-          className="
-          relative
-          overflow-hidden
-          rounded-2xl
-          bg-gradient-to-b
-          from-orange-400
-          to-orange-600
-          p-5
-          text-white
-lg:col-span-2        "
-        >
-          <span
-            className="
-            rounded
-            bg-white
-            px-2
-            py-1
-            text-xs
-            text-orange-500
-          "
+        <div className="relative lg:col-span-2">
+          <div
+            className={`relative h-full min-h-[200px] overflow-hidden rounded-2xl p-5 text-white shadow-[0_14px_30px_rgba(34,74,130,0.15)] ${activeSlide.bgClass}`}
           >
-            Cainiao Express
-          </span>
+            {slides.map((slide, index) => (
+              <div
+                key={slide.id}
+                className={`absolute inset-0 flex flex-col justify-between p-5 transition-all duration-500 ${
+                  index === activeSlideIndex
+                    ? "translate-x-0 opacity-100"
+                    : "translate-x-6 opacity-0"
+                }`}
+              >
+                <div>
+                  {/* <span className="inline-flex rounded-full bg-white/20 px-2 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase text-white/90">
+                    Featured
+                  </span> */}
 
-          <h2
-            className="
-            mt-5
-            text-3xl
-            font-black
-          "
-          >
-            Play with
-            <br />
-            New Tech
-          </h2>
+                  <h2 className=" text-2xl font-black leading-tight sm:text-3xl">
+                    {slide.title}
+                  </h2>
 
-          <p
-            className="
-            mt-3
-            text-sm
-          "
-          >
-            Get 15% off with subsidy coupon
-          </p>
+                  <p className="mt-2 max-w-[80%] text-sm text-white/90">
+                    {slide.subtitle}
+                  </p>
+                </div>
 
-          <button
-            className="
-            mt-5
-            rounded-full
-            bg-white
-            px-5
-            py-2
-            text-orange-500
-            font-bold
-          "
-          >
-            Shop Now
-          </button>
+                {slide.image && (
+                  <div className="flex justify-end">
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="h-24 w-auto rounded-2xl border border-white/30 bg-white/10 object-cover shadow-lg backdrop-blur-sm sm:h-28"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
 
-          <img
-            src="/ad-image.png"
-            className="
-              absolute
-              bottom-4
-              right-4
-              h-24
-              rounded-xl
-            "
-          />
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+              {slides.map((slide, index) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => setActiveSlideIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    index === activeSlideIndex
+                      ? "w-7 bg-white"
+                      : "w-2.5 bg-white/60"
+                  }`}
+                  aria-label={`View slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* MARKETPLACE CATEGORY */}
+      {/* <div className="relative mt-2 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {categories.map((item) => {
+          const hasChildren = !!item.children?.length;
+          const isOpen = openCategoryId === item.id;
 
-      <div
-        className="
-    flex
-    gap-2
-    overflow-x-auto
-    py-0
-    scrollbar-none
-  "
-      >
-        {[
-          {
-            name: "Tmall",
-            icon: "🟥",
-          },
-          {
-            name: "Taobao Live",
-            icon: "📺",
-          },
-          {
-            name: "Enterprise Purchase",
-            icon: "🟧",
-          },
-          {
-            name: "Judicial Auction",
-            icon: "🔨",
-          },
-          {
-            name: "Tmall Supermarket",
-            icon: "🟩",
-          },
-          {
-            name: "Government Subsidy",
-            icon: "🎁",
-          },
-          {
-            name: "Coupon Center",
-            icon: "🎟️",
-          },
-        ].map((item) => (
-          <button
-            key={item.name}
-            className="
-        group
-        flex
-        h-9
-        shrink-0
-        items-center
-        gap-2
-        rounded-xl
-        border
-        border-gray-100
-        bg-white
-        px-2
-        text-xs
-        font-semibold
-        text-gray-700
-
-        shadow-[0_2px_8px_rgba(0,0,0,0.05)]
-
-        transition-all
-        duration-200
-
-        hover:shadow-[0_5px_12px_rgba(0,0,0,0.08)]
-      "
-          >
-            <span
-              className="
-          flex
-          h-7
-          w-7
-          items-center
-          justify-center
-          rounded-lg
-          bg-gray-50
-          text-sm
-        "
+          return (
+            <div
+              key={item.id}
+              className="relative shrink-0"
+              onMouseEnter={() => hasChildren && setOpenCategoryId(item.id)}
+              onMouseLeave={() => hasChildren && setOpenCategoryId(null)}
             >
-              {item.icon}
-            </span>
+              <button
+                type="button"
+                className="group flex h-9 items-center gap-2 rounded-xl border border-gray-100 bg-white px-2 text-xs font-semibold text-gray-700 shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 hover:shadow-[0_5px_12px_rgba(0,0,0,0.08)]"
+                onClick={() =>
+                  hasChildren &&
+                  setOpenCategoryId((prev) =>
+                    prev === item.id ? null : item.id,
+                  )
+                }
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 text-sm">
+                  {item.name.charAt(0).toUpperCase()}
+                </span>
+                <span className="whitespace-nowrap">{item.name}</span>
+                {hasChildren && (
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                  />
+                )}
+              </button>
 
-            <span className="whitespace-nowrap">{item.name}</span>
-          </button>
-        ))}
-      </div>
+              {hasChildren && isOpen && (
+                <div className="absolute left-0 top-full z-30 mt-2 min-w-[180px] rounded-xl border border-gray-100 bg-white p-2 shadow-[0_16px_30px_rgba(15,23,42,0.12)]">
+                  {item.children!.map((child) => (
+                    <button
+                      key={child.id}
+                      type="button"
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs text-gray-700 transition hover:bg-gray-50"
+                    >
+                      <span>{child.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div> */}
 
       {/* RECOMMENDATION TAB */}
 

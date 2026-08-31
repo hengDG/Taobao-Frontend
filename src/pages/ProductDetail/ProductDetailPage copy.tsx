@@ -225,8 +225,19 @@ function ProductDetailView({
           className="space-y-5 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           <div className="space-y-4">
-            <div className="flex gap-3 px-2 sm:px-4">
-              <div className="flex w-16 shrink-0 flex-col gap-3 sm:w-18">
+            <div className="px-2 sm:px-4">
+              <div
+                ref={imageRef}
+                className="mx-auto flex w-full max-w-[520px] items-center justify-center overflow-hidden rounded-[15px] bg-slate-50"
+              >
+                <img
+                  src={selectedImage || product.imageUrl}
+                  alt={product.title.en}
+                  className="block max-h-[520px] w-full object-contain"
+                />
+              </div>
+
+              <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5 lg:grid-cols-8">
                 {thumbnails.map((image, index) => (
                   <button
                     key={`${image}-${index}`}
@@ -244,21 +255,10 @@ function ProductDetailView({
                     <img
                       src={image}
                       alt={`${product.title.en} view ${index + 1}`}
-                      className="h-16 w-full object-cover sm:h-20"
+                      className="h-16 w-full object-cover sm:h-25"
                     />
                   </button>
                 ))}
-              </div>
-
-              <div
-                ref={imageRef}
-                className="mx-auto flex w-full max-w-[520px] flex-1 items-center justify-center overflow-hidden rounded-[15px] "
-              >
-                <img
-                  src={selectedImage || product.imageUrl}
-                  alt={product.title.en}
-                  className="block max-h-[520px] w-full object-contain"
-                />
               </div>
             </div>
           </div>
@@ -474,142 +474,81 @@ function ProductDetailView({
             x: flyState.startX,
             y: flyState.startY,
             scale: 1,
-            opacity: 1,
+            opacity: 0.95,
             rotate: 0,
           }}
           animate={{
-            x: [
-              flyState.startX,
-              flyState.startX + flyState.deltaX * 0.15,
-              flyState.startX + flyState.deltaX * 0.95,
-              flyState.startX + flyState.deltaX,
-            ],
-            y: [
-              flyState.startY,
-              flyState.startY - 80,
-              flyState.startY + flyState.deltaY * 0.90,
-              flyState.startY + flyState.deltaY,
-            ],
-            scale: [1, 0.95, 0.35, 0.15],
-            opacity: [1, 1, 0.8, 1],
-            rotate: [0, -8, 12, 20],
+            x: flyState.startX + flyState.deltaX,
+            y: flyState.startY + flyState.deltaY,
+            scale: 0.2,
+            opacity: 0.18,
+            rotate: 10,
           }}
-          transition={{
-            duration: 1,
-            times: [0, 0.25, 0.5, 1],
-            ease: [0.16, 0.5, 0.2, 1],
-          }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           onAnimationComplete={() => {
-            const target = document.querySelector("[data-cart-target='true']");
+            const target = Array.from(
+              document.querySelectorAll<HTMLElement>(
+                "[data-cart-target='true']",
+              ),
+            ).find((element) => {
+              const rect = element.getBoundingClientRect();
+              return rect.width > 0 && rect.height > 0;
+            });
 
             if (target) {
-              const cartIcon = target.querySelector("[data-cart-icon='true']");
+              const cartIcon = target.querySelector<HTMLElement>(
+                "[data-cart-icon='true']",
+              );
+              const cartFlash = target.querySelector<HTMLElement>(
+                "[data-cart-flash='true']",
+              );
 
               if (cartIcon) {
                 animate(
                   cartIcon,
                   {
-                    scale: [1, 1.4, 0.9, 1],
-                    rotate: [0, -15, 15, 0],
+                    scale: [1, 1.35, 0.9, 1.12, 1],
+                    rotate: [0, -8, 8, -4, 0],
                   },
+                  { duration: 0.5, ease: "easeOut" },
+                );
+              }
+
+              if (cartFlash) {
+                animate(
+                  cartFlash,
                   {
-                    duration: 0.45,
-                    ease: "easeOut",
+                    opacity: [0, 0.35, 0],
+                    scale: [0.8, 1.1, 1],
                   },
+                  { duration: 0.45, ease: "easeOut" },
                 );
               }
             }
 
             setFlyState(null);
           }}
-          className="
-    pointer-events-none
-    fixed
-    left-0
-    top-0
-    z-[80]
-    overflow-hidden
-    rounded-2xl
-    border
-    border-slate-200
-    bg-white
-    shadow-xl
-  "
-          style={{
-            width: flyState.width,
-            height: flyState.height,
-          }}
+          className="pointer-events-none fixed left-0 top-0 z-[80] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.25)]"
+          style={{ width: flyState.width, height: flyState.height }}
         >
           <div className="flex h-full w-full items-center gap-3 p-3">
-            <div
-              className="
-        relative
-        h-full
-        w-[34%]
-        shrink-0
-        overflow-hidden
-        rounded-xl
-        bg-slate-100
-      "
-            >
-              <motion.img
+            <div className="relative h-full w-[34%] shrink-0 overflow-hidden rounded-xl bg-slate-100">
+              <img
                 src={flyState.imageSrc}
                 alt={flyState.title}
-                className="
-          h-full
-          w-full
-          object-cover
-        "
-                animate={{
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 0.6,
-                }}
+                className="h-full w-full object-cover"
               />
             </div>
 
-            <div className="flex-1">
-              <p
-                className="
-          line-clamp-2
-          text-xs
-          font-semibold
-          text-slate-700
-        "
-              >
+            <div className="w-[66%] flex-1">
+              <p className="line-clamp-2 text-xs font-semibold text-slate-700">
                 {flyState.title}
               </p>
-
-              <div
-                className="
-          mt-2
-          flex
-          items-center
-          justify-between
-        "
-              >
-                <span
-                  className="
-            text-sm
-            font-bold
-            text-[#ff5000]
-          "
-                >
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <span className="text-sm font-bold text-[#ff5000]">
                   {formatCurrency(salePrice || listPrice)}
                 </span>
-
-                <span
-                  className="
-            rounded-full
-            bg-orange-50
-            px-2
-            py-1
-            text-[10px]
-            font-semibold
-            text-orange-500
-          "
-                >
+                <span className="rounded-full bg-orange-50 px-2 py-1 text-[10px] font-semibold text-orange-500">
                   x{flyState.quantity}
                 </span>
               </div>

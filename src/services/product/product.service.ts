@@ -15,6 +15,12 @@ export const productService = {
     return data;
   },
 
+  async getPicks(): Promise<TaobaoProductsResponse> {
+    const { data } = await apiClient.get("/picks");
+
+    return data;
+  },
+
   async getThemeProducts(themeId: string): Promise<TaobaoProductsResponse> {
     const { data } = await apiClient.get(`/themes/${themeId}/products`);
 

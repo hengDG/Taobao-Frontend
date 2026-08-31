@@ -16,15 +16,18 @@ export type ProductOption = {
 
 export type ProductSku = {
   skuId: string;
+  mpSkuId?: string;
   selectionKey: string;
+  selection: Record<string, string>;
+  image?: string;
 
   priceRmbRaw: number;
   promotionPriceRmbRaw: number;
+  couponPriceRmbRaw?: number;
+  shippingCents?: number;
 
   quantity: number;
   available: boolean;
-
-  selection: Record<string, string>;
 };
 
 export type ProductCard = {

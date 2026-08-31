@@ -23,7 +23,7 @@ const ThemeProductsSection = () => {
 
         setError(null);
 
-        const response = await productService.getThemeProducts("11647");
+        const response = await productService.getPicks();
 
         if (mounted) {
           setProducts(response.items ?? []);
@@ -60,7 +60,6 @@ const ThemeProductsSection = () => {
         py-2
       "
     >
-
       {loading && <ProductCardSkeleton count={12} />}
 
       {error && (

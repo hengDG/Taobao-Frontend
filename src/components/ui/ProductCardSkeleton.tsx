@@ -116,7 +116,7 @@ export function ProductCardSkeletonCard({
           "
         />
 
-        {hasLongTitle && (
+        {/* {hasLongTitle && (
           <div
             className="
                 h-3
@@ -126,7 +126,7 @@ export function ProductCardSkeletonCard({
                 bg-slate-200
               "
           />
-        )}
+        )} */}
 
         {/* BOTTOM PRICE AREA */}
 

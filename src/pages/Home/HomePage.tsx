@@ -71,7 +71,7 @@ export default function HomePage() {
 
           `}
         >
-          Theme Products
+          Guess You Like
         </button>
 
         <button
@@ -92,7 +92,7 @@ export default function HomePage() {
 
           `}
         >
-          Homepage
+          1688
         </button>
       </div>
 

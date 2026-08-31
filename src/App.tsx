@@ -8,11 +8,70 @@ import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
 import ProductsPage from "./pages/Products/ProductsPage";
 import SimilarProductsPage from "./pages/Products/SimilarProductsPage";
 
-function CartRoute() {
+function CartRoute({
+  items,
+  onUpdateQuantity,
+  onRemoveItem,
+}: {
+  items: CartLineItem[];
+  onUpdateQuantity: (productId: string, nextQuantity: number) => void;
+  onRemoveItem: (productId: string) => void;
+}) {
   const navigate = useNavigate();
+
+  const handleContinueShopping = () => navigate(-1);
+  const handleCheckout = () => {
+    console.log("Checkout clicked");
+  };
+
+  return (
+    <CartPage
+      items={items}
+      onContinueShopping={handleContinueShopping}
+      onUpdateQuantity={onUpdateQuantity}
+      onRemoveItem={onRemoveItem}
+      onCheckout={handleCheckout}
+    />
+  );
+}
+
+function App() {
   const [items, setItems] = useState<CartLineItem[]>([]);
 
-  const handleContinueShopping = () => navigate("/");
+  const handleAddToCart = (
+    product: CartLineItem["product"],
+    selectedOptions: Record<string, string> = {},
+    quantity: number = 1,
+  ) => {
+    setItems((current) => {
+      const sameItem = current.find(
+        (item) =>
+          item.product.id === product.id &&
+          JSON.stringify(item.selectedOptions) ===
+            JSON.stringify(selectedOptions),
+      );
+
+      if (sameItem) {
+        return current.map((item) =>
+          item.product.id === product.id &&
+          JSON.stringify(item.selectedOptions) ===
+            JSON.stringify(selectedOptions)
+            ? { ...item, quantity: item.quantity + quantity }
+            : item,
+        );
+      }
+
+      return [
+        ...current,
+        {
+          product,
+          quantity,
+          selectedOptions,
+        },
+      ];
+    });
+  };
+
   const handleUpdateQuantity = (productId: string, nextQuantity: number) => {
     setItems((current) =>
       current.map((item) =>
@@ -22,38 +81,38 @@ function CartRoute() {
       ),
     );
   };
+
   const handleRemoveItem = (productId: string) => {
     setItems((current) =>
       current.filter((item) => item.product.id !== productId),
     );
   };
-  const handleCheckout = () => {
-    console.log("Checkout clicked");
-  };
+
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartPage
-      items={items}
-      onContinueShopping={handleContinueShopping}
-      onUpdateQuantity={handleUpdateQuantity}
-      onRemoveItem={handleRemoveItem}
-      onCheckout={handleCheckout}
-    />
-  );
-}
-
-function App() {
-  return (
-    <AppShell cartCount={3}>
+    <AppShell cartCount={cartCount}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
-        <Route path="/cart" element={<CartRoute />} />
+        <Route
+          path="/cart"
+          element={
+            <CartRoute
+              items={items}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+            />
+          }
+        />
         <Route
           path="/products/:sourceItemId/similar"
           element={<SimilarProductsPage />}
         />
-        <Route path="/products/:sourceItemId" element={<ProductDetailPage />} />
+        <Route
+          path="/products/:sourceItemId"
+          element={<ProductDetailPage onAddToCart={handleAddToCart} />}
+        />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </AppShell>

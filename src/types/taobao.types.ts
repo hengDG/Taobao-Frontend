@@ -1,16 +1,20 @@
 export type TaobaoProduct = {
+  source?: string;
   itemId?: string;
   sourceItemId?: string;
+  supplyProductId?: string | null;
   title?: string;
   titleOriginal?: string;
   image?: string;
   images?: string[];
   categoryName?: string;
   soldLabel?: string;
+  shopName?: string | null;
+  shopRating?: number | null;
+  shippingOrigin?: string | null;
   couponCents?: number | null;
   listCents?: number | null;
   priceCents?: number | null;
-  shopName?: string;
   description?: string;
   inStock?: boolean;
 };
