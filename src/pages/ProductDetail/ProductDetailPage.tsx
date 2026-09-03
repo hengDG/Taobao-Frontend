@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Heart, ShoppingCart, Sparkles, Store } from "lucide-react";
 import { animate, motion } from "motion/react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
 import type { ProductCard as ProductCardType } from "@/types/product";
@@ -35,6 +36,7 @@ function ProductDetailView({
 }) {
   const imageRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const galleryList = useMemo(
     () => (product.gallery?.length ? product.gallery : gallery).filter(Boolean),
     [gallery, product.gallery],
@@ -56,31 +58,25 @@ function ProductDetailView({
     quantity: number;
   } | null>(null);
 
-  const colorOption = product.options?.find((option) =>
-    /color|颜色/i.test(option.name),
-  );
-  const sizeOption = product.options?.find((option) =>
-    /size|尺码/i.test(option.name),
+  // Taobao products expose arbitrary option groups (颜色分类, 主色系, 尺寸, 型号, ...),
+  // so every option group is rendered dynamically instead of only color/size.
+  const productOptions = useMemo(
+    () => product.options ?? [],
+    [product.options],
   );
 
-  const defaultSelectedColor = colorOption?.values[0]?.name ?? "Default";
-  const defaultSelectedSize = sizeOption?.values[0]?.name ?? "Default";
-  const [selectedColor, setSelectedColor] = useState(defaultSelectedColor);
-  const [selectedSize, setSelectedSize] = useState(defaultSelectedSize);
+  // No option is pre-selected; the user must actively choose each value.
+  const defaultSelection = useMemo<Record<string, string>>(() => ({}), []);
+
+  const [selectedValues, setSelectedValues] =
+    useState<Record<string, string>>(defaultSelection);
 
   useEffect(() => {
     const nextImage = galleryList[0] ?? product.imageUrl;
     setSelectedImage(nextImage);
-    setSelectedColor(defaultSelectedColor);
-    setSelectedSize(defaultSelectedSize);
+    setSelectedValues(defaultSelection);
     setQuantity(1);
-  }, [
-    defaultSelectedColor,
-    defaultSelectedSize,
-    galleryList,
-    product.id,
-    product.imageUrl,
-  ]);
+  }, [defaultSelection, galleryList, product.id, product.imageUrl]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -103,23 +99,15 @@ function ProductDetailView({
       return null;
     }
 
-    const colorValueId = colorOption?.values.find(
-      (value) => value.name === selectedColor,
-    )?.valueId;
-    const sizeValueId = sizeOption?.values.find(
-      (value) => value.name === selectedSize,
-    )?.valueId;
-
     const matchSku = skuList.find((sku) => {
       if (!sku.selection) return false;
 
-      const matchesColor =
-        !colorValueId ||
-        sku.selection[colorOption?.propId ?? ""] === colorValueId;
-      const matchesSize =
-        !sizeValueId || sku.selection[sizeOption?.propId ?? ""] === sizeValueId;
-
-      return matchesColor && matchesSize;
+      return productOptions.every((option) => {
+        const selectedValueId = selectedValues[option.propId];
+        return (
+          !selectedValueId || sku.selection[option.propId] === selectedValueId
+        );
+      });
     });
 
     return (
@@ -127,7 +115,7 @@ function ProductDetailView({
       skuList.find((sku) => sku.available && sku.quantity > 0) ??
       skuList[0]
     );
-  }, [colorOption, product.skus, selectedColor, selectedSize, sizeOption]);
+  }, [productOptions, product.skus, selectedValues]);
 
   const optionValueImageMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -196,17 +184,47 @@ function ProductDetailView({
     });
   };
 
+  const missingOptionNames = productOptions
+    .filter((option) => !selectedValues[option.propId])
+    .map((option) => option.name);
+
+  const buildSelectedOptions = () =>
+    productOptions.reduce<Record<string, string>>((acc, option) => {
+      const valueName = option.values.find(
+        (value) => value.valueId === selectedValues[option.propId],
+      )?.name;
+      if (valueName) {
+        acc[option.name] = valueName;
+      }
+      return acc;
+    }, {});
+
   const handleAddToCart = () => {
+    if (missingOptionNames.length > 0) {
+      toast.error("Please select an option", {
+        description: `Choose ${missingOptionNames.join(", ")} before adding to cart.`,
+      });
+      return;
+    }
+
     triggerFlyToCart();
 
-    const selectedOptions = {
-      ...(colorOption ? { [colorOption.name]: selectedColor } : {}),
-      ...(sizeOption ? { [sizeOption.name]: selectedSize } : {}),
-    };
+    const selectedOptions = buildSelectedOptions();
 
     window.setTimeout(() => {
       onAddToCart(product, selectedOptions, quantity);
     }, 420);
+  };
+
+  const handleBuyNow = () => {
+    if (missingOptionNames.length > 0) {
+      toast.error("Please select an option", {
+        description: `Choose ${missingOptionNames.join(", ")} before continuing.`,
+      });
+      return;
+    }
+
+    onSelectProduct(product);
   };
 
   const thumbnails = Array.from(
@@ -216,7 +234,7 @@ function ProductDetailView({
   console.log("product detail page render", product);
 
   return (
-    <div className="mx-auto mt-0 max-w-8xl px-4 py-6 sm:px-6 lg:px-0 ">
+    <div className="mx-auto mt-0 max-w-8xl px-4 py-0 sm:px-6 lg:px-0 ">
       <div className="mb-5 flex items-center justify-between"></div>
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">
@@ -264,25 +282,71 @@ function ProductDetailView({
           </div>
 
           {product.description ? (
-            <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+            <div
+              className="
+      rounded-[24px]
+      border
+      border-slate-200
+      bg-white
+      p-4
+      shadow-[0_12px_32px_rgba(15,23,42,0.04)]
+    "
+            >
               <div
-                className="product-description prose max-w-none [&_img]:mx-auto [&_img]:block [&_img]:w-full [&_img]:rounded-xl [&_img]:border [&_img]:border-slate-200 [&_div]:w-full [&_div]:max-w-full"
-                dangerouslySetInnerHTML={{ __html: product.description }}
+                className="
+        product-description
+        mx-auto
+        max-w-[750px]
+        overflow-hidden
+        prose
+        max-w-none
+
+      2xl:border-none
+        [&>div]:mx-auto
+        [&>div]:w-full
+        [&>div]:max-w-full
+
+        [&_img]:
+        mx-auto
+        block
+        h-auto
+        w-full
+        max-w-full
+        rounded-xl
+        border
+        border-slate-200
+
+        [&_p]:
+        text-center
+      "
+                dangerouslySetInnerHTML={{
+                  __html: product.description,
+                }}
               />
             </div>
           ) : null}
         </div>
 
-        <div className="flex flex-col pt-2 md:sticky md:top-6 md:max-h-[calc(100vh-3rem)] md:self-start">
-          <div className="shrink-0 border-b border-slate-200 bg-white pb-3">
+        <div className="flex flex-col pt-2  md:sticky md:top-6 md:max-h-[calc(100vh-5rem)] md:self-start">
+          <div className="shrink-0 border-b pb-2 border-slate-200 bg-white pb-3">
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <div className="flex items-center gap-1.5">
                 <Store className="h-3.5 w-3.5 text-slate-500" />
-                <span>{product.shopName.en}</span>
+                {product.shopId ? (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/shop/${product.shopId}`)}
+                    className="cursor-pointer font-medium text-slate-600 underline-offset-2 hover:text-[#ff6a00] hover:underline"
+                  >
+                    {product.shopName.en}
+                  </button>
+                ) : (
+                  <span>{product.shopName.en}</span>
+                )}
               </div>
             </div>
 
-            <div className="mt-3 space-y-3">
+            <div className="mt-3  space-y-3">
               <h1 className="text-xl font-bold leading-[1.32] text-slate-900">
                 {product.title.en}
               </h1>
@@ -368,52 +432,49 @@ to-[#ff002b]
                   >
                     {formatCurrency(salePrice || listPrice)}
                   </p>
-
-                  {/* <div
-                    className="
-          rounded-lg
-          bg-white/15
-          px-2.5
-          py-1
-          backdrop-blur-sm
-        "
-                  >
-                    <p
-                      className="
-            text-xs
-            font-semibold
-            text-white
-          "
-                    >
-                      {product.totalQuantity
-                        ? `${product.totalQuantity} items`
-                        : "Ready"}
-                    </p>
-                  </div> */}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex-1 space-y-5 overflow-y-auto pb-5 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {colorOption ? (
-              <div className="space-y-2">
+          <div className="flex-1 space-y-5 overflow-y-auto   pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {productOptions.map((option) => (
+              <div key={option.propId} className="space-y-2">
                 <p className="text-sm font-semibold text-slate-800">
-                  {colorOption.name}
+                  {option.name}
+                  {!selectedValues[option.propId] ? (
+                    <span className="ml-1 text-xs font-normal text-red-500">
+                      (required)
+                    </span>
+                  ) : null}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {colorOption.values.map((value) => {
-                    const valueImage = optionValueImageMap.get(
-                      `${colorOption.propId}:${value.valueId}`,
-                    );
+                  {option.values.map((value) => {
+                    const isColorOption = /color|颜色|色/i.test(option.name);
+                    const valueImage = isColorOption
+                      ? optionValueImageMap.get(
+                          `${option.propId}:${value.valueId}`,
+                        )
+                      : undefined;
+                    const isSelected =
+                      selectedValues[option.propId] === value.valueId;
 
                     return (
                       <button
                         key={value.valueId}
                         type="button"
-                        onClick={() => setSelectedColor(value.name)}
+                        onClick={() =>
+                          setSelectedValues((prev) => {
+                            if (prev[option.propId] === value.valueId) {
+                              const next = { ...prev };
+                              delete next[option.propId];
+                              return next;
+                            }
+                            return { ...prev, [option.propId]: value.valueId };
+                          })
+                        }
                         className={`flex items-center gap-2 cursor-pointer rounded-lg border px-2 py-1 text-sm transition ${
-                          selectedColor === value.name
+                          isSelected
                             ? "border-[#ff6a00] bg-[#fff5ee] text-[#ff6a00]"
                             : "border-slate-200 bg-white text-slate-700"
                         }`}
@@ -430,43 +491,12 @@ to-[#ff002b]
                     );
                   })}
                 </div>
+                
               </div>
-            ) : null}
+              
+            ))}
 
-            {sizeOption ? (
-              <div className="space-y-2">
-                <p className="text-sm font-semibold text-slate-800">
-                  {sizeOption.name}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {sizeOption.values.map((value) => {
-                    return (
-                      <button
-                        key={value.valueId}
-                        type="button"
-                        onClick={() => setSelectedSize(value.name)}
-                        className={`flex items-center gap-2 cursor-pointer rounded-lg border px-2 py-1 text-sm transition ${
-                          selectedSize === value.name
-                            ? "border-[#ff6a00] bg-[#fff5ee] text-[#ff6a00]"
-                            : "border-slate-200 bg-white text-slate-700"
-                        }`}
-                      >
-                        {/* {valueImage ? (
-                          <img
-                            src={valueImage}
-                            alt={value.name}
-                            className="h-7 w-7 rounded-sm object-cover"
-                          />
-                        ) : null} */}
-                        <span>{value.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
-
-            <div className="space-y-2">
+            <div className="space-y-2 mb-15">
               <p className="text-sm font-semibold text-slate-800">Quantity</p>
               <div className="flex w-fit items-center  rounded-full border border-slate-200 bg-slate-50 px-2">
                 <button
@@ -494,7 +524,7 @@ to-[#ff002b]
             </div>
           </div>
 
-          <div className="sticky bottom-0 z-10 border-t border-slate-200 bg-white/95 pt-3 pb-3 backdrop-blur-sm">
+          <div className="sticky bottom-0  z-10  border-t border-slate-200 bg-white/95 pt-3 pb-3 backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -508,7 +538,7 @@ to-[#ff002b]
               <button
                 type="button"
                 className="flex items-center cursor-pointer justify-center gap-2 rounded-full border border-[#ffb17a] bg-[#fff7f2] px-4 py-3 text-sm font-semibold text-[#d85b00] transition hover:bg-[#fff1e7]"
-                onClick={() => onSelectProduct(product)}
+                onClick={handleBuyNow}
               >
                 <Sparkles className="h-4 w-4" strokeWidth={2.2} />
                 <span>Buy now</span>
@@ -775,6 +805,7 @@ export default function ProductDetailPage({
             en: data.shop?.name ?? "E-Taobao",
             km: data.shop?.name ?? "E-Taobao",
           },
+          shopId: data.shop?.id ?? undefined,
           priceText,
           imageUrl: data.image ?? imageList[0] ?? "",
           productUrl: "",
@@ -882,7 +913,9 @@ export default function ProductDetailPage({
         }}
       />
       {/* <TestingComponent /> */}
-      <ExploreProduct />
+      <div className="mt-0">
+        <ExploreProduct />
+      </div>
     </>
   );
 }

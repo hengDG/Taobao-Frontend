@@ -13,15 +13,17 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     // port: 4173,
-    port: 5173,
-
-    // proxy: {
-    //   "/api": {
-    //     target: "http://192.168.0.10:3168",
-    //     // target: "http://localhost:3168",
-    //     changeOrigin: true,
-    //     secure: false,
-    //   },
-    // },
+    // port: 5173,
+    port: 3000
   },
+
+  // server:{
+  //   proxy:{
+  //     "/api":{
+  //       target:"http://192.168.0.10:3168",
+  //       changeOrigin:true,
+  //       secure:false
+  //     }
+  //   }
+  // }
 });

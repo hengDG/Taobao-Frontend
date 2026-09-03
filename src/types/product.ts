@@ -36,6 +36,7 @@ export type ProductCard = {
   section: LocalizedText;
   title: LocalizedText;
   shopName: LocalizedText;
+  shopId?: string;
 
   priceText: string;
 

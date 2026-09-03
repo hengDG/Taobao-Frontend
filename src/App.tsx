@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { AppShell } from "./components/app-shell/AppShell";
+import { Toaster } from "./components/ui/sonner";
 import HomePage from "./pages/Home/HomePage";
 import { CartPage, type CartLineItem } from "./pages/Cart/CartPage";
 import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
 import ProductsPage from "./pages/Products/ProductsPage";
 import SimilarProductsPage from "./pages/Products/SimilarProductsPage";
+import ShopPage from "./pages/Shop/ShopPage";
 
 function CartRoute({
   items,
@@ -92,6 +94,7 @@ function App() {
 
   return (
     <AppShell cartCount={cartCount}>
+      <Toaster />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
@@ -113,6 +116,7 @@ function App() {
           path="/products/:sourceItemId"
           element={<ProductDetailPage onAddToCart={handleAddToCart} />}
         />
+        <Route path="/shop/:shopId" element={<ShopPage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </AppShell>

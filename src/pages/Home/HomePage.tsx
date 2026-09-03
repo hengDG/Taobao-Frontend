@@ -33,21 +33,35 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("explore")}
           className={`
-            rounded-xl
-            px-5
-            py-2
-            text-sm
-            font-semibold
-            transition
-            cursor-pointer
+  rounded-xl
+  border
+  px-5
+  py-2
+  text-sm
+  font-semibold
+  transition-all
+  duration-300
+  cursor-pointer
 
-            ${
-              activeTab === "explore"
-                ? "bg-[#ff6a00] text-white"
-                : "bg-slate-100 text-slate-700"
-            }
-
-          `}
+  ${
+    activeTab === "explore"
+      ? `
+        border-[#194891]
+        bg-[#194891]/10
+        text-[#194891]
+        shadow-sm
+        border-none
+      `
+      : `
+         border-[#194891]/15
+         border-none
+        text-slate-700
+        hover:border-[#194891]/30
+        hover:bg-[#194891]/5
+        hover:text-[#194891]
+      `
+  }
+`}
         >
           Explore
         </button>
@@ -55,21 +69,33 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("theme")}
           className={`
-            rounded-xl
-            px-5
-            py-2
-            text-sm
-            font-semibold
-            font-semibold
-            transition
-            cursor-pointer
-            ${
-              activeTab === "theme"
-                ? "bg-[#ff6a00] text-white"
-                : "bg-slate-100 text-slate-700"
-            }
+  rounded-xl
+  border
+  px-5
+  py-2
+  text-sm
+  font-semibold
+  transition-all
+  duration-300
+  cursor-pointer
 
-          `}
+  ${
+    activeTab === "theme"
+      ? `
+        border-[#194891]
+        bg-[#194891]/10
+        text-[#194891]
+        shadow-sm
+      `
+      : `
+        border-[#194891]/15
+        text-slate-700
+        hover:border-[#194891]/30
+        hover:bg-[#194891]/5
+        hover:text-[#194891]
+      `
+  }
+`}
         >
           Guess You Like
         </button>
@@ -77,18 +103,32 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("homepage")}
           className={`
-            rounded-xl
-            px-5
-            py-2
-            text-sm
-            font-semibold
-            transition
-            cursor-pointer
-            ${
-              activeTab === "homepage"
-                ? "bg-[#ff6a00] text-white"
-                : "bg-slate-100 text-slate-700"
-            }
+  rounded-xl
+  border
+  px-5
+  py-2
+  text-sm
+  font-semibold
+  transition-all
+  duration-300
+  cursor-pointer
+
+  ${
+    activeTab === "homepage"
+      ? `
+        border-[#194891]
+        bg-[#194891]/0
+        text-[#194891]
+        shadow-sm
+      `
+      : `
+        border-[#194891]/15
+        text-slate-700
+        hover:border-[#194891]/30
+        hover:bg-[#194891]/5
+        hover:text-[#194891]
+      `
+  }
 
           `}
         >

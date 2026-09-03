@@ -52,6 +52,23 @@ export const productService = {
     return data;
   },
 
+  async getShopProducts(
+    shopId: string,
+    size: number = 12,
+  ): Promise<TaobaoProductsResponse> {
+    const { data } = await apiClient.get(`/products/shop/${shopId}`, {
+      params: {
+        size,
+      },
+    });
+
+    if (Array.isArray(data)) {
+      return { items: data };
+    }
+
+    return data;
+  },
+
   async searchProducts(
     keyword: string,
     page: number = 1,

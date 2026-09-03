@@ -37,6 +37,63 @@ const slides: Slide[] = [
 
 export function HomeMarketplaceDashboard() {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [activeOrder, setActiveOrder] = useState(0);
+  const [enableTransition, setEnableTransition] = useState(true);
+
+  const orders = [
+    {
+      image: products[0]?.imageUrl,
+      status: "Shipping",
+      date: "09-02",
+      message: "Package arrived at China warehouse",
+    },
+    {
+      image: products[1]?.imageUrl,
+      status: "Paid",
+      date: "09-01",
+      message: "Waiting seller to prepare your order",
+    },
+    {
+      image: products[2]?.imageUrl,
+      status: "Cambodia",
+      date: "08-30",
+      message: "Package arrived in Cambodia",
+    },
+    {
+      image: products[3]?.imageUrl,
+      status: "Delivered",
+      date: "08-28",
+      message: "Order delivered successfully",
+    },
+  ];
+
+  // clone first item
+  const userOrders = [...orders, orders[0]];
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveOrder((prev) => prev + 1);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (activeOrder === orders.length) {
+      const timer = setTimeout(() => {
+        setEnableTransition(false);
+
+        setActiveOrder(0);
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setEnableTransition(true);
+          });
+        });
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [activeOrder]);
 
   useEffect(() => {
     if (!slides.length) return;
@@ -70,7 +127,7 @@ export function HomeMarketplaceDashboard() {
           <div
             className="
       grid
-      grid-cols-[35%_65%]
+      grid-cols-[42%_58%]
       gap-4
     "
           >
@@ -127,7 +184,7 @@ export function HomeMarketplaceDashboard() {
               {/* ORDER STATUS */}
               <div
                 className="
-          mt-5
+          mt-3
           grid
           grid-cols-3
           gap-2
@@ -163,7 +220,7 @@ export function HomeMarketplaceDashboard() {
               {/* QUICK MENU */}
               <div
                 className="
-          mt-5
+          mt-2
           grid
           grid-cols-3
           gap-2
@@ -198,6 +255,131 @@ export function HomeMarketplaceDashboard() {
                     <p className="mt-1 text-[10px]">{item.label}</p>
                   </div>
                 ))}
+              </div>
+              
+              {/* ACTIVE ORDER SLIDER */}
+
+              <div className="mt-3">
+                {/* Slider Container */}
+
+                <div
+                  className="
+      overflow-hidden
+      rounded-xl
+    "
+                >
+                  <div
+                    className={`
+ flex
+ ${enableTransition ? "transition-transform duration-500 ease-out" : ""}
+`}
+                    style={{
+                      transform: `translateX(-${activeOrder * 100}%)`,
+                    }}
+                  >
+                    {userOrders.map((order, index) => (
+                      <div
+                        key={index}
+                        className="
+            flex
+            min-w-full
+            items-center
+            gap-3
+            rounded-xl
+            bg-gray-50
+            p-2.5
+            transition
+            hover:bg-gray-100
+          "
+                      >
+                        {/* Product Image */}
+
+                        <img
+                          src={order.image}
+                          alt=""
+                          className="
+              h-8
+              w-8
+              shrink-0
+              rounded-xl
+              object-cover
+            "
+                        />
+
+                        {/* Order Information */}
+
+                        <div
+                          className="
+              flex-1
+              overflow-hidden
+            "
+                        >
+                          <div
+                            className="
+                flex
+                items-center
+                justify-between
+              "
+                          >
+                            <span
+                              className="
+                  text-[11px]
+                  font-bold
+                  text-[#ff5000]
+                "
+                            >
+                              {order.status}
+                            </span>
+
+                            <span
+                              className="
+                  text-[11px]
+                  text-gray-400
+                "
+                            >
+                              {order.date}
+                            </span>
+                          </div>
+
+                          <p
+                            className="
+                mt-1
+                truncate
+                text-[10px]
+                text-gray-600
+              "
+                          >
+                            {order.message}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Slider dots */}
+
+                {/* <div
+                  className="
+      mt-2
+      flex
+      justify-center
+      gap-1
+    "
+                >
+                  {userOrders.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActiveOrder(index)}
+                      className={[
+                        "h-1.5 rounded-full transition-all duration-300",
+                        activeOrder === index
+                          ? "w-4 bg-[#ff5000]"
+                          : "w-1.5 bg-gray-300",
+                      ].join(" ")}
+                    />
+                  ))}
+                </div> */}
               </div>
             </div>
 
@@ -592,7 +774,7 @@ export function HomeMarketplaceDashboard() {
       transition
       hover:shadow-[0_4px_10px_rgba(0,0,0,0.08)]
     "
-        >
+        >F
           Explore
         </button>
 

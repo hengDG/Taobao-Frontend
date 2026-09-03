@@ -35,7 +35,7 @@ export const ProductSkeleton = ({
 );
 
 export const ProductDetailSkeleton = () => (
-  <div className="mx-auto max-w-8xl px-10 py-6 mt-10">
+  <div className="mx-auto max-w-8xl px-10 py-0 mt-10">
     <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">
       <div className="space-y-5 md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="space-y-4">

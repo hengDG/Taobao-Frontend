@@ -72,4 +72,11 @@ export type TaobaoProductsResponse = {
   exact?: TaobaoExactProduct;
   detailUrl?: string;
   similar?: TaobaoProduct[];
+  shopName?: string | null;
+  shop?: {
+    id?: string;
+    name?: string;
+    rating?: number | null;
+    shippingOrigin?: string | null;
+  };
 };
