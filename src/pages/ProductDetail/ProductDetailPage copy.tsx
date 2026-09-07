@@ -46,12 +46,6 @@ function ProductDetailView({
   );
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [shopSummary, setShopSummary] = useState<{
-    name: string;
-    rating: number;
-    shippingOrigin: string;
-    totalProducts: number;
-  } | null>(null);
   const [flyState, setFlyState] = useState<{
     startX: number;
     startY: number;
@@ -83,46 +77,6 @@ function ProductDetailView({
     setSelectedValues(defaultSelection);
     setQuantity(1);
   }, [defaultSelection, galleryList, product.id, product.imageUrl]);
-
-  useEffect(() => {
-    const shopId = product.shopId;
-
-    if (!shopId) {
-      setShopSummary(null);
-      return;
-    }
-
-    let mounted = true;
-
-    const loadShopSummary = async () => {
-      try {
-        const response = await productService.getShopProducts(shopId, 12);
-
-        if (!mounted) {
-          return;
-        }
-
-        const shop = response.shop;
-
-        setShopSummary({
-          name: shop?.name ?? product.shopName?.en ?? "Shop",
-          rating: shop?.rating ?? 0,
-          shippingOrigin: shop?.shippingOrigin ?? "",
-          totalProducts: response.items?.length ?? 0,
-        });
-      } catch {
-        if (mounted) {
-          setShopSummary(null);
-        }
-      }
-    };
-
-    void loadShopSummary();
-
-    return () => {
-      mounted = false;
-    };
-  }, [product.shopId, product.shopName]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -289,55 +243,6 @@ function ProductDetailView({
           className="space-y-5 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           <div className="space-y-4">
-            {shopSummary && (
-              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-lg font-bold text-orange-500">
-                    {shopSummary.name.charAt(0).toUpperCase()}
-                  </div>
-
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        product.shopId && navigate(`/shop/${product.shopId}`)
-                      }
-                      className="text-left text-base font-semibold text-slate-800 hover:text-[#ff6a00]"
-                    >
-                      {shopSummary.name}
-                    </button>
-
-                    <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
-                        {shopSummary.rating > 0
-                          ? `${shopSummary.rating} rating`
-                          : "New seller"}
-                      </span>
-
-                      {shopSummary.shippingOrigin ? (
-                        <span>{shopSummary.shippingOrigin}</span>
-                      ) : null}
-
-                      <span>{shopSummary.totalProducts} items</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (product.shopId) {
-                      navigate(`/shop/${product.shopId}`);
-                    }
-                  }}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
-                >
-                  View Store
-                </button>
-              </div>
-            )}
-
             <div className="flex gap-3 px-2 sm:px-4">
               <div className="flex w-16 shrink-0 flex-col gap-3 sm:w-18">
                 {thumbnails.map((image, index) => (
@@ -430,11 +335,7 @@ function ProductDetailView({
                 {product.shopId ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      if (product.shopId) {
-                        navigate(`/shop/${product.shopId}`);
-                      }
-                    }}
+                    onClick={() => navigate(`/shop/${product.shopId}`)}
                     className="cursor-pointer font-medium text-slate-600 underline-offset-2 hover:text-[#ff6a00] hover:underline"
                   >
                     {product.shopName.en}

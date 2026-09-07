@@ -6,9 +6,23 @@ import type {
   TaobaoProductDetailResponse,
   ExploreProductsResponse,
   ByLinkProductResponse,
+  CategoryGroup,
 } from "@/types/taobao.types";
 
 export const productService = {
+  async getCategories(): Promise<CategoryGroup[]> {
+    const { data } = await apiClient.get("/categories");
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    if (Array.isArray(data?.categories)) {
+      return data.categories;
+    }
+
+    return data ? [data] : [];
+  },
   async getHomepageProducts(): Promise<TaobaoHomeResponse> {
     const { data } = await apiClient.get("/homepage");
 
@@ -21,8 +35,17 @@ export const productService = {
     return data;
   },
 
-  async getThemeProducts(themeId: string): Promise<TaobaoProductsResponse> {
-    const { data } = await apiClient.get(`/themes/${themeId}/products`);
+  async getThemeProducts(
+    themeId: string,
+    scrollId?: string,
+    signal?: AbortSignal,
+  ): Promise<TaobaoProductsResponse> {
+    const { data } = await apiClient.get(`/themes/${themeId}/products`, {
+      params: {
+        ...(scrollId ? { scrollId } : {}),
+      },
+      signal,
+    });
 
     return data;
   },

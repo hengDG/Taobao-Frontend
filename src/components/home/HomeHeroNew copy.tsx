@@ -1,12 +1,7 @@
 import { Star, Eye, ShoppingBag } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
-import image1 from "/slideImage/tg_image_266439099.png";
-import image2 from "/slideImage/tg_image_887748772.png";
-import image3 from "/slideImage/tg_image_1831750447.png";
-import image4 from "/slideImage/tg_image_2548941537.png";
-import image5 from "/slideImage/tg_image_2582722055.png";
+
 import { products } from "@/data/products";
-import CategoryMenu from "@/components/home/CategoryMenu";
 
 type Slide = {
   id: string;
@@ -16,41 +11,30 @@ type Slide = {
   image?: string;
 };
 
+
+
+
 const slides: Slide[] = [
   {
     id: "slide-1",
     title: "NIKE Official Flagship ",
     subtitle: "The selected type is ready",
     bgClass: "bg-gradient-to-r from-[#37b97f] to-[#5ec47c]",
-    image: image1,
+    image: products[0]?.imageUrl,
   },
   {
     id: "slide-2",
     title: "Top Home Living Picks",
     subtitle: "Trusted quality and fast shipping",
     bgClass: "bg-gradient-to-r from-[#3b82d6] to-[#5d8df0]",
-    image: image2,
+    image: products[1]?.imageUrl,
   },
   {
     id: "slide-3",
     title: "Beauty & Daily ",
     subtitle: "Hot products updated every day",
     bgClass: "bg-gradient-to-r from-[#6c63ff] to-[#8c7dff]",
-    image: image3,
-  },
-  {
-    id: "slide-4",
-    title: "Home Essentials",
-    subtitle: "Everything you need for your home",
-    bgClass: "bg-gradient-to-r from-[#ff7e5f] to-[#feb47b]",
-    image: image4,
-  },
-  {
-    id: "slide-5",
-    title: "Fashion & Accessories",
-    subtitle: "Stay trendy with our latest collection",
-    bgClass: "bg-gradient-to-r from-[#ff6a88] to-[#ff99ac]",
-    image: image5,
+    image: products[6]?.imageUrl,
   },
 ];
 
@@ -127,15 +111,13 @@ export function HomeMarketplaceDashboard() {
   const activeSlide = slides[activeSlideIndex] ?? slides[0];
 
   return (
-    <section className="mx-auto w-full  space-y-2 px-0">
-      <CategoryMenu />
-
+    <section className="mx-auto w-full mt-5 space-y-2  px-0">
       {/* TOP AREA */}
       <div className="grid gap-2 lg:grid-cols-10">
         {" "}
         {/* USER + TRACK COMBINED CARD */}
         <div
-          className="
+  className="
     lg:col-span-5
     rounded-2xl
     border
@@ -145,9 +127,10 @@ export function HomeMarketplaceDashboard() {
     via-[#E3F2FD]
     to-[#E3F2FD]
     p-4
-    shadow-sm
+    shadow-lg
+    shadow-blue-900/20
   "
-        >
+>
           <div
             className="
       grid
@@ -349,7 +332,7 @@ export function HomeMarketplaceDashboard() {
                               className="
                   text-[11px]
                   font-bold
-                  text-[#F97908]
+                  text-[#ff5000]
                 "
                             >
                               {order.status}
@@ -380,6 +363,30 @@ export function HomeMarketplaceDashboard() {
                     ))}
                   </div>
                 </div>
+
+                {/* Slider dots */}
+
+                {/* <div
+                  className="
+      mt-2
+      flex
+      justify-center
+      gap-1
+    "
+                >
+                  {userOrders.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActiveOrder(index)}
+                      className={[
+                        "h-1.5 rounded-full transition-all duration-300",
+                        activeOrder === index
+                          ? "w-4 bg-[#ff5000]"
+                          : "w-1.5 bg-gray-300",
+                      ].join(" ")}
+                    />
+                  ))}
+                </div> */}
               </div>
             </div>
 
@@ -635,73 +642,54 @@ export function HomeMarketplaceDashboard() {
           </div>
         </div>
         {/* AD */}
-        <div className="relative lg:col-span-2 ">
+        <div className="relative lg:col-span-2">
           <div
-            className="
-      relative
-      h-full
-      min-h-[200px]
-      overflow-hidden
-      rounded-2xl
-    "
+            className={`relative h-full min-h-[200px] overflow-hidden rounded-2xl p-5 text-white shadow-[0_14px_30px_rgba(34,74,130,0.15)] ${activeSlide.bgClass}`}
           >
             {slides.map((slide, index) => (
               <div
                 key={slide.id}
-                className={`
-          absolute
-          inset-0
-          flex
-          items-center
-          justify-center
-          transition-all
-          duration-500
-          ${
-            index === activeSlideIndex
-              ? "translate-x-0 opacity-100"
-              : "translate-x-6 opacity-0"
-          }
-        `}
+                className={`absolute inset-0 flex flex-col justify-between p-5 transition-all duration-500 ${
+                  index === activeSlideIndex
+                    ? "translate-x-0 opacity-100"
+                    : "translate-x-6 opacity-0"
+                }`}
               >
+                <div>
+                  
+
+                  <h2 className=" text-2xl font-black leading-tight sm:text-3xl">
+                    {slide.title}
+                  </h2>
+
+                  <p className="mt-2 max-w-[80%] text-sm text-white/90">
+                    {slide.subtitle}
+                  </p>
+                </div>
+
                 {slide.image && (
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="
-              h-full
-              w-full
-              object-cover
-              rounded-2xl
-              bg-red-300
-            "
-                  />
+                  <div className="flex justify-end">
+                    <img
+                      src="/"
+                      alt={slide.title}
+                      className="h-24 w-auto rounded-2xl border border-white/30 bg-white/10 object-cover shadow-lg backdrop-blur-sm sm:h-28"
+                    />
+                  </div>
                 )}
               </div>
             ))}
 
-            {/* Slider Dots */}
-            <div
-              className="
-        absolute
-        bottom-3
-        left-1/2
-        flex
-        -translate-x-1/2
-        gap-2
-      "
-            >
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
               {slides.map((slide, index) => (
                 <button
                   key={slide.id}
                   type="button"
                   onClick={() => setActiveSlideIndex(index)}
-                  className={`
-            h-2.5
-            rounded-full
-            transition-all
-            duration-300
-            ${index === activeSlideIndex ? "w-7 bg-white" : "w-2.5 bg-white/60"}
-          `}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    index === activeSlideIndex
+                      ? "w-7 bg-white"
+                      : "w-2.5 bg-white/60"
+                  }`}
                   aria-label={`View slide ${index + 1}`}
                 />
               ))}
@@ -709,6 +697,131 @@ export function HomeMarketplaceDashboard() {
           </div>
         </div>
       </div>
+
+      {/* MARKETPLACE CATEGORY */}
+      {/* <div className="relative mt-2 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {categories.map((item) => {
+          const hasChildren = !!item.children?.length;
+          const isOpen = openCategoryId === item.id;
+
+          return (
+            <div
+              key={item.id}
+              className="relative shrink-0"
+              onMouseEnter={() => hasChildren && setOpenCategoryId(item.id)}
+              onMouseLeave={() => hasChildren && setOpenCategoryId(null)}
+            >
+              <button
+                type="button"
+                className="group flex h-9 items-center gap-2 rounded-xl border border-gray-100 bg-white px-2 text-xs font-semibold text-gray-700 shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 hover:shadow-[0_5px_12px_rgba(0,0,0,0.08)]"
+                onClick={() =>
+                  hasChildren &&
+                  setOpenCategoryId((prev) =>
+                    prev === item.id ? null : item.id,
+                  )
+                }
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 text-sm">
+                  {item.name.charAt(0).toUpperCase()}
+                </span>
+                <span className="whitespace-nowrap">{item.name}</span>
+                {hasChildren && (
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                  />
+                )}
+              </button>
+
+              {hasChildren && isOpen && (
+                <div className="absolute left-0 top-full z-30 mt-2 min-w-[180px] rounded-xl border border-gray-100 bg-white p-2 shadow-[0_16px_30px_rgba(15,23,42,0.12)]">
+                  {item.children!.map((child) => (
+                    <button
+                      key={child.id}
+                      type="button"
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs text-gray-700 transition hover:bg-gray-50"
+                    >
+                      <span>{child.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div> */}
+
+      {/* RECOMMENDATION TAB */}
+
+      {/* <div
+        className="
+    flex
+    justify-center
+    gap-3
+    py-0
+  "
+      >
+
+        <button
+          className="
+      flex
+      h-9
+      items-center
+      gap-2
+      rounded-full
+      bg-white
+      px-5
+      text-sm
+      font-semibold
+      text-gray-700
+
+      shadow-[0_2px_8px_rgba(0,0,0,0.06)]
+
+      transition
+      hover:shadow-[0_4px_10px_rgba(0,0,0,0.08)]
+    "
+        >F
+          Explore
+        </button>
+
+
+        <button
+          className="
+      relative
+      flex
+      h-9
+      items-center
+      gap-2
+      rounded-full
+      bg-white
+      px-5
+      text-sm
+      font-semibold
+      text-gray-700
+
+      shadow-[0_2px_8px_rgba(0,0,0,0.06)]
+
+      transition
+      hover:shadow-[0_4px_10px_rgba(0,0,0,0.08)]
+    "
+        >
+          Following
+          <span
+            className="
+        absolute
+        -right-1
+        -top-1
+        rounded-full
+        bg-red-500
+        px-1.5
+        text-[8px]
+        font-bold
+        text-white
+      "
+          >
+            New
+          </span>
+        </button>
+      </div> */}
     </section>
   );
 }

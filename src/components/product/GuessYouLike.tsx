@@ -6,6 +6,7 @@ import { ProductCardSkeleton } from "@/components/ui/ProductCardSkeleton";
 import productService from "@/services/product/product.service";
 
 import type { TaobaoProduct } from "@/types/taobao.types";
+import ServerError from "@/pages/ErrorPage";
 
 const ThemeProductsSection = () => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
@@ -63,13 +64,11 @@ const ThemeProductsSection = () => {
       {loading && <ProductCardSkeleton count={12} />}
 
       {error && (
-        <p
-          className="
-              text-red-500
-            "
-        >
-          {error}
-        </p>
+        <ServerError
+          onRetry={() => {
+            window.location.reload();
+          }}
+        />
       )}
 
       {!loading && !error && products.length > 0 && (

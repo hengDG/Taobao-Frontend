@@ -7,6 +7,7 @@ import productService from "@/services/product/product.service";
 import type { TaobaoProduct } from "@/types/taobao.types";
 
 import { ProductCardSkeletonCard } from "../ui/ProductCardSkeleton";
+import ServerError from "@/pages/ErrorPage";
 
 const PRODUCT_GRID = `
 grid
@@ -138,13 +139,11 @@ const ExploreProduct = () => {
       )}
 
       {error && (
-        <p
-          className="
-            text-red-500
-            "
-        >
-          {error}
-        </p>
+        <ServerError
+          onRetry={() => {
+            fetchProducts(cursor);
+          }}
+        />
       )}
 
       {!error && products.length > 0 && (

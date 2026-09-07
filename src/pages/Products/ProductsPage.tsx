@@ -11,6 +11,7 @@ import {
   ProductCardSkeleton,
   ProductCardSkeletonCard,
 } from "@/components/ui/ProductCardSkeleton";
+import ServerError from "../ErrorPage";
 
 export default function ProductsPage() {
   const [searchParams] = useSearchParams();
@@ -67,10 +68,10 @@ export default function ProductsPage() {
               text-slate-500
             "
           >
-            Search Results
+            <span >Results for</span> "{keyword}"
           </p>
 
-          <h1
+          {/* <h1
             className="
               mt-2
               text-3xl
@@ -83,7 +84,7 @@ export default function ProductsPage() {
               : url
                 ? "Results from product link"
                 : "Search products"}
-          </h1>
+          </h1> */}
         </div>
 
         {!loading && !error && (keyword || url) && (
@@ -101,19 +102,11 @@ export default function ProductsPage() {
       {/* ERROR */}
 
       {error && (
-        <div
-          className="
-            rounded-xl
-            border
-            border-red-200
-            bg-red-50
-            p-4
-            text-sm
-            text-red-700
-          "
-        >
-          {error}
-        </div>
+        <ServerError
+          onRetry={() => {
+            window.location.reload();
+          }}
+        />
       )}
 
       {/* FIRST LOADING */}

@@ -32,7 +32,7 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-1/2 z-40 hidden w-17 h-[32vh] transform -translate-y-1/2 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4 lg:rounded-r-xl lg:shadow-lg lg:pointer-events-auto">
+      <aside className="fixed left-0 top-1/2 z-40 hidden w-15 h-[32vh] transform -translate-y-1/2 border-r border-gray-200 bg-white lg:flex lg:flex-col lg:items-center lg:py-4 lg:rounded-r-xl lg:shadow-lg lg:pointer-events-auto">
         {/* left intentionally blank: logo moved to header for desktop */}
 
         {/* Navigation */}
@@ -49,7 +49,7 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
                 aria-label={item.label}
                 data-cart-target={isCart ? "true" : undefined}
                 className={[
-                  "group relative flex w-14 items-center justify-center rounded-2xl py-3 transition-all duration-300 animate-sidebar-enter hover:-translate-y-1",
+                  "group relative flex w-12 items-center justify-center rounded-xl py-2 transition-all duration-300 animate-sidebar-enter hover:-translate-y-1",
                   isCart
                     ? "overflow-visible border border-white/20 bg-gradient-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] text-white shadow-[0_8px_24px_rgba(25,72,145,0.28)] hover:-translate-y-0.5"
                     : isActive

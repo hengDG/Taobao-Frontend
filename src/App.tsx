@@ -8,6 +8,7 @@ import { CartPage, type CartLineItem } from "./pages/Cart/CartPage";
 import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
 import ProductsPage from "./pages/Products/ProductsPage";
 import SimilarProductsPage from "./pages/Products/SimilarProductsPage";
+import ThemeProductsPage from "./pages/Products/ThemeProductsPage";
 import ShopPage from "./pages/Shop/ShopPage";
 
 function CartRoute({
@@ -112,6 +113,7 @@ function App() {
           path="/products/:sourceItemId/similar"
           element={<SimilarProductsPage />}
         />
+        <Route path="/themes/:themeId" element={<ThemeProductsPage />} />
         <Route
           path="/products/:sourceItemId"
           element={<ProductDetailPage onAddToCart={handleAddToCart} />}

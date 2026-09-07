@@ -3,7 +3,6 @@ import { Heart, ShoppingCart, Sparkles, Store } from "lucide-react";
 import { animate, motion } from "motion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-
 import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
 import type { ProductCard as ProductCardType } from "@/types/product";
 import productService from "@/services/product/product.service";
@@ -41,17 +40,9 @@ function ProductDetailView({
     () => (product.gallery?.length ? product.gallery : gallery).filter(Boolean),
     [gallery, product.gallery],
   );
-  const [selectedImage, setSelectedImage] = useState(
-    galleryList[0] ?? product.imageUrl,
-  );
+  const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [shopSummary, setShopSummary] = useState<{
-    name: string;
-    rating: number;
-    shippingOrigin: string;
-    totalProducts: number;
-  } | null>(null);
   const [flyState, setFlyState] = useState<{
     startX: number;
     startY: number;
@@ -70,7 +61,11 @@ function ProductDetailView({
     () => product.options ?? [],
     [product.options],
   );
-
+  useEffect(() => {
+    if (!selectedImage && product.imageUrl) {
+      setSelectedImage(product.imageUrl);
+    }
+  }, [product.imageUrl, selectedImage]);
   // No option is pre-selected; the user must actively choose each value.
   const defaultSelection = useMemo<Record<string, string>>(() => ({}), []);
 
@@ -83,46 +78,6 @@ function ProductDetailView({
     setSelectedValues(defaultSelection);
     setQuantity(1);
   }, [defaultSelection, galleryList, product.id, product.imageUrl]);
-
-  useEffect(() => {
-    const shopId = product.shopId;
-
-    if (!shopId) {
-      setShopSummary(null);
-      return;
-    }
-
-    let mounted = true;
-
-    const loadShopSummary = async () => {
-      try {
-        const response = await productService.getShopProducts(shopId, 12);
-
-        if (!mounted) {
-          return;
-        }
-
-        const shop = response.shop;
-
-        setShopSummary({
-          name: shop?.name ?? product.shopName?.en ?? "Shop",
-          rating: shop?.rating ?? 0,
-          shippingOrigin: shop?.shippingOrigin ?? "",
-          totalProducts: response.items?.length ?? 0,
-        });
-      } catch {
-        if (mounted) {
-          setShopSummary(null);
-        }
-      }
-    };
-
-    void loadShopSummary();
-
-    return () => {
-      mounted = false;
-    };
-  }, [product.shopId, product.shopName]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -182,11 +137,32 @@ function ProductDetailView({
 
     return map;
   }, [product.skus]);
+  const getSelectedOptionImage = useMemo(() => {
+    for (const option of productOptions) {
+      const selectedValueId = selectedValues[option.propId];
 
+      if (!selectedValueId) continue;
+
+      const image = optionValueImageMap.get(
+        `${option.propId}:${selectedValueId}`,
+      );
+
+      if (image) {
+        return image;
+      }
+    }
+
+    return null;
+  }, [selectedValues, productOptions, optionValueImageMap]);
   useEffect(() => {
-    const nextImage = currentSku?.image ?? galleryList[0] ?? product.imageUrl;
+    const nextImage =
+      getSelectedOptionImage ??
+      currentSku?.image ??
+      galleryList[0] ??
+      product.imageUrl;
+
     setSelectedImage(nextImage);
-  }, [currentSku, galleryList, product.imageUrl]);
+  }, [getSelectedOptionImage, currentSku, galleryList, product.imageUrl]);
 
   const salePrice = currentSku?.promotionPriceRmbRaw ?? 0;
   const listPrice = currentSku?.priceRmbRaw ?? salePrice;
@@ -277,6 +253,12 @@ function ProductDetailView({
     new Set([...galleryList, product.imageUrl].filter(Boolean)),
   );
 
+  const nextImage =
+    getSelectedOptionImage ??
+    currentSku?.image ??
+    galleryList[0] ??
+    product.imageUrl;
+
   console.log("product detail page render", product);
 
   return (
@@ -288,91 +270,70 @@ function ProductDetailView({
           ref={contentRef}
           className="space-y-5 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
-          <div className="space-y-4">
-            {shopSummary && (
-              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-lg font-bold text-orange-500">
-                    {shopSummary.name.charAt(0).toUpperCase()}
-                  </div>
+          <div className="flex justify-center px-2 sm:px-4">
+            <div
+              ref={imageRef}
+              className="
+      relative
+      flex
+      h-[520px]
+      w-full
+      max-w-[900px]
+      items-center
+      justify-center
+      overflow-hidden
+    "
+            >
+              {thumbnails.slice(0, 10).map((image, index) => {
+                const active = selectedImage === image;
 
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        product.shopId && navigate(`/shop/${product.shopId}`)
-                      }
-                      className="text-left text-base font-semibold text-slate-800 hover:text-[#ff6a00]"
-                    >
-                      {shopSummary.name}
-                    </button>
+                const currentIndex = thumbnails.indexOf(
+                  selectedImage || product.imageUrl,
+                );
 
-                    <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
-                        {shopSummary.rating > 0
-                          ? `${shopSummary.rating} rating`
-                          : "New seller"}
-                      </span>
+                const position = currentIndex - index;
+                const isCenter = position === 0;
 
-                      {shopSummary.shippingOrigin ? (
-                        <span>{shopSummary.shippingOrigin}</span>
-                      ) : null}
-
-                      <span>{shopSummary.totalProducts} items</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (product.shopId) {
-                      navigate(`/shop/${product.shopId}`);
-                    }
-                  }}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
-                >
-                  View Store
-                </button>
-              </div>
-            )}
-
-            <div className="flex gap-3 px-2 sm:px-4">
-              <div className="flex w-16 shrink-0 flex-col gap-3 sm:w-18">
-                {thumbnails.map((image, index) => (
-                  <button
+                return (
+                  <motion.button
                     key={`${image}-${index}`}
                     type="button"
-                    aria-label={`View ${product.title.en} image ${index + 1}`}
-                    onMouseEnter={() => setSelectedImage(image)}
-                    onFocus={() => setSelectedImage(image)}
                     onClick={() => setSelectedImage(image)}
-                    className={`overflow-hidden rounded-lg border-2 bg-slate-100 transition ${
-                      selectedImage === image
-                        ? "border-[#ff6a00]"
-                        : "border-transparent"
-                    }`}
+                    animate={{
+                      x: -position * 170,
+
+                      scale: isCenter ? 1 : 0.7,
+
+                      opacity: isCenter ? 1 : 1,
+
+                      zIndex: isCenter ? 20 : 10,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      ease: "easeOut",
+                    }}
+                    className="
+            absolute
+            overflow-hidden
+            rounded-[24px]
+            border
+            border-slate-200
+            bg-white
+            shadow-2xl
+          "
                   >
                     <img
                       src={image}
-                      alt={`${product.title.en} view ${index + 1}`}
-                      className="h-16 w-full object-cover sm:h-20"
+                      alt={`${product.title.en} ${index}`}
+                      className="
+              h-[420px]
+              w-[320px]
+              object-cover
+            "
                     />
-                  </button>
-                ))}
-              </div>
-
-              <div
-                ref={imageRef}
-                className="mx-auto flex w-full max-w-[520px] flex-1 items-center justify-center overflow-hidden rounded-[15px] "
-              >
-                <img
-                  src={selectedImage || product.imageUrl}
-                  alt={product.title.en}
-                  className="block max-h-[520px] w-full object-contain"
-                />
-              </div>
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
 
@@ -430,11 +391,7 @@ function ProductDetailView({
                 {product.shopId ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      if (product.shopId) {
-                        navigate(`/shop/${product.shopId}`);
-                      }
-                    }}
+                    onClick={() => navigate(`/shop/${product.shopId}`)}
                     className="cursor-pointer font-medium text-slate-600 underline-offset-2 hover:text-[#ff6a00] hover:underline"
                   >
                     {product.shopName.en}

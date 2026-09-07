@@ -2,6 +2,61 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { MapPin, Star, Heart } from "lucide-react";
 
+const renderRatingStars = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating - fullStars >= 0.5;
+  const stars = Array.from({ length: 5 }, (_, index) => {
+    if (index < fullStars) {
+      return "full";
+    }
+
+    if (index === fullStars && hasHalfStar) {
+      return "half";
+    }
+
+    return "empty";
+  });
+
+  return stars.map((type, index) => {
+    if (type === "full") {
+      return (
+        <Star
+          key={`star-${index}`}
+          size={16}
+          className="fill-yellow-400 text-yellow-400"
+          fill="currentColor"
+        />
+      );
+    }
+
+    if (type === "half") {
+      return (
+        <div
+          key={`star-${index}`}
+          className="relative inline-flex h-4 w-4 items-center"
+        >
+          <Star size={16} className="text-slate-300" fill="none" />
+          <Star
+            size={16}
+            className="absolute left-0 top-0 text-yellow-400"
+            fill="currentColor"
+            style={{ clipPath: "inset(0 50% 0 0)" }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <Star
+        key={`star-${index}`}
+        size={16}
+        className="text-slate-300"
+        fill="none"
+      />
+    );
+  });
+};
+
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductCardSkeleton } from "@/components/ui/ProductCardSkeleton";
 
@@ -126,12 +181,14 @@ text-slate-900
                   className="
                 flex
                 items-center
-                gap-1
+                gap-1.5
                 "
                 >
-                  <Star size={16} className="fill-yellow-400 text-yellow-400" />
+                  <span className="flex items-center gap-0.5">
+                    {renderRatingStars(shop.rating)}
+                  </span>
 
-                  {shop.rating}
+                  <span>{shop.rating}</span>
                 </span>
 
                 <span
@@ -142,8 +199,7 @@ gap-1
 "
                 >
                   <MapPin size={15} />
-
-                  {shop.shippingOrigin}
+                  {shop.shippingOrigin} - China
                 </span>
               </div>
 

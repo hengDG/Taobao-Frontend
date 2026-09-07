@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ServerError from "../ErrorPage";
 
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductCardSkeleton } from "@/components/ui/ProductCardSkeleton";
@@ -79,11 +80,13 @@ export default function SimilarProductsPage() {
         </button>
       </div>
 
-      {error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+          {error ? (
+            <ServerError
+              onRetry={() => {
+                window.location.reload();
+              }}
+            />
+          ) : null}
 
       {loading && products.length === 0 ? (
         <ProductCardSkeleton count={18} />

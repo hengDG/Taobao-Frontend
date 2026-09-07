@@ -9,16 +9,32 @@ type ProductLinkSearchResultProps = {
   similarProducts: TaobaoProduct[];
 };
 
-const formatPrice = (cents?: number | null) => {
+const formatUsdPrice = (cents?: number | null) => {
   if (typeof cents !== "number") {
     return "Price on request";
   }
 
-  return new Intl.NumberFormat("zh-CN", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "CNY",
+    currency: "USD",
     minimumFractionDigits: 2,
   }).format(cents / 100);
+};
+
+const formatKhrPrice = (value?: number | null, rawText?: string | null) => {
+  if (rawText) {
+    return rawText;
+  }
+
+  if (typeof value !== "number") {
+    return "Price on request";
+  }
+
+  return new Intl.NumberFormat("km-KH", {
+    style: "currency",
+    currency: "KHR",
+    maximumFractionDigits: 0,
+  }).format(value);
 };
 
 export function ProductLinkSearchResult({
@@ -110,17 +126,28 @@ export function ProductLinkSearchResult({
 
               <div className="flex flex-wrap items-end gap-3 pt-1">
                 <span className="text-2xl font-black text-[#194891]">
-                  {formatPrice(
-                    exactProduct.couponCents ?? exactProduct.listCents ?? 0,
-                  )}
+                  {exactProduct.price?.usd ||
+                    formatUsdPrice(
+                      exactProduct.priceUsdCents ??
+                        exactProduct.couponCents ??
+                        exactProduct.listCents ??
+                        0,
+                    )}
                 </span>
-                {typeof exactProduct.listCents === "number" &&
-                  typeof exactProduct.couponCents === "number" &&
-                  exactProduct.couponCents < exactProduct.listCents && (
-                    <span className="text-sm text-slate-400 line-through">
-                      {formatPrice(exactProduct.listCents)}
-                    </span>
-                  )}
+                {(exactProduct.price?.khr ||
+                  (typeof exactProduct.listCents === "number" &&
+                    typeof exactProduct.couponCents === "number" &&
+                    exactProduct.couponCents < exactProduct.listCents)) && (
+                  <span className="text-sm text-slate-400 line-through">
+                    {formatKhrPrice(
+                      exactProduct.priceKhr ??
+                        (typeof exactProduct.listCents === "number"
+                          ? exactProduct.listCents
+                          : null),
+                      exactProduct.price?.khr,
+                    )}
+                  </span>
+                )}
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { HomeMarketplaceDashboard } from "@/components/home/HomeHeroNew";
 
 import ExploreProduct from "@/components/product/ExploreProduct";
 
-import TestingComponent from "@/components/testing";
+import TestingComponent from "@/components/product/GuessYouLike";
 
 import HomepageSectionList from "@/components/testing-homepage";
 
@@ -22,7 +22,7 @@ export default function HomePage() {
       <div
         className="
           mx-auto
-          mt-3
+          mt-5
           flex
           max-w-8xl
           justify-center
@@ -33,10 +33,10 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("explore")}
           className={`
-  rounded-xl
+  rounded-lg
   border
-  px-5
-  py-2
+  px-4
+  py-1
   text-sm
   font-semibold
   transition-all
@@ -69,10 +69,10 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("theme")}
           className={`
-  rounded-xl
+  rounded-lg
   border
-  px-5
-  py-2
+  px-4
+  py-1
   text-sm
   font-semibold
   transition-all
@@ -103,10 +103,10 @@ export default function HomePage() {
         <button
           onClick={() => setActiveTab("homepage")}
           className={`
-  rounded-xl
+  rounded-lg
   border
-  px-5
-  py-2
+  px-4
+  py-1
   text-sm
   font-semibold
   transition-all

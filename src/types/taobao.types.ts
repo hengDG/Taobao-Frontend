@@ -8,6 +8,7 @@ export type TaobaoProduct = {
   image?: string;
   images?: string[];
   categoryName?: string;
+  themeLabel?: string;
   soldLabel?: string;
   shopName?: string | null;
   shopRating?: number | null;
@@ -15,6 +16,19 @@ export type TaobaoProduct = {
   couponCents?: number | null;
   listCents?: number | null;
   priceCents?: number | null;
+  priceUsdCents?: number | null;
+  priceKhr?: number | null;
+  originalPrice?:
+    | {
+        usd?: string | null;
+        khr?: string | null;
+      }
+    | number
+    | null;
+  price?: {
+    usd?: string | null;
+    khr?: string | null;
+  } | null;
   description?: string;
   inStock?: boolean;
 };
@@ -62,6 +76,18 @@ export type TaobaoHomeResponse = {
   rows?: TaobaoHomeRow[];
 };
 
+export type CategoryChild = {
+  themeId?: string;
+  label?: string;
+  flag?: string | null;
+  productsUrl?: string;
+};
+
+export type CategoryGroup = {
+  label?: string;
+  children?: CategoryChild[];
+};
+
 export type TaobaoProductsResponse = {
   items?: TaobaoProduct[];
   total?: number;
@@ -72,7 +98,9 @@ export type TaobaoProductsResponse = {
   exact?: TaobaoExactProduct;
   detailUrl?: string;
   similar?: TaobaoProduct[];
+  nextScrollId?: string | null;
   shopName?: string | null;
+  shopId?: string | null;
   shop?: {
     id?: string;
     name?: string;

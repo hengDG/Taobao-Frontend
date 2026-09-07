@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type FormEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import {
   Bell,
   Camera,
@@ -85,128 +79,17 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showUtilityBar, setShowUtilityBar] = useState(true);
-
   const searchExamples = [
-    {
-      // category: "Pet",
-      child: "Search by link ...",
-      color: "bg-green-500 text-white",
-    },
-    {
-      child: "Search by category ...",
-    },
-    {
-      child: "Search by product keywords ...",
-    },
-    {
-      category: "Fashion",
-      child: "T-Shirt",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Fashion",
-      child: "Sneakers",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Fashion",
-      child: "Jackets",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Electronics",
-      child: "iPhone",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Electronics",
-      child: "Smart Watch",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Electronics",
-      child: "Earbuds",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Beauty",
-      child: "Skincare",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Beauty",
-      child: "Perfume",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Home",
-      child: "Sofa",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Home",
-      child: "Kitchen Tools",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Home",
-      child: "Decoration",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Sports",
-      child: "Running Shoes",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Sports",
-      child: "Fitness Gear",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Travel",
-      child: "Backpack",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Travel",
-      child: "Suitcase",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Baby",
-      child: "Toys",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Baby",
-      child: "Baby Clothes",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Jewelry",
-      child: "Necklace",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Automotive",
-      child: "Car Accessories",
-      color: "bg-green-500 text-white",
-    },
-    {
-      category: "Pet",
-      child: "Pet Supplies",
-      color: "bg-green-500 text-white",
-    },
+    "Search products...",
+    "Paste Taobao product link...",
+    "Search iPhone, shoes, bags...",
+    "Find your favorite items...",
   ];
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
+
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [hasStartedTyping, setHasStartedTyping] = useState(false);
-  const currentSearchExample = searchExamples[placeholderIndex];
   const [searchText, setSearchText] = useState(() => {
     const params = new URLSearchParams(location.search);
     return params.get("keyword") ?? params.get("url") ?? "";
@@ -219,7 +102,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
   });
 
   /*
-   * Save selected languageF
+   * Save selected language
    */
   useEffect(() => {
     window.localStorage.setItem("app-language", language);
@@ -231,11 +114,8 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
     setSearchText(keyword);
   }, [location.search]);
   useEffect(() => {
-    if (hasStartedTyping || searchFocused) {
-      return;
-    }
+    const currentText = searchExamples[placeholderIndex];
 
-    const currentText = searchExamples[placeholderIndex].child;
     let timeout: ReturnType<typeof setTimeout>;
 
     if (!isDeleting && placeholderText.length < currentText.length) {
@@ -261,18 +141,13 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
     }
 
     return () => clearTimeout(timeout);
-  }, [
-    placeholderText,
-    isDeleting,
-    placeholderIndex,
-    hasStartedTyping,
-    searchFocused,
-  ]);
+  }, [placeholderText, isDeleting, placeholderIndex]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const value = searchText.trim() || currentSearchExample.child.trim();
+    const value = searchText.trim();
+
     if (!value) {
       return;
     }
@@ -289,26 +164,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
     } else {
       params.set("keyword", value);
     }
-
-    setSearchText("");
-    setSearchFocused(false);
-    setHasStartedTyping(false);
-
-    // remove old input composition
-    requestAnimationFrame(() => {
-      const input =
-        document.querySelector<HTMLInputElement>("input[type='text']");
-
-      if (input) {
-        input.value = "";
-        input.blur();
-      }
-    });
-
-    setPlaceholderText("");
-    setIsDeleting(false);
-
-    setPlaceholderIndex((prev) => (prev + 1) % searchExamples.length);
 
     setTimeout(() => {
       navigate(`/products?${params.toString()}`);
@@ -617,86 +472,20 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
                 <Search className="size-4 shrink-0 text-slate-400" />
 
-                <div className="relative flex-1">
-                  {!searchText && !hasStartedTyping && (
-                    <div
-                      className="
-      pointer-events-none
-      absolute
-      inset-0
-      flex
-      items-center
-      gap-1.5
-      text-sm
-    "
-                    >
-                      {/* Show category only when not focused */}
-                      {!searchFocused && currentSearchExample.category && (
-                        <>
-                          <span
-                            className={`
-        ml-0
-        rounded-md
-        px-2
-        py-0.5
-        text-xs
-        font-semibold
-        ${currentSearchExample.color}
-      `}
-                          >
-                            {currentSearchExample.category}
-                          </span>
-
-                          <span className="text-slate-400">:</span>
-                        </>
-                      )}
-
-                      {/* Always show child suggestion */}
-                      <span className="text-slate-400">{placeholderText}</span>
-                    </div>
-                  )}
-
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchText}
-                    onFocus={() => {
-                      setSearchFocused(true);
-
-                      // finish current suggestion internally
-                      setPlaceholderText(currentSearchExample.child);
-                    }}
-                    onBlur={() => {
-                      setSearchFocused(false);
-
-                      if (!searchText) {
-                        setHasStartedTyping(false);
-
-                        // reset animation
-                        setPlaceholderText("");
-                        setIsDeleting(false);
-                      }
-                    }}
-                    onChange={(event) => {
-                      const value = event.target.value;
-
-                      setSearchText(value);
-                      setSearchFocused(true);
-
-                      if (value.length > 0) {
-                        setHasStartedTyping(true);
-                      } else {
-                        setHasStartedTyping(false);
-                      }
-                    }}
-                    className="
-      w-full
-      bg-transparent
-      text-sm
-      outline-none
-    "
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={searchText}
+                  onChange={(event) => setSearchText(event.target.value)}
+                  placeholder={placeholderText}
+                  className="
+                      min-w-0 
+                      flex-1 
+                      bg-transparent 
+                      text-sm 
+                      outline-none 
+                      placeholder:text-slate-400
+                    "
+                />
 
                 <button
                   type="submit"
@@ -743,6 +532,7 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                 height={isCompact ? 40 : 85}
                 className="hidden shrink-0 rounded-xl  right-30 bottom-0 absolute lg:inline-flex lg:mr-4 transition-all duration-200"
               /> */}
+              
             </div>
           </div>
         </header>
