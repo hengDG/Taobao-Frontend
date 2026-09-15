@@ -30,77 +30,33 @@ export default function ProductsPage() {
     hasMore,
     setObserverRef,
   } = useInfiniteProducts(keyword, size, url);
-
+  console.log(items);
   return (
-    <div
-      className="
-        mx-auto
-        max-w-8xl
-        px-4
-        py-6
-        sm:px-6
-        lg:px-8
-      "
-    >
+    <div className="mx-auto max-w-8xl px-4 py-6 sm:px-6 lg:px-8">
       {/* HEADER */}
-
-      <div
-        className="
-          mb-6
-          flex
-          flex-col
-          gap-3
-          border-b
-          border-slate-200
-          pb-4
-          md:flex-row
-          md:items-end
-          md:justify-between
-        "
-      >
+      <div className="mb-6 flex flex-col gap-3 border-b border-slate-200 pb-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p
-            className="
-              text-sm
-              font-medium
-              uppercase
-              tracking-[0.18em]
-              text-slate-500
-            "
-          >
-            <span >Results for</span> "{keyword}"
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
+            <span>Results for</span> "{keyword}"
           </p>
 
-          {/* <h1
-            className="
-              mt-2
-              text-3xl
-              font-bold
-              text-slate-900
-            "
-          >
-            {keyword
-              ? `Results for "${keyword}"`
-              : url
-                ? "Results from product link"
-                : "Search products"}
-          </h1> */}
+          {/* <h1 className="mt-2 text-3xl font-bold text-slate-900">
+        {keyword
+          ? `Results for "${keyword}"`
+          : url
+            ? "Results from product link"
+            : "Search products"}
+      </h1> */}
         </div>
 
         {!loading && !error && (keyword || url) && (
-          <div
-            className="
-              text-sm
-              text-slate-500
-            "
-          >
+          <div className="text-sm text-slate-500">
             {items.length} products found
           </div>
         )}
       </div>
 
       {/* ERROR */}
-
       {error && (
         <ServerError
           onRetry={() => {
@@ -110,7 +66,6 @@ export default function ProductsPage() {
       )}
 
       {/* FIRST LOADING */}
-
       {loading && items.length === 0 ? (
         <ProductCardSkeleton count={12} />
       ) : url ? (
@@ -121,22 +76,7 @@ export default function ProductsPage() {
       ) : items.length > 0 ? (
         <>
           {/* PRODUCT GRID */}
-
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-2
-
-              sm:grid-cols-3
-
-              md:grid-cols-4
-
-              lg:grid-cols-5
-
-              xl:grid-cols-6
-            "
-          >
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {items.map((product: TaobaoProduct) => (
               <ProductCard
                 key={product.sourceItemId ?? product.title ?? product.image}
@@ -145,7 +85,6 @@ export default function ProductsPage() {
             ))}
 
             {/* LOADING MORE */}
-
             {loading &&
               Array.from({
                 length: 8,
@@ -155,41 +94,16 @@ export default function ProductsPage() {
           </div>
 
           {/* INFINITE SCROLL SENSOR */}
-
-          <div
-            ref={setObserverRef as any}
-            className="
-              h-1
-              mt-8
-            "
-          />
+          <div ref={setObserverRef as any} className="mt-8 h-1" />
 
           {!hasMore && (
-            <div
-              className="
-                mt-6
-                text-center
-                text-sm
-                text-slate-500
-              "
-            >
+            <div className="mt-6 text-center text-sm text-slate-500">
               No more products
             </div>
           )}
         </>
       ) : (
-        <div
-          className="
-            rounded-2xl
-            border
-            border-dashed
-            border-slate-300
-            bg-slate-50
-            p-10
-            text-center
-            text-slate-500
-          "
-        >
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-slate-500">
           {keyword
             ? "No items matched your keyword."
             : url

@@ -1,104 +1,114 @@
-export type LocalizedText = {
-  en: string;
-  km: string;
-};
+// export type LocalizedText = {
+//   en: string;
+//   km: string;
+// };
 
-export type ProductOptionValue = {
-  valueId: string;
-  name: string;
-};
+// export type ProductOptionValue = {
+//   valueId: string;
+//   name: string;
+// };
 
-export type ProductOption = {
-  propId: string;
-  name: string;
-  values: ProductOptionValue[];
-};
+// export type ProductOption = {
+//   propId: string;
+//   name: string;
+//   values: ProductOptionValue[];
+// };
 
-export type ProductSku = {
-  skuId: string;
-  mpSkuId?: string;
-  selectionKey: string;
-  selection: Record<string, string>;
-  image?: string;
+// export type ProductSku = {
+//   skuId: string;
+//   mpSkuId?: string;
+//   selectionKey: string;
+//   selection: Record<string, string>;
+//   image?: string;
 
-  priceRmbRaw: number;
-  promotionPriceRmbRaw: number;
-  couponPriceRmbRaw?: number;
-  shippingCents?: number;
+//   priceRmbRaw: number;
+//   promotionPriceRmbRaw: number;
+//   couponPriceRmbRaw?: number;
+//   priceUsdCents?: number;
+//   priceKhr?: number;
+//   price?: {
+//     usd?: string | null;
+//     khr?: string | null;
+//   } | null;
+//   originalPrice?: {
+//     usd?: string | null;
+//     khr?: string | null;
+//   } | null;
+//   shippingCents?: number;
 
-  quantity: number;
-  available: boolean;
-};
+//   quantity: number;
+//   available: boolean;
+// };
 
-export type ProductCard = {
-  id: string;
+// export type ProductCard = {
+//   id: string;
 
-  section: LocalizedText;
-  title: LocalizedText;
-  shopName: LocalizedText;
+//   section: LocalizedText;
+//   title: LocalizedText;
+//   shopName: LocalizedText;
 
-  priceText: string;
+//   priceText: string;
 
-  imageUrl: string;
-  productUrl: string;
+//   imageUrl: string;
+//   productUrl: string;
 
-  benefit?: LocalizedText;
+//   benefit?: LocalizedText;
 
-  gallery?: string[];
-  description?: string;
-  categoryName?: string;
-  available?: boolean;
-  totalQuantity?: number;
-  options?: ProductOption[];
-  skus?: ProductSku[];
-};
+//   gallery?: string[];
+//   description?: string;
+//   categoryName?: string;
+//   available?: boolean;
+//   totalQuantity?: number;
+//   options?: ProductOption[];
+//   skus?: ProductSku[];
+// };
 
-export type ThemeProductItem = {
-  source: string;
-  sourceItemId: string;
-  supplyProductId: string | null;
-  title: string;
-  image: string;
-  categoryName: string;
-  categoryId: string;
-  listCents: number;
-  couponCents: number | null;
-  soldLabel: string;
-};
+// export type ThemeProductItem = {
+//   source: string;
+//   sourceItemId: string;
+//   supplyProductId: string | null;
+//   title: string;
+//   image: string;
+//   categoryName: string;
+//   categoryId: string;
+//   listCents: number;
+//   couponCents: number | null;
+//   soldLabel: string;
+// };
 
-export type ThemeProductsResponse = {
-  items: ThemeProductItem[];
-  nextScrollId?: string | null;
-};
+// export type ThemeProductsResponse = {
+//   items: ThemeProductItem[];
+//   nextScrollId?: string | null;
+// };
 
-export type TaobaoProduct = {
-  sourceItemId?: string;
-  title?: string;
-  image?: string;
-  images?: string[];
-  categoryName?: string;
-  soldLabel?: string;
-  couponCents?: number | null;
-  listCents?: number | null;
-  priceCents?: number | null;
-  shopName?: string;
-  description?: string;
-};
+// export type TaobaoProduct = {
+//   sourceItemId?: string;
+//   title?: string;
+//   image?: string;
+//   images?: string[];
+//   categoryName?: string;
+//   soldLabel?: string;
+//   couponCents?: number | null;
+//   listCents?: number | null;
+//   priceCents?: number | null;
+//   shopName?: string;
+//   description?: string;
+// };
 
-export type TaobaoProductDetailResponse = TaobaoProduct;
+// export type TaobaoProductDetailResponse = TaobaoProduct;
 
-export type TaobaoHomeRow = {
-  themeId?: string;
-  label?: string;
-  order?: number;
-  items?: TaobaoProduct[];
-  seeAllUrl?: string;
-};
+// export type TaobaoHomeRow = {
+//   themeId?: string;
+//   label?: string;
+//   order?: number;
+//   items?: TaobaoProduct[];
+//   seeAllUrl?: string;
+// };
 
-export type TaobaoHomeResponse = {
-  rows?: TaobaoHomeRow[];
-};
+// export type TaobaoHomeResponse = {
+//   rows?: TaobaoHomeRow[];
+// };
 
-export type TaobaoProductsResponse = {
-  items?: TaobaoProduct[];
-};
+// export type TaobaoProductsResponse = {
+//   items?: TaobaoProduct[];
+// };

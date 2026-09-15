@@ -8,7 +8,11 @@ import productService from "@/services/product/product.service";
 import type { TaobaoHomeRow } from "@/types/taobao.types";
 import ServerError from "@/pages/ErrorPage";
 
-const HomepageSectionList = () => {
+type HomepageSectionListProps = {
+  refreshKey?: number;
+};
+
+const HomepageSectionList = ({ refreshKey = 0 }: HomepageSectionListProps) => {
   const [rows, setRows] = useState<TaobaoHomeRow[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -34,7 +38,7 @@ const HomepageSectionList = () => {
 
   useEffect(() => {
     loadHomepage();
-  }, []);
+  }, [refreshKey]);
 
   if (loading) {
     return <ProductCardSkeleton count={12} />;

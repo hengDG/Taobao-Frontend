@@ -20,7 +20,11 @@ xl:grid-cols-6
 2xl:grid-cols-7
 `;
 
-const ExploreProduct = () => {
+type ExploreProductProps = {
+  refreshKey?: number;
+};
+
+const ExploreProduct = ({ refreshKey = 0 }: ExploreProductProps) => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -79,11 +83,12 @@ const ExploreProduct = () => {
     }
   }, []);
 
-  // initial loading
-
   useEffect(() => {
+    setProducts([]);
+    setCursor(null);
+    setHasMore(false);
     void fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchProducts, refreshKey]);
 
   // infinite scroll
 

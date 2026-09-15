@@ -24,6 +24,16 @@ export type ProductSku = {
   priceRmbRaw: number;
   promotionPriceRmbRaw: number;
   couponPriceRmbRaw?: number;
+  priceUsdCents?: number;
+  priceKhr?: number;
+  price?: {
+    usd?: string | null;
+    khr?: string | null;
+  } | null;
+  originalPrice?: {
+    usd?: string | null;
+    khr?: string | null;
+  } | null;
   shippingCents?: number;
 
   quantity: number;

@@ -1,0 +1,80 @@
+@property --search-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* OUTER WRAPPER */
+.search-light-wrap {
+  position: relative;
+
+  border-radius: 16px;
+
+  padding: 1.5px;
+
+  overflow: hidden;
+
+  background:
+    conic-gradient(
+      from var(--search-angle),
+
+      transparent 0deg,
+      transparent 210deg,
+
+      rgba(35, 91, 167, 0.02) 220deg,
+      rgba(35, 91, 167, 0.05) 235deg,
+      rgba(35, 91, 167, 0.12) 250deg,
+
+      rgba(59, 130, 246, 0.25) 265deg,
+      rgba(96, 165, 250, 0.45) 280deg,
+
+      rgba(147, 197, 253, 0.7) 295deg,
+
+      rgba(219, 234, 254, 0.95) 310deg,
+
+      rgba(255, 255, 255, 1) 323deg,
+
+      rgba(147, 197, 253, 1) 334deg,
+
+      #60a5fa 344deg,
+
+      #235ba7 352deg,
+
+      rgba(35, 91, 167, 0.4) 357deg,
+
+      transparent 360deg
+    ),
+    #dbeafe;
+
+  animation: search-light-run 4s linear infinite;
+
+  box-shadow:
+    0 3px 12px rgba(35, 91, 167, 0.08);
+}
+
+/* INNER SEARCH BAR */
+.search-light-form {
+  position: relative;
+
+  z-index: 1;
+
+  border-radius: 14.5px;
+
+  background: linear-gradient(
+    90deg,
+    #f8fafc 0%,
+    #ffffff 50%,
+    #f3f7ff 100%
+  );
+}
+
+/* RUNNING LIGHT */
+@keyframes search-light-run {
+  from {
+    --search-angle: 0deg;
+  }
+
+  to {
+    --search-angle: 360deg;
+  }
+}

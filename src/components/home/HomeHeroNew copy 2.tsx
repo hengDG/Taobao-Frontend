@@ -1,7 +1,7 @@
 // import { Star, Eye, ShoppingBag } from "lucide-react";
 // import { Fragment, useEffect, useState } from "react";
-// import image1 from "/slideImage/slide1.jpg";
-// import image2 from "/slideImage/slide2.jpg";
+// import image1 from "/slideImage/tg_image_266439099.png";
+// import image2 from "/slideImage/tg_image_887748772.png";
 // import image3 from "/slideImage/tg_image_1831750447.png";
 // import image4 from "/slideImage/tg_image_2548941537.png";
 // import image5 from "/slideImage/tg_image_2582722055.png";
@@ -54,140 +54,10 @@
 //   },
 // ];
 
-// const categories = [
-//   {
-//     name: "Fashion",
-//     image: "/categoryIcon/icon/fashion.png",
-//     children: [
-//       "Women",
-//       "Men",
-//       "Kids",
-//       "Accessories",
-//       "Shoes",
-//       "Luxury",
-//       "Streetwear",
-//       "Sale Picks",
-//     ],
-//   },
-//   {
-//     name: "Beauty",
-//     image: "/categoryIcon/icon/beauty.png",
-//     children: [
-//       "Skincare",
-//       "Makeup",
-//       "Hair Care",
-//       "Body Care",
-//       "Perfume",
-//       "Wellness",
-//       "Tools",
-//       "Popular",
-//     ],
-//   },
-//   {
-//     name: "Hobbies",
-//     image: "/categoryIcon/icon/hobby.png",
-//     children: [
-//       "DIY",
-//       "Collectibles",
-//       "Crafts",
-//       "Games",
-//       "Stationery",
-//       "Art Supplies",
-//       "Gifts",
-//       "New Arrivals",
-//     ],
-//   },
-//   {
-//     name: "Home",
-//     image: "/categoryIcon/icon/home.png",
-//     children: [
-//       "Furniture",
-//       "Bedding",
-//       "Decor",
-//       "Lighting",
-//       "Storage",
-//       "Textiles",
-//       "Living Room",
-//       "Bedroom",
-//     ],
-//   },
-//   {
-//     name: "Kitchen",
-//     image: "/categoryIcon/icon/kitchen.png",
-//     children: [
-//       "Cookware",
-//       "Dining",
-//       "Appliances",
-//       "Storage",
-//       "Cleaning",
-//       "Tableware",
-//       "Bistro",
-//       "Best Sellers",
-//     ],
-//   },
-//   {
-//     name: "Pet",
-//     image: "/categoryIcon/icon/pet.png",
-//     children: [
-//       "Dog Food",
-//       "Cat Food",
-//       "Toys",
-//       "Grooming",
-//       "Beds",
-//       "Travel",
-//       "Health",
-//       "Accessories",
-//     ],
-//   },
-//   {
-//     name: "Sport",
-//     image: "/categoryIcon/icon/sport.png",
-//     children: [
-//       "Running",
-//       "Cycling",
-//       "Training",
-//       "Fitness",
-//       "Outdoor",
-//       "Balls",
-//       "Travel Gear",
-//       "Essentials",
-//     ],
-//   },
-//   {
-//     name: "Tools",
-//     image: "/categoryIcon/icon/tool.png",
-//     children: [
-//       "Power Tools",
-//       "Hand Tools",
-//       "Safety",
-//       "Hardware",
-//       "Home Repair",
-//       "Garden",
-//       "Smart Tools",
-//       "Workshop",
-//     ],
-//   },
-//   {
-//     name: "More",
-//     image: "/categoryIcon/icon/more.png",
-//     children: [
-//       "Featured",
-//       "Bundles",
-//       "Daily Deals",
-//       "Flash Sale",
-//       "Trending",
-//       "Fresh Finds",
-//       "Popular",
-//       "Top Rated",
-//     ],
-//   },
-// ];
-
 // export function HomeMarketplaceDashboard() {
 //   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 //   const [activeOrder, setActiveOrder] = useState(0);
 //   const [enableTransition, setEnableTransition] = useState(true);
-//   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
 //   const orders = [
 //     {
@@ -254,57 +124,14 @@
 //     return () => window.clearInterval(timer);
 //   }, []);
 
-//   const activeCategoryData =
-//     categories.find((category) => category.name === hoveredCategory) ?? null;
+//   const activeSlide = slides[activeSlideIndex] ?? slides[0];
 
 //   return (
 //     <section className="mx-auto w-full space-y-2 px-3 sm:px-4 lg:px-0">
 //       <CategoryMenu />
 
-//       {activeCategoryData && (
-//         <div
-//           className="fixed left-35 top-38 z-[80] w-[min(1000px,57vw)] rounded-xl border border-blue-100 bg-white/95 p-5 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-md"
-//           onMouseEnter={() => setHoveredCategory(activeCategoryData.name)}
-//           onMouseLeave={() => setHoveredCategory(null)}
-//         >
-//           <div className="mb-4 flex items-center justify-between">
-//             <div className="flex items-center gap-3">
-//               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#dfeeff] to-[#eef6ff] text-lg shadow-sm">
-//                 {activeCategoryData.name.charAt(0)}
-//               </div>
-//               <div>
-//                 <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400">
-//                   Category
-//                 </p>
-//                 <h3 className="text-lg font-bold text-slate-800">
-//                   {activeCategoryData.name}
-//                 </h3>
-//               </div>
-//             </div>
-//             <span className="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-semibold text-blue-700">
-//               Popular picks
-//             </span>
-//           </div>
-
-//           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-//             {activeCategoryData.children.map((child) => (
-//               <button
-//                 key={child}
-//                 type="button"
-//                 className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3 text-left text-sm font-medium text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-//               >
-//                 <span>{child}</span>
-//                 <span className="text-base text-slate-400 transition group-hover:text-blue-700">
-//                   →
-//                 </span>
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-
 //       {/* TOP AREA */}
-//       <div className="grid gap-2 lg:grid-cols-10 3xl:grid-cols-14">
+//       <div className="grid gap-2 lg:grid-cols-10">
 //         {" "}
 //         {/* USER + TRACK COMBINED CARD */}
 //         {/* <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-[#3f89f8] via-[#E3F2FD] to-[#E3F2FD] p-3 shadow-sm sm:p-4 lg:col-span-5">
@@ -496,7 +323,7 @@
 //           </div>
 //         </div> */}
 //         <div
-//           className="relative overflow-hidden rounded-2xl border border-blue-100 bg-cover bg-center bg-no-repeat  p-3 shadow-sm sm:p-4 lg:col-span-5 3xl:col-span-7 "
+//           className="relative overflow-hidden rounded-2xl border border-blue-100 bg-cover bg-center bg-no-repeat  p-3 shadow-sm sm:p-4 lg:col-span-5"
 //           style={{
 //             backgroundImage: "url('/backgroundSlideImage.png')",
 //           }}
@@ -505,9 +332,9 @@
 //           <div className="absolute inset-0 bg-white/80 opacity-100" />
 
 //           {/* USER + TRACK CONTENT */}
-//           <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-[42%_58%] 2xl:grid-cols-[42%_58%]">
+//           <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-[42%_58%]">
 //             {/* USER SECTION */}
-//             <div className="border-b border-white/40 pb-4 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4 space-y-4">
+//             <div className="border-b border-white/40 pb-4 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4">
 //               {/* USER INFO */}
 //               <div className="flex items-center gap-3">
 //                 <img
@@ -525,7 +352,7 @@
 //                     </span>
 //                   </div>
 
-//                   <div className="mt-1 flex gap-3 text-[11px] text-[#323232]">
+//                   <div className="mt-1 flex gap-3 text-[11px] text-[#ecedf2]">
 //                     <span>Premium User</span>
 //                     {/* <span>Shipping</span> */}
 //                   </div>
@@ -533,7 +360,7 @@
 //               </div>
 
 //               {/* ORDER STATUS */}
-//               <div className="mt-3 grid grid-cols-3 gap-4 text-center">
+//               <div className="mt-3 grid grid-cols-3 gap-2 text-center">
 //                 {[
 //                   {
 //                     number: "21",
@@ -561,7 +388,7 @@
 //               </div>
 
 //               {/* QUICK MENU */}
-//               <div className="mt-2 grid grid-cols-3 gap-3">
+//               <div className="mt-2 grid grid-cols-3 gap-2">
 //                 {[
 //                   {
 //                     icon: <ShoppingBag size={15} />,
@@ -640,7 +467,7 @@
 //                 <button className="text-xs text-gray-400">View All</button>
 //               </div>
 
-//               <div className="space-y-7">
+//               <div className="space-y-5">
 //                 {[
 //                   {
 //                     image:
@@ -705,141 +532,92 @@
 //             </div>
 //           </div>
 //         </div>
+//         {/* TOP STORE + SMALL CARDS */}
+//         <div className="space-y-2 lg:col-span-3">
+//           {/* TOP STORE */}
+//           <div className="rounded-2xl bg-white p-5 shadow-sm">
+//             <div className="flex justify-between">
+//               <h3 className="font-bold">Top Stores</h3>
+
+//               <span className="text-xs text-gray-400">View All</span>
+//             </div>
+
+//             <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
+//               {["Xiaomi", "Apple", "Nike", "Uniqlo", "Adidas"].map((store) => (
+//                 <div key={store} className="text-center">
+//                   <div className="mx-auto h-10 w-10 rounded-xl bg-gray-100" />
+
+//                   <p className="mt-2 text-xs font-semibold">{store}</p>
+
+//                   {/* <span className="text-[10px] text-gray-400">
+//                   Official Store
+//                 </span> */}
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+
+//           {/* SMALL CARDS */}
+//           <div className="grid grid-cols-2 gap-2">
+//             {/* COUPON */}
+//             <div className="rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 p-4 shadow-sm">
+//               <div className="text-xl">🎟️</div>
+
+//               <h4 className="mt-2 text-sm font-bold text-gray-800">Coupon</h4>
+
+//               <p className="mt-1 text-[11px] text-gray-500">
+//                 Get discount coupons
+//               </p>
+//             </div>
+
+//             {/* LIVE */}
+//             <div className="rounded-2xl bg-gradient-to-br from-red-50 to-pink-100 p-4 shadow-sm">
+//               <div className="text-xl">📺</div>
+
+//               <h4 className="mt-2 text-sm font-bold text-gray-800">Live</h4>
+
+//               <p className="mt-1 text-[11px] text-gray-500">
+//                 Watch shopping live
+//               </p>
+//             </div>
+//           </div>
+//         </div>
 //         {/* AD */}
-//         <div className="relative lg:col-span-2 2xl:col-span-2">
-//           <div
-//             className="
-//       relative
-//       aspect-square
-//       w-full
-//       overflow-hidden
-//       rounded-2xl
-//     "
-//           >
+//         <div className="relative lg:col-span-2">
+//           <div className="relative h-full min-h-[200px] overflow-hidden rounded-2xl">
 //             {slides.map((slide, index) => (
 //               <div
 //                 key={slide.id}
-//                 className={`
-//           absolute
-//           inset-0
-//           flex
-//           items-center
-//           justify-center
-//           transition-all
-//           duration-500
-//           ${
-//             index === activeSlideIndex
-//               ? "translate-x-0 opacity-100"
-//               : "translate-x-6 opacity-0"
-//           }
-//         `}
+//                 className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+//                   index === activeSlideIndex
+//                     ? "translate-x-0 opacity-100"
+//                     : "translate-x-6 opacity-0"
+//                 }`}
 //               >
 //                 {slide.image && (
 //                   <img
 //                     src={slide.image}
 //                     alt={slide.title}
-//                     className="
-//               h-full
-//               w-full
-//               rounded-2xl
-//               object-cover
-//             "
+//                     className="h-full w-full rounded-2xl bg-red-300 object-cover"
 //                   />
 //                 )}
 //               </div>
 //             ))}
 
 //             {/* Slider Dots */}
-//             <div
-//               className="
-//         absolute
-//         bottom-2
-//         left-1/2
-//         flex
-//         -translate-x-1/2
-//         gap-2
-//       "
-//             >
+//             <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
 //               {slides.map((slide, index) => (
 //                 <button
 //                   key={slide.id}
 //                   type="button"
 //                   onClick={() => setActiveSlideIndex(index)}
-//                   className={`
-//             h-1.5
-//             rounded-full
-//             transition-all
-//             ${index === activeSlideIndex ? "w-7 bg-white" : "w-1.5 bg-white/60"}
-//           `}
+//                   className={`h-2.5 rounded-full transition-all duration-300 ${
+//                     index === activeSlideIndex
+//                       ? "w-7 bg-white"
+//                       : "w-2.5 bg-white/60"
+//                   }`}
+//                   aria-label={`View slide ${index + 1}`}
 //                 />
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//         {/* Category */}
-//         <div className="space-y-2 lg:col-span-3 3xl:col-span-5">
-//           <div className="rounded-2xl bg-white/50 p-2 shadow-sm">
-//             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-//               {categories.map((category) => (
-//                 <div
-//                   key={category.name}
-//                   onMouseEnter={() => setHoveredCategory(category.name)}
-//                   onMouseLeave={() =>
-//                     setHoveredCategory((current) =>
-//                       current === category.name ? null : current,
-//                     )
-//                   }
-//                   className="
-//             rounded-[18px]
-//             bg-gradient-to-b
-//             from-[#9EC5FF]
-//             via-[#D7E8FF]
-//             to-[#F4F9FF]
-//             p-[1px]
-//             shadow-sm
-//             transition
-//             hover:-translate-y-0.5
-//             hover:shadow-md
-//           "
-//                 >
-//                   <div
-//                     className="
-//               relative
-//               flex
-//               h-[85px]
-//               items-start
-//               overflow-hidden
-//               rounded-[17px]
-//               bg-gradient-to-bl
-//               from-[#E8F2FF]
-//               via-[#F7FBFF]
-//               to-white
-//               px-3
-//               pt-3
-//             "
-//                   >
-//                     <p className="relative z-10 max-w-[110px] text-[14px] font-semibold leading-[18px] text-[#1E293B]">
-//                       {category.name}
-//                     </p>
-
-//                     <img
-//                       src={category.image}
-//                       alt={category.name}
-//                       className="
-//                 absolute
-//                 2xl:bottom-[-13px]
-//                 2xl:right-[-6px]
-//                 2xl:h-[80px]
-//                 2xl:w-[80px]
-//                 bottom-[-10px]
-//                 right-[-5px]
-//                 h-17
-//                 w-17
-//                 object-contain
-//               "
-//                     />
-//                   </div>
-//                 </div>
 //               ))}
 //             </div>
 //           </div>

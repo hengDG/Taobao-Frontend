@@ -8,7 +8,13 @@ import productService from "@/services/product/product.service";
 import type { TaobaoProduct } from "@/types/taobao.types";
 import ServerError from "@/pages/ErrorPage";
 
-const ThemeProductsSection = () => {
+type ThemeProductsSectionProps = {
+  refreshKey?: number;
+};
+
+const ThemeProductsSection = ({
+  refreshKey = 0,
+}: ThemeProductsSectionProps) => {
   const [products, setProducts] = useState<TaobaoProduct[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -49,7 +55,7 @@ const ThemeProductsSection = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   return (
     <section

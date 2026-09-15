@@ -1,270 +1,86 @@
 import { useState } from "react";
+import { RefreshCw } from "lucide-react";
+import { motion } from "motion/react";
 
 import { HomeMarketplaceDashboard } from "@/components/home/HomeHeroNew";
-
 import ExploreProduct from "@/components/product/ExploreProduct";
-
 import TestingComponent from "@/components/product/GuessYouLike";
-
 import HomepageSectionList from "@/components/testing-homepage";
 
 type TabType = "explore" | "theme" | "homepage";
 
+const tabs: { key: TabType; label: string }[] = [
+  { key: "explore", label: "Explore" },
+  { key: "theme", label: "Guess You Like" },
+  { key: "homepage", label: "1688" },
+];
+
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TabType>("explore");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   return (
     <>
       <HomeMarketplaceDashboard />
 
-      {/* TAB BUTTON */}
+      <div className="mx-auto mt-3 grid grid-cols-3 items-center px-2">
+        {/* left spacer to balance the grid */}
+        <div />
 
-      <div
-        className="
-          mx-auto
-          mt-5
-          flex
-          max-w-8xl
-          justify-center
-          gap-3
-          px-4
-        "
-      >
-        <button
-          onClick={() => setActiveTab("explore")}
-          className={`
-  rounded-lg
-  border
-  px-4
-  py-1
-  text-sm
-  font-semibold
-  transition-all
-  duration-300
-  cursor-pointer
+        <div className="flex justify-center">
+          <div className="flex w-fit items-center rounded-xl border border-slate-200 p-1 shadow-sm">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.key;
 
-  ${
-    activeTab === "explore"
-      ? `
-        border-[#194891]
-        bg-[#194891]/10
-        text-[#194891]
-        shadow-sm
-        border-none
-      `
-      : `
-         border-[#194891]/15
-         border-none
-        text-slate-700
-        hover:border-[#194891]/30
-        hover:bg-[#194891]/5
-        hover:text-[#194891]
-      `
-  }
-`}
-        >
-          Explore
-        </button>
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`relative cursor-pointer rounded-lg px-4 py-1 text-sm font-semibold transition-colors duration-200 ${
+                    isActive
+                      ? "text-white"
+                      : "text-slate-600 hover:text-[#194891]"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="active-home-tab"
+                      className="absolute inset-0 rounded-lg bg-[#194891] shadow-sm"
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                    />
+                  )}
 
-        <button
-          onClick={() => setActiveTab("theme")}
-          className={`
-  rounded-lg
-  border
-  px-4
-  py-1
-  text-sm
-  font-semibold
-  transition-all
-  duration-300
-  cursor-pointer
+                  <span className="relative z-10">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-  ${
-    activeTab === "theme"
-      ? `
-        border-[#194891]
-        bg-[#194891]/10
-        text-[#194891]
-        shadow-sm
-      `
-      : `
-        border-[#194891]/15
-        text-slate-700
-        hover:border-[#194891]/30
-        hover:bg-[#194891]/5
-        hover:text-[#194891]
-      `
-  }
-`}
-        >
-          Guess You Like
-        </button>
-
-        <button
-          onClick={() => setActiveTab("homepage")}
-          className={`
-  rounded-lg
-  border
-  px-4
-  py-1
-  text-sm
-  font-semibold
-  transition-all
-  duration-300
-  cursor-pointer
-
-  ${
-    activeTab === "homepage"
-      ? `
-        border-[#194891]
-        bg-[#194891]/0
-        text-[#194891]
-        shadow-sm
-      `
-      : `
-        border-[#194891]/15
-        text-slate-700
-        hover:border-[#194891]/30
-        hover:bg-[#194891]/5
-        hover:text-[#194891]
-      `
-  }
-
-          `}
-        >
-          1688
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setRefreshKey((prev) => prev + 1)}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#194891] hover:text-[#194891]"
+            aria-label="Refresh product data"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      {/* CONTENT */}
-
       <div className="mt-2">
-        {activeTab === "explore" && <ExploreProduct />}
-
-        {activeTab === "theme" && <TestingComponent />}
-
-        {activeTab === "homepage" && <HomepageSectionList />}
+        {activeTab === "explore" && <ExploreProduct refreshKey={refreshKey} />}
+        {activeTab === "theme" && <TestingComponent refreshKey={refreshKey} />}
+        {activeTab === "homepage" && (
+          <HomepageSectionList refreshKey={refreshKey} />
+        )}
       </div>
     </>
   );
 }
-
-// import { useState } from "react";
-
-// import { HomeMarketplaceDashboard } from "@/components/home/HomeHeroNew";
-
-// import ExploreProduct from "@/components/product/ExploreProduct";
-
-// import TestingComponent from "@/components/testing";
-
-// import HomepageSectionList from "@/components/testing-homepage";
-
-// type TabType = "explore" | "theme" | "homepage";
-
-// export default function HomePage() {
-//   const [activeTab, setActiveTab] = useState<TabType>("explore");
-
-//   return (
-//     <>
-//       <HomeMarketplaceDashboard />
-
-//       {/* MAIN PRODUCT CONTAINER */}
-
-//       <div
-//         className="
-//           mx-auto
-//           mt-8
-//           max-w-8xl
-//           rounded-3xl
-//           bg-white
-//           px-5
-//           py-5
-//           shadow-sm
-//         "
-//       >
-//         {/* TAB HEADER */}
-
-//         <div
-//           className="
-//             mb-6
-//             flex
-//             items-center
-//             justify-center
-//             gap-3
-//             border-b
-//             border-slate-200
-//             pb-4
-//           "
-//         >
-//           <button
-//             onClick={() => setActiveTab("explore")}
-//             className={`
-//               rounded-full
-//               px-5
-//               py-2
-//               text-sm
-//               font-semibold
-
-//               ${
-//                 activeTab === "explore"
-//                   ? "bg-orange-500 text-white"
-//                   : "bg-slate-100 text-slate-700"
-//               }
-
-//             `}
-//           >
-//             Explore
-//           </button>
-
-//           <button
-//             onClick={() => setActiveTab("theme")}
-//             className={`
-//               rounded-full
-//               px-5
-//               py-2
-//               text-sm
-//               font-semibold
-
-//               ${
-//                 activeTab === "theme"
-//                   ? "bg-orange-500 text-white"
-//                   : "bg-slate-100 text-slate-700"
-//               }
-
-//             `}
-//           >
-//             Theme
-//           </button>
-
-//           <button
-//             onClick={() => setActiveTab("homepage")}
-//             className={`
-//               rounded-full
-//               px-5
-//               py-2
-//               text-sm
-//               font-semibold
-
-//               ${
-//                 activeTab === "homepage"
-//                   ? "bg-orange-500 text-white"
-//                   : "bg-slate-100 text-slate-700"
-//               }
-
-//             `}
-//           >
-//             Homepage
-//           </button>
-//         </div>
-
-//         {/* PRODUCT CONTENT */}
-
-//         {activeTab === "explore" && <ExploreProduct />}
-
-//         {activeTab === "theme" && <TestingComponent />}
-
-//         {activeTab === "homepage" && <HomepageSectionList />}
-//       </div>
-//     </>
-//   );
-// }

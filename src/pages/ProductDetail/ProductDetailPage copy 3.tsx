@@ -1,13 +1,17 @@
 // import { useEffect, useMemo, useRef, useState } from "react";
 // import { Heart, ShoppingCart, Sparkles, Store } from "lucide-react";
 // import { animate, motion } from "motion/react";
-// import { useNavigate, useParams } from "react-router-dom";
+// import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import { toast } from "sonner";
 
 // import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
-// import type { ProductCard as ProductCardType } from "@/types/product";
+// import type {
+//   ProductCard as ProductCardType,
+//   ProductSku,
+// } from "@/types/product";
 // import productService from "@/services/product/product.service";
 // import ExploreProduct from "@/components/product/ExploreProduct";
+// import ServerError from "../ErrorPage";
 
 // const formatCurrency = (cents: number) => {
 //   return new Intl.NumberFormat("zh-CN", {
@@ -15,6 +19,97 @@
 //     currency: "CNY",
 //     minimumFractionDigits: 2,
 //   }).format(cents / 100);
+// };
+
+// const parseUsdPrice = (value?: string | null) => {
+//   if (!value) {
+//     return null;
+//   }
+
+//   const parsed = Number(value.replace(/[^\d.]/g, ""));
+
+//   return Number.isFinite(parsed) ? parsed : null;
+// };
+
+// const normalizeProductDetailData = (data: any, fallbackId: string) => {
+//   const imageList = Array.from(
+//     new Set(
+//       [
+//         ...(Array.isArray(data?.images) ? data.images : []),
+//         data?.image,
+//         ...(Array.isArray(data?.gallery) ? data.gallery : []),
+//       ].filter(Boolean),
+//     ),
+//   );
+
+//   const options = (data?.options ?? []).map((option: any) => ({
+//     propId: String(option?.propId ?? ""),
+//     name: String(option?.name ?? ""),
+//     values: (option?.values ?? []).map((value: any) => ({
+//       valueId: String(value?.valueId ?? ""),
+//       name: String(value?.name ?? ""),
+//     })),
+//   }));
+
+//   const skus: ProductSku[] = (data?.skus ?? []).map(
+//     (sku: any): ProductSku => ({
+//       skuId: String(sku?.skuId ?? ""),
+//       mpSkuId: String(sku?.mpSkuId ?? ""),
+//       selectionKey: String(sku?.selectionKey ?? ""),
+//       selection: sku?.selection ?? {},
+//       image: String(sku?.image ?? ""),
+//       priceRmbRaw: Number(sku?.priceRmbRaw ?? 0),
+//       promotionPriceRmbRaw: Number(
+//         sku?.promotionPriceRmbRaw ?? sku?.priceRmbRaw ?? 0,
+//       ),
+//       couponPriceRmbRaw: Number(sku?.couponPriceRmbRaw ?? 0),
+//       priceUsdCents: Number(sku?.priceUsdCents ?? 0),
+//       priceKhr: Number(sku?.priceKhr ?? 0),
+//       price: sku?.price ?? null,
+//       originalPrice: sku?.originalPrice ?? null,
+//       shippingCents: Number(sku?.shippingCents ?? 0),
+//       quantity: Number(sku?.quantity ?? 0),
+//       available: sku?.available ?? true,
+//     }),
+//   );
+
+//   const firstSku: ProductSku | null =
+//     skus.find((sku) => sku.available && sku.quantity > 0) ?? skus[0] ?? null;
+
+//   const primaryImage = firstSku?.image || data?.image || imageList[0] || "";
+
+//   return {
+//     id: String(data?.itemId ?? fallbackId),
+//     section: {
+//       en: data?.category?.name ?? data?.categoryName ?? "Products",
+//       km: data?.category?.name ?? data?.categoryName ?? "Products",
+//     },
+//     title: {
+//       en: data?.title ?? "Product",
+//       km: data?.title ?? "Product",
+//     },
+//     shopName: {
+//       en: data?.shop?.name ?? data?.shopName ?? "E-Taobao",
+//       km: data?.shop?.name ?? data?.shopName ?? "E-Taobao",
+//     },
+//     shopId: data?.shop?.id ?? data?.shopId ?? undefined,
+//     priceText: formatCurrency(
+//       firstSku?.promotionPriceRmbRaw ?? firstSku?.priceRmbRaw ?? 0,
+//     ),
+//     imageUrl: primaryImage,
+//     productUrl: "",
+//     benefit: {
+//       en: data?.available === false ? "Out of stock" : "Best seller",
+//       km: data?.available === false ? "Out of stock" : "Best seller",
+//     },
+//     gallery: imageList.length ? imageList : primaryImage ? [primaryImage] : [],
+//     description: data?.description ?? "",
+//     categoryName: data?.category?.name ?? data?.categoryName ?? "Products",
+//     available: data?.available ?? true,
+//     totalQuantity: Number(data?.totalQuantity ?? 0),
+//     options,
+//     skus,
+//   } as ProductCardType;
 // };
 
 // function ProductDetailView({
@@ -37,6 +132,9 @@
 //   const imageRef = useRef<HTMLDivElement | null>(null);
 //   const contentRef = useRef<HTMLDivElement | null>(null);
 //   const navigate = useNavigate();
+//   const location = useLocation();
+//   const initialPrice =
+//     (location.state as { initialPrice?: string } | null)?.initialPrice ?? null;
 //   const galleryList = useMemo(
 //     () => (product.gallery?.length ? product.gallery : gallery).filter(Boolean),
 //     [gallery, product.gallery],
@@ -46,6 +144,12 @@
 //   );
 //   const [quantity, setQuantity] = useState(1);
 //   const [isFavorite, setIsFavorite] = useState(false);
+//   const [shopSummary, setShopSummary] = useState<{
+//     name: string;
+//     rating: number;
+//     shippingOrigin: string;
+//     totalProducts: number;
+//   } | null>(null);
 //   const [flyState, setFlyState] = useState<{
 //     startX: number;
 //     startY: number;
@@ -65,18 +169,100 @@
 //     [product.options],
 //   );
 
-//   // No option is pre-selected; the user must actively choose each value.
-//   const defaultSelection = useMemo<Record<string, string>>(() => ({}), []);
+//   const initialSku = useMemo(() => {
+//     if (!initialPrice) {
+//       return null;
+//     }
+
+//     const targetPrice = parseUsdPrice(initialPrice);
+
+//     if (targetPrice === null) {
+//       return null;
+//     }
+
+//     return (
+//       product.skus?.find((sku) => {
+//         const skuPrice = parseUsdPrice(sku.price?.usd);
+
+//         if (skuPrice === null) {
+//           return false;
+//         }
+
+//         return Math.abs(skuPrice - targetPrice) < 0.001;
+//       }) ?? null
+//     );
+//   }, [initialPrice, product.skus]);
+
+//   const defaultSelection = useMemo<Record<string, string>>(() => {
+//     if (initialSku?.selection) {
+//       return {
+//         ...initialSku.selection,
+//       };
+//     }
+
+//     const autoSelected: Record<string, string> = {};
+
+//     productOptions.forEach((option) => {
+//       if (option.values.length === 1) {
+//         autoSelected[option.propId] = option.values[0].valueId;
+//       }
+//     });
+
+//     return autoSelected;
+//   }, [initialSku, productOptions]);
 
 //   const [selectedValues, setSelectedValues] =
 //     useState<Record<string, string>>(defaultSelection);
 
 //   useEffect(() => {
-//     const nextImage = galleryList[0] ?? product.imageUrl;
-//     setSelectedImage(nextImage);
 //     setSelectedValues(defaultSelection);
 //     setQuantity(1);
-//   }, [defaultSelection, galleryList, product.id, product.imageUrl]);
+//   }, [defaultSelection, product.id]);
+
+//   useEffect(() => {
+//     const nextImage = galleryList[0] ?? product.imageUrl;
+//     setSelectedImage(nextImage);
+//   }, [galleryList, product.id, product.imageUrl]);
+
+//   useEffect(() => {
+//     const shopId = product.shopId;
+
+//     if (!shopId) {
+//       setShopSummary(null);
+//       return;
+//     }
+
+//     let mounted = true;
+
+//     const loadShopSummary = async () => {
+//       try {
+//         const response = await productService.getShopProducts(shopId, 12);
+
+//         if (!mounted) {
+//           return;
+//         }
+
+//         const shop = response.shop;
+
+//         setShopSummary({
+//           name: shop?.name ?? product.shopName?.en ?? "Shop",
+//           rating: shop?.rating ?? 0,
+//           shippingOrigin: shop?.shippingOrigin ?? "",
+//           totalProducts: response.items?.length ?? 0,
+//         });
+//       } catch {
+//         if (mounted) {
+//           setShopSummary(null);
+//         }
+//       }
+//     };
+
+//     void loadShopSummary();
+
+//     return () => {
+//       mounted = false;
+//     };
+//   }, [product.shopId, product.shopName]);
 
 //   useEffect(() => {
 //     if (contentRef.current) {
@@ -99,23 +285,23 @@
 //       return null;
 //     }
 
-//     const matchSku = skuList.find((sku) => {
-//       if (!sku.selection) return false;
+//     const selectedEntries = Object.entries(selectedValues);
 
-//       return productOptions.every((option) => {
-//         const selectedValueId = selectedValues[option.propId];
-//         return (
-//           !selectedValueId || sku.selection[option.propId] === selectedValueId
-//         );
-//       });
-//     });
+//     if (selectedEntries.length === 0) {
+//       return initialSku ??
+//         skuList.find((sku) => sku.available && sku.quantity > 0) ??
+//         skuList[0];
+//     }
 
-//     return (
-//       matchSku ??
-//       skuList.find((sku) => sku.available && sku.quantity > 0) ??
-//       skuList[0]
+//     const matchedSku = skuList.find((sku) =>
+//       selectedEntries.every(
+//         ([propId, valueId]) =>
+//           String(sku.selection?.[propId]) === String(valueId),
+//       ),
 //     );
-//   }, [productOptions, product.skus, selectedValues]);
+
+//     return matchedSku ?? initialSku ?? null;
+//   }, [product.skus, selectedValues, initialSku]);
 
 //   const optionValueImageMap = useMemo(() => {
 //     const map = new Map<string, string>();
@@ -126,7 +312,14 @@
 //       }
 
 //       Object.entries(sku.selection ?? {}).forEach(([propId, valueId]) => {
-//         const key = `${propId}:${valueId}`;
+//         const normalizedPropId = String(propId ?? "").trim();
+//         const normalizedValueId = String(valueId ?? "").trim();
+
+//         if (!normalizedPropId || !normalizedValueId) {
+//           return;
+//         }
+
+//         const key = `${normalizedPropId}:${normalizedValueId}`;
 
 //         if (!map.has(key)) {
 //           map.set(key, sku.image as string);
@@ -138,9 +331,31 @@
 //   }, [product.skus]);
 
 //   useEffect(() => {
-//     const nextImage = currentSku?.image ?? galleryList[0] ?? product.imageUrl;
+//     const selectedOptionImage = productOptions
+//       .map((option) => {
+//         const valueId = selectedValues[option.propId];
+//         if (!valueId) {
+//           return null;
+//         }
+
+//         return optionValueImageMap.get(`${option.propId}:${valueId}`) ?? null;
+//       })
+//       .find(Boolean);
+
+//     const nextImage =
+//       currentSku?.image ??
+//       selectedOptionImage ??
+//       galleryList[0] ??
+//       product.imageUrl;
 //     setSelectedImage(nextImage);
-//   }, [currentSku, galleryList, product.imageUrl]);
+//   }, [
+//     currentSku,
+//     galleryList,
+//     optionValueImageMap,
+//     product.imageUrl,
+//     productOptions,
+//     selectedValues,
+//   ]);
 
 //   const salePrice = currentSku?.promotionPriceRmbRaw ?? 0;
 //   const listPrice = currentSku?.priceRmbRaw ?? salePrice;
@@ -148,6 +363,24 @@
 //     listPrice > 0 && salePrice > 0
 //       ? Math.max(1, Math.round(((listPrice - salePrice) / listPrice) * 100))
 //       : 0;
+
+//   const currentUsdPrice =
+//     currentSku?.price?.usd ??
+//     (typeof currentSku?.priceUsdCents === "number" &&
+//     currentSku.priceUsdCents > 0
+//       ? `$${(currentSku.priceUsdCents / 100).toFixed(2)}`
+//       : null);
+
+//   const currentKhrPrice =
+//     currentSku?.price?.khr ??
+//     (typeof currentSku?.priceKhr === "number" && currentSku.priceKhr > 0
+//       ? `៛${new Intl.NumberFormat("en-US").format(currentSku.priceKhr)}`
+//       : null);
+
+//   const listUsdPrice = currentSku?.originalPrice?.usd ?? currentUsdPrice ?? "";
+//   const listKhrPrice = currentSku?.originalPrice?.khr ?? currentKhrPrice ?? "";
+//   const saleUsdPrice = currentUsdPrice ?? listUsdPrice;
+//   const saleKhrPrice = currentKhrPrice ?? listKhrPrice;
 
 //   const triggerFlyToCart = () => {
 //     const source = imageRef.current;
@@ -243,6 +476,55 @@
 //           className="space-y-5 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
 //         >
 //           <div className="space-y-4">
+//             {shopSummary && (
+//               <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+//                 <div className="flex items-center gap-3">
+//                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-lg font-bold text-orange-500">
+//                     {shopSummary.name.charAt(0).toUpperCase()}
+//                   </div>
+
+//                   <div>
+//                     <button
+//                       type="button"
+//                       onClick={() =>
+//                         product.shopId && navigate(`/shop/${product.shopId}`)
+//                       }
+//                       className="text-left text-base font-semibold text-slate-800 hover:text-[#ff6a00]"
+//                     >
+//                       {shopSummary.name}
+//                     </button>
+
+//                     <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+//                       <span className="flex items-center gap-1">
+//                         <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
+//                         {shopSummary.rating > 0
+//                           ? `${shopSummary.rating} rating`
+//                           : "New seller"}
+//                       </span>
+
+//                       {shopSummary.shippingOrigin ? (
+//                         <span>{shopSummary.shippingOrigin}</span>
+//                       ) : null}
+
+//                       <span>{shopSummary.totalProducts} items</span>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <button
+//                   type="button"
+//                   onClick={() => {
+//                     if (product.shopId) {
+//                       navigate(`/shop/${product.shopId}`);
+//                     }
+//                   }}
+//                   className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+//                 >
+//                   View Store
+//                 </button>
+//               </div>
+//             )}
+
 //             <div className="flex gap-3 px-2 sm:px-4">
 //               <div className="flex w-16 shrink-0 flex-col gap-3 sm:w-18">
 //                 {thumbnails.map((image, index) => (
@@ -335,7 +617,11 @@
 //                 {product.shopId ? (
 //                   <button
 //                     type="button"
-//                     onClick={() => navigate(`/shop/${product.shopId}`)}
+//                     onClick={() => {
+//                       if (product.shopId) {
+//                         navigate(`/shop/${product.shopId}`);
+//                       }
+//                     }}
 //                     className="cursor-pointer font-medium text-slate-600 underline-offset-2 hover:text-[#ff6a00] hover:underline"
 //                   >
 //                     {product.shopName.en}
@@ -381,16 +667,18 @@
 //               />
 
 //               <div className="relative z-10">
-//                 <div className="flex items-center justify-between gap-2">
+//                 <div className="flex flex-col gap-1 text-white/75">
 //                   <span
 //                     className="
 //           text-xs
 //           font-medium
-//           text-white/60
 //           line-through
 //         "
 //                   >
-//                     {formatCurrency(listPrice)}
+//                     {listUsdPrice || "$0.00"}
+//                   </span>
+//                   <span className="text-[10px] font-medium text-white/70">
+//                     {/* {listKhrPrice || "៛0"} */}
 //                   </span>
 //                 </div>
 
@@ -416,11 +704,13 @@
 
 //                 <div
 //                   className="
-//         mt-1
+        
 //         flex
-//         items-end
-//         gap-2
+//         flex-row
+//         items-baseline
+//         gap-1
 //       "
+//       // in product list page in ExploreProduct page (any page) when user click on the product card, if it show price 6.5 in list, so in product detail page it should also show 6.5 initially before any selection is made. or auto select the corresponding option to match the list price.
 //                 >
 //                   <p
 //                     className="
@@ -430,8 +720,11 @@
 //           text-white
 //         "
 //                   >
-//                     {formatCurrency(salePrice || listPrice)}
+//                     {saleUsdPrice || "$0.00"}
 //                   </p>
+//                   <span className="text-sm font-semibold text-white/80">
+//                     {saleKhrPrice || "៛0"}
+//                   </span>
 //                 </div>
 //               </div>
 //             </div>
@@ -450,12 +743,9 @@
 //                 </p>
 //                 <div className="flex flex-wrap gap-2">
 //                   {option.values.map((value) => {
-//                     const isColorOption = /color|颜色|色/i.test(option.name);
-//                     const valueImage = isColorOption
-//                       ? optionValueImageMap.get(
-//                           `${option.propId}:${value.valueId}`,
-//                         )
-//                       : undefined;
+//                     const valueImage = optionValueImageMap.get(
+//                       `${option.propId}:${value.valueId}`,
+//                     );
 //                     const isSelected =
 //                       selectedValues[option.propId] === value.valueId;
 
@@ -742,108 +1032,135 @@
 
 //     const controller = new AbortController();
 
+//     // const loadProduct = async () => {
+//     //   try {
+//     //     setLoading(true);
+//     //     setError(null);
+
+//     //     const data = (await productService.getProductDetail(
+//     //       sourceItemId,
+//     //       // undefined,
+//     //     )) as {
+//     //       itemId?: string;
+//     //       title?: string;
+//     //       description?: string;
+//     //       images?: string[];
+//     //       shop?: { id?: string; name?: string };
+//     //       category?: { id?: string; name?: string };
+//     //       available?: boolean;
+//     //       totalQuantity?: number;
+//     //       options?: Array<{
+//     //         propId?: string;
+//     //         name?: string;
+//     //         values?: Array<{ valueId?: string; name?: string }>;
+//     //       }>;
+//     //       skus?: Array<{
+//     //         skuId?: string;
+//     //         mpSkuId?: string;
+//     //         selectionKey?: string;
+//     //         selection?: Record<string, string>;
+//     //         image?: string;
+//     //         priceRmbRaw?: number;
+//     //         promotionPriceRmbRaw?: number;
+//     //         couponPriceRmbRaw?: number;
+//     //         shippingCents?: number;
+//     //         quantity?: number;
+//     //         available?: boolean;
+//     //       }>;
+//     //       image?: string;
+//     //     };
+
+//     //     const imageList = Array.from(
+//     //       new Set([...(data.images ?? []), data.image ?? ""].filter(Boolean)),
+//     //     );
+
+//     //     const firstSku = data.skus?.[0];
+//     //     const priceText = formatCurrency(
+//     //       firstSku?.promotionPriceRmbRaw ?? firstSku?.priceRmbRaw ?? 0,
+//     //     );
+
+//     //     const mappedProduct: ProductCardType = {
+//     //       id: data.itemId ?? sourceItemId,
+//     //       section: {
+//     //         en: data.category?.name ?? "Products",
+//     //         km: data.category?.name ?? "Products",
+//     //       },
+//     //       title: {
+//     //         en: data.title ?? "Product",
+//     //         km: data.title ?? "Product",
+//     //       },
+//     //       shopName: {
+//     //         en: data.shop?.name ?? "E-Taobao",
+//     //         km: data.shop?.name ?? "E-Taobao",
+//     //       },
+//     //       shopId: data.shop?.id ?? undefined,
+//     //       priceText,
+//     //       imageUrl: data.image ?? imageList[0] ?? "",
+//     //       productUrl: "",
+//     //       benefit: {
+//     //         en: data.available === false ? "Out of stock" : "Best seller",
+//     //         km: data.available === false ? "Out of stock" : "Best seller",
+//     //       },
+//     //       gallery: imageList,
+//     //       description: data.description ?? "",
+//     //       categoryName: data.category?.name ?? "Products",
+//     //       available: data.available ?? true,
+//     //       totalQuantity: data.totalQuantity ?? 0,
+//     //       options:
+//     //         data.options?.map((option) => ({
+//     //           propId: option.propId ?? "",
+//     //           name: option.name ?? "",
+//     //           values:
+//     //             option.values?.map((value) => ({
+//     //               valueId: value.valueId ?? "",
+//     //               name: value.name ?? "",
+//     //             })) ?? [],
+//     //         })) ?? [],
+//     //       skus:
+//     //         data.skus?.map((sku) => ({
+//     //           skuId: sku.skuId ?? "",
+//     //           mpSkuId: sku.mpSkuId ?? "",
+//     //           selectionKey: sku.selectionKey ?? "",
+//     //           selection: sku.selection ?? {},
+//     //           image: sku.image ?? "",
+//     //           priceRmbRaw: sku.priceRmbRaw ?? 0,
+//     //           promotionPriceRmbRaw: sku.promotionPriceRmbRaw ?? 0,
+//     //           couponPriceRmbRaw: sku.couponPriceRmbRaw ?? 0,
+//     //           shippingCents: sku.shippingCents ?? 0,
+//     //           quantity: sku.quantity ?? 0,
+//     //           available: sku.available ?? true,
+//     //         })) ?? [],
+//     //     };
+
+//     //     setProduct(mappedProduct);
+//     //     setGallery(imageList);
+//     //   } catch (caughtError) {
+//     //     if (controller.signal.aborted) {
+//     //       return;
+//     //     }
+
+//     //     setError(
+//     //       caughtError instanceof Error
+//     //         ? caughtError.message
+//     //         : "Failed to load product.",
+//     //     );
+//     //   } finally {
+//     //     if (!controller.signal.aborted) {
+//     //       setLoading(false);
+//     //     }
+//     //   }
+//     // };
 //     const loadProduct = async () => {
 //       try {
 //         setLoading(true);
 //         setError(null);
 
-//         const data = (await productService.getProductDetail(
-//           sourceItemId,
-//           // undefined,
-//         )) as {
-//           itemId?: string;
-//           title?: string;
-//           description?: string;
-//           images?: string[];
-//           shop?: { id?: string; name?: string };
-//           category?: { id?: string; name?: string };
-//           available?: boolean;
-//           totalQuantity?: number;
-//           options?: Array<{
-//             propId?: string;
-//             name?: string;
-//             values?: Array<{ valueId?: string; name?: string }>;
-//           }>;
-//           skus?: Array<{
-//             skuId?: string;
-//             mpSkuId?: string;
-//             selectionKey?: string;
-//             selection?: Record<string, string>;
-//             image?: string;
-//             priceRmbRaw?: number;
-//             promotionPriceRmbRaw?: number;
-//             couponPriceRmbRaw?: number;
-//             shippingCents?: number;
-//             quantity?: number;
-//             available?: boolean;
-//           }>;
-//           image?: string;
-//         };
+//         const data = await productService.getProductDetail(sourceItemId);
 
-//         const imageList = Array.from(
-//           new Set([...(data.images ?? []), data.image ?? ""].filter(Boolean)),
-//         );
-
-//         const firstSku = data.skus?.[0];
-//         const priceText = formatCurrency(
-//           firstSku?.promotionPriceRmbRaw ?? firstSku?.priceRmbRaw ?? 0,
-//         );
-
-//         const mappedProduct: ProductCardType = {
-//           id: data.itemId ?? sourceItemId,
-//           section: {
-//             en: data.category?.name ?? "Products",
-//             km: data.category?.name ?? "Products",
-//           },
-//           title: {
-//             en: data.title ?? "Product",
-//             km: data.title ?? "Product",
-//           },
-//           shopName: {
-//             en: data.shop?.name ?? "E-Taobao",
-//             km: data.shop?.name ?? "E-Taobao",
-//           },
-//           shopId: data.shop?.id ?? undefined,
-//           priceText,
-//           imageUrl: data.image ?? imageList[0] ?? "",
-//           productUrl: "",
-//           benefit: {
-//             en: data.available === false ? "Out of stock" : "Best seller",
-//             km: data.available === false ? "Out of stock" : "Best seller",
-//           },
-//           gallery: imageList,
-//           description: data.description ?? "",
-//           categoryName: data.category?.name ?? "Products",
-//           available: data.available ?? true,
-//           totalQuantity: data.totalQuantity ?? 0,
-//           options:
-//             data.options?.map((option) => ({
-//               propId: option.propId ?? "",
-//               name: option.name ?? "",
-//               values:
-//                 option.values?.map((value) => ({
-//                   valueId: value.valueId ?? "",
-//                   name: value.name ?? "",
-//                 })) ?? [],
-//             })) ?? [],
-//           skus:
-//             data.skus?.map((sku) => ({
-//               skuId: sku.skuId ?? "",
-//               mpSkuId: sku.mpSkuId ?? "",
-//               selectionKey: sku.selectionKey ?? "",
-//               selection: sku.selection ?? {},
-//               image: sku.image ?? "",
-//               priceRmbRaw: sku.priceRmbRaw ?? 0,
-//               promotionPriceRmbRaw: sku.promotionPriceRmbRaw ?? 0,
-//               couponPriceRmbRaw: sku.couponPriceRmbRaw ?? 0,
-//               shippingCents: sku.shippingCents ?? 0,
-//               quantity: sku.quantity ?? 0,
-//               available: sku.available ?? true,
-//             })) ?? [],
-//         };
+//         const mappedProduct = normalizeProductDetailData(data, sourceItemId);
 
 //         setProduct(mappedProduct);
-//         setGallery(imageList);
+//         setGallery(mappedProduct.gallery ?? []);
 //       } catch (caughtError) {
 //         if (controller.signal.aborted) {
 //           return;
@@ -883,16 +1200,11 @@
 //   if (error || !product) {
 //     return (
 //       <div className="mx-auto max-w-2xl p-10 mt-5 text-center">
-//         <p className="text-lg font-semibold text-red-600">
-//           {error ?? "Product not found."}
-//         </p>
-//         <button
-//           type="button"
-//           onClick={() => navigate("/")}
-//           className="mt-4 rounded-full bg-[#ff6a00] px-5 py-2 text-sm font-semibold text-white"
-//         >
-//           Back to home
-//         </button>
+//         <ServerError
+//           onRetry={() => {
+//             window.location.reload();
+//           }}
+//         />
 //       </div>
 //     );
 //   }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { ProductCard } from "@/components/product/ProductCard";
 import {
@@ -12,7 +12,7 @@ import type { TaobaoProduct } from "@/types/taobao.types";
 import ServerError from "@/pages/ErrorPage";
 
 export default function ThemeProductsPage() {
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
   const location = useLocation();
   const { themeId } = useParams();
 
@@ -136,9 +136,7 @@ export default function ThemeProductsPage() {
     }
   }, [themeId, nextScrollId, loadingMore]);
 
-  // -----------------------------------------
   // Infinite scroll observer
-  // -----------------------------------------
   useEffect(() => {
     const element = loadMoreRef.current;
 
@@ -170,11 +168,17 @@ export default function ThemeProductsPage() {
   return (
     <div className="mx-auto max-w-8xl px-4 pb-6 pt-3 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between gap-3 border-b border-slate-200 pb-4">
+      <div
+        className="mb-6 flex flex-col gap-3 border-b border-slate-200 pb-4 md:flex-row md:items-end md:justify-between
+        "
+      >
         <div>
-          <h1 className="mt-2 text-2xl font-bold text-gray-700">
-            {categoryLabel}
-          </h1>
+          <p
+            className="text-sm font-medium uppercase tracking-[0.18em] text-slate-500
+            "
+          >
+            <span>Results for</span> "{categoryLabel}"
+          </p>
         </div>
       </div>
 
@@ -206,7 +210,7 @@ export default function ThemeProductsPage() {
             ))}
 
             {loadingMore &&
-              Array.from({ length: 8 }).map((_, index) => (
+              Array.from({ length: 18 }).map((_, index) => (
                 <ProductCardSkeletonCard key={`theme-loading-${index}`} />
               ))}
           </div>

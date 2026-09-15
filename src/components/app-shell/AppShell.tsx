@@ -5,6 +5,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import "@/styles/index.css";
 import {
   Bell,
   Camera,
@@ -14,12 +15,25 @@ import {
   ScanQrCode,
   ChevronDown,
   ShoppingCart,
+  Handbag,
+  Cable,
+  MirrorRound,
+  HouseHeart,
+  SportShoe,
+  Map,
+  Baby,
+  Gem,
+  Car,
+  PawPrint,
+  X,
+  SwitchCamera,
 } from "lucide-react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 import { AppSidebar, type SidebarItem } from "./AppSidebar";
 import { Footer } from "./Footer";
+import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 
 import {
   LanguageProvider,
@@ -55,6 +69,29 @@ const sidebarItems: SidebarItem[] = [
   },
 ];
 
+const promoBanners = [
+  {
+    key: "promo-a",
+    badge: "🎁",
+    accent: "🎉",
+    title: "Super 88",
+    subtitle: "On Sale Now!",
+    highlight: "Big Discount Coupons from 30% Off",
+    button: "Shop Now",
+    tint: "from-[#ff6a88] via-[#ff7b7f] to-[#ffb26b]",
+  },
+  {
+    key: "promo-b",
+    badge: "🔥",
+    accent: "⚡",
+    title: "Flash Sale",
+    subtitle: "New User Exclusive!",
+    highlight: "Discount Coupons from 20% Off",
+    button: "Claim Now",
+    tint: "from-[#2f7ef7] via-[#4ea7ff] to-[#6ee7b7]",
+  },
+] as const;
+
 const languageMeta: Record<
   Language,
   {
@@ -85,6 +122,21 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showUtilityBar, setShowUtilityBar] = useState(true);
+  const [showPromoBanner, setShowPromoBanner] = useState(true);
+  const [activePromoIndex, setActivePromoIndex] = useState(0);
+
+  const [showImageSearch, setShowImageSearch] = useState(false);
+
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [imageSearching, setImageSearching] = useState(false);
+
+  const [foundProducts, setFoundProducts] = useState<number | null>(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const streamRef = useRef<MediaStream | null>(null);
 
   const searchExamples = [
     {
@@ -99,102 +151,202 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
       child: "Search by product keywords ...",
     },
     {
-      category: "Fashion",
+      category: (
+        <span className="flex items-center gap-1">
+          <Handbag className="h-3 w-3" />
+          Fashion
+        </span>
+      ),
       child: "T-Shirt",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Fashion",
+      category: (
+        <span className="flex items-center gap-1">
+          <Handbag className="h-3 w-3" />
+          Fashion
+        </span>
+      ),
       child: "Sneakers",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Fashion",
+      category: (
+        <span className="flex items-center gap-1">
+          <Handbag className="h-3 w-3" />
+          Fashion
+        </span>
+      ),
       child: "Jackets",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Electronics",
+      category: (
+        <span className="flex items-center gap-1">
+          <Cable className="h-3 w-3" />
+          Electronics
+        </span>
+      ),
       child: "iPhone",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Electronics",
+      category: (
+        <span className="flex items-center gap-1">
+          <Cable className="h-3 w-3" />
+          Electronics
+        </span>
+      ),
       child: "Smart Watch",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Electronics",
+      category: (
+        <span className="flex items-center gap-1">
+          <Cable className="h-3 w-3" />
+          Electronics
+        </span>
+      ),
       child: "Earbuds",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Beauty",
+      category: (
+        <span className="flex items-center gap-1">
+          <MirrorRound className="h-3 w-3" />
+          Beauty
+        </span>
+      ),
       child: "Skincare",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Beauty",
+      category: (
+        <span className="flex items-center gap-1">
+          <MirrorRound className="h-3 w-3" />
+          Beauty
+        </span>
+      ),
       child: "Perfume",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Home",
+      category: (
+        <span className="flex items-center gap-1">
+          <HouseHeart className="h-3 w-3" />
+          Home
+        </span>
+      ),
       child: "Sofa",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Home",
+      category: (
+        <span className="flex items-center gap-1">
+          <HouseHeart className="h-3 w-3" />
+          Home
+        </span>
+      ),
       child: "Kitchen Tools",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Home",
+      category: (
+        <span className="flex items-center gap-1">
+          <HouseHeart className="h-3 w-3" />
+          Home
+        </span>
+      ),
       child: "Decoration",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Sports",
+      category: (
+        <span className="flex items-center gap-1">
+          <SportShoe className="h-3 w-3" />
+          Sports
+        </span>
+      ),
       child: "Running Shoes",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Sports",
+      category: (
+        <span className="flex items-center gap-1">
+          <SportShoe className="h-3 w-3" />
+          Sports
+        </span>
+      ),
       child: "Fitness Gear",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Travel",
+      category: (
+        <span className="flex items-center gap-1">
+          <Map className="h-3 w-3" />
+          Travel
+        </span>
+      ),
       child: "Backpack",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Travel",
+      category: (
+        <span className="flex items-center gap-1">
+          <Map className="h-3 w-3" />
+          Travel
+        </span>
+      ),
       child: "Suitcase",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Baby",
+      category: (
+        <span className="flex items-center gap-1">
+          <Baby className="h-3 w-3" />
+          Toys
+        </span>
+      ),
       child: "Toys",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Baby",
+      category: (
+        <span className="flex items-center gap-1">
+          <Baby className="h-3 w-3" />
+          Baby
+        </span>
+      ),
       child: "Baby Clothes",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Jewelry",
+      category: (
+        <span className="flex items-center gap-1">
+          <Gem className="h-3 w-3" />
+          Jewelry
+        </span>
+      ),
       child: "Necklace",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Automotive",
+      category: (
+        <span className="flex items-center gap-1">
+          <Car className="h-3 w-3" />
+          Automotive
+        </span>
+      ),
       child: "Car Accessories",
       color: "bg-green-500 text-white",
     },
     {
-      category: "Pet",
+      category: (
+        <span className="flex items-center gap-1">
+          <PawPrint className="h-3 w-3" />
+          Pet
+        </span>
+      ),
       child: "Pet Supplies",
       color: "bg-green-500 text-white",
     },
@@ -340,7 +492,112 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
   // Compact header state when user scrolls down
   const isCompact = !showUtilityBar;
+  const isHomePage = location.pathname === "/";
+  const shouldShowPromoBanner = isHomePage && showPromoBanner && showUtilityBar;
 
+  useEffect(() => {
+    if (!isHomePage || !showUtilityBar) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setActivePromoIndex((current) => (current + 1) % promoBanners.length);
+    }, 5000);
+
+    return () => window.clearInterval(interval);
+  }, [isHomePage, showUtilityBar]);
+
+  /*
+   * Handle image upload for image search
+   */
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const preview = URL.createObjectURL(file);
+
+    setImagePreview(preview);
+
+    // auto search
+    processImageSearch();
+  };
+
+  const processImageSearch = () => {
+    setImageSearching(true);
+
+    setFoundProducts(null);
+
+    // simulate AI search
+
+    setTimeout(() => {
+      setImageSearching(false);
+
+      setFoundProducts(10);
+    }, 2000);
+  };
+  const openCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "environment",
+        },
+      });
+
+      streamRef.current = stream;
+
+      setCameraOpen(true);
+
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (error) {
+      console.log(error);
+
+      alert("Camera permission denied");
+    }
+  };
+  const takePhoto = () => {
+    if (!videoRef.current) return;
+
+    const video = videoRef.current;
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageUrl = canvas.toDataURL("image/jpeg");
+
+    // stop camera
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+
+    setImagePreview(imageUrl);
+
+    setCameraOpen(false);
+
+    // auto search
+    processImageSearch();
+  };
+  const closeCamera = () => {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+
+    setCameraOpen(false);
+  };
+  const resetImageSearch = () => {
+    setImagePreview(null);
+
+    setFoundProducts(null);
+
+    setImageSearching(false);
+  };
   return (
     <LanguageProvider
       value={{
@@ -349,13 +606,15 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
       }}
     >
       <div className="min-h-screen bg-[#ffffff] text-slate-800">
+        <ScrollToTopButton />
+
         {/* Sidebar */}
 
         <AppSidebar items={sidebarItems} cartCount={cartCount} />
 
         {/* Header */}
 
-        <header className="fixed px-20 top-0 right-0 left-0 z-20 border-b border-gray-200/20 bg-white/60 backdrop-blur-md">
+        <header className="fixed left-0 right-0 top-0 z-20 border-b border-gray-200/20 bg-white/60 px-3 backdrop-blur-md sm:px-4 lg:px-20">
           {/* Utility Bar */}
 
           {/* <div
@@ -580,21 +839,97 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
             </div>
           </div>
 
+          {/* Promo Banner */}
+          <div
+            className={[
+              "relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-gradient-to-l from-[#235BA7] via-[#3B82F6] to-[#4483d1] transition-all duration-300 ease-out",
+              shouldShowPromoBanner
+                ? "max-h-11 opacity-100"
+                : "max-h-1 opacity-0",
+            ].join(" ")}
+          >
+            <div className="relative h-11 w-full overflow-hidden">
+              {promoBanners.map((banner, index) => {
+                const isActive = index === activePromoIndex;
+
+                return (
+                  <div
+                    key={banner.key}
+                    className={[
+                      "absolute inset-0 flex items-center justify-center px-3 py-2.5 transition-all duration-700 ease-in-out sm:px-6",
+                      `bg-gradient-to-r ${banner.tint}`,
+                      isActive
+                        ? "translate-y-0 opacity-100 scale-100"
+                        : index === (activePromoIndex + 1) % promoBanners.length
+                          ? "-translate-y-full opacity-0 scale-95"
+                          : "translate-y-full opacity-0 scale-95",
+                    ].join(" ")}
+                    style={{
+                      transform: isActive
+                        ? "translateY(0) scale(1)"
+                        : index === (activePromoIndex + 1) % promoBanners.length
+                          ? "translateY(-100%) scale(0.96)"
+                          : "translateY(100%) scale(0.96)",
+                      opacity: isActive ? 1 : 0,
+                    }}
+                  >
+                    <div className="flex items-center gap-4 text-[#fafbff]">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ffd8e5]/80 text-lg shadow-sm">
+                          {banner.badge}
+                        </span>
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fff2b8]/80 text-lg shadow-sm">
+                          {banner.accent}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-center text-[9px] font-semibold tracking-wide sm:text-[11px]">
+                        <span className="text-white/95">{banner.title}</span>
+                        <span className="text-[#fff0f4]">
+                          {banner.subtitle}
+                        </span>
+                        <span className="rounded-full bg-white/15 px-2 py-0.5 text-[#fffafc]">
+                          {banner.highlight}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="ml-2 inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/90 px-5 py-1 text-[11px] font-semibold text-[#0c1e87] shadow-sm transition hover:bg-white"
+                      >
+                        {banner.button}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => setShowPromoBanner(false)}
+                aria-label="Close promotional banner"
+                className="absolute right-4 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md  text-lg font-light text-[#223fa8] transition hover:bg-[#e02914] hover:text-white sm:right-6"
+              >
+                <X className="size-4" strokeWidth={2} />
+              </button>
+            </div>
+          </div>
+
           {/* Main Header */}
 
-          <div className="pt-1 pl-20">
+          <div className="pt-1 lg:pl-20">
             <div className="mx-auto flex w-[95%] items-center gap-2 sm:gap-3">
               {/* Mobile Logo */}
 
-              {/* Mobile Logo */}
-
-              <img
-                src="/vtslogo.png"
-                alt="Logo"
-                width={64}
-                height={64}
-                className="shrink-0 rounded-xl lg:hidden transition-all duration-200"
-              />
+              <Link to="/">
+                <img
+                  src="/vtslogo.png"
+                  alt="Logo"
+                  width={64}
+                  height={64}
+                  className="shrink-0 rounded-xl lg:hidden transition-all duration-200"
+                />
+              </Link>
 
               {/* Desktop Logo (moved from sidebar) */}
               <img
@@ -607,9 +942,9 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
               {/* Search */}
 
-              <form
+              {/* <form
                 onSubmit={handleSearchSubmit}
-                className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-slate-100 px-3 py-3 sm:px-4 sm:ml-20"
+                className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-slate-100 px-3 py-3 sm:ml-4 sm:px-4 lg:ml-20"
               >
                 <ScanQrCode className="mr-2 size-5 shrink-0" />
 
@@ -630,7 +965,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
       text-sm
     "
                     >
-                      {/* Show category only when not focused */}
                       {!searchFocused && currentSearchExample.category && (
                         <>
                           <span
@@ -651,7 +985,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                         </>
                       )}
 
-                      {/* Always show child suggestion */}
                       <span className="text-slate-400">{placeholderText}</span>
                     </div>
                   )}
@@ -663,7 +996,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                     onFocus={() => {
                       setSearchFocused(true);
 
-                      // finish current suggestion internally
                       setPlaceholderText(currentSearchExample.child);
                     }}
                     onBlur={() => {
@@ -672,7 +1004,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                       if (!searchText) {
                         setHasStartedTyping(false);
 
-                        // reset animation
                         setPlaceholderText("");
                         setIsDeleting(false);
                       }
@@ -704,11 +1035,212 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                 >
                   Search
                 </button>
-              </form>
+              </form> */}
+              {/* <div className="search-comet-wrap min-w-0 flex-1 sm:ml-4 lg:ml-20">
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="search-comet-form flex min-w-0 items-center gap-2 px-3 py-3 sm:px-4"
+                >
+                  <ScanQrCode className="mr-2 size-5 shrink-0 text-slate-600" />
+
+                  <span className="mr-2 h-6 w-px bg-slate-300" />
+
+                  <Search className="size-4 shrink-0 text-slate-400" />
+
+                  <div className="relative flex-1">
+                    {!searchText && !hasStartedTyping && (
+                      <div
+                        className="
+            pointer-events-none
+            absolute inset-0
+            flex items-center
+            gap-1.5
+            text-sm
+          "
+                      >
+                        {!searchFocused && currentSearchExample.category && (
+                          <>
+                            <span
+                              className={`
+                  ml-0
+                  rounded-md
+                  px-2
+                  py-0.5
+                  text-xs
+                  font-semibold
+                  ${currentSearchExample.color}
+                `}
+                            >
+                              {currentSearchExample.category}
+                            </span>
+
+                            <span className="text-slate-400">:</span>
+                          </>
+                        )}
+
+                        <span className="text-slate-400">
+                          {placeholderText}
+                        </span>
+                      </div>
+                    )}
+
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchText}
+                      onFocus={() => {
+                        setSearchFocused(true);
+                        setPlaceholderText(currentSearchExample.child);
+                      }}
+                      onBlur={() => {
+                        setSearchFocused(false);
+
+                        if (!searchText) {
+                          setHasStartedTyping(false);
+                          setPlaceholderText("");
+                          setIsDeleting(false);
+                        }
+                      }}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setSearchText(value);
+                        setSearchFocused(true);
+
+                        if (value.length > 0) {
+                          setHasStartedTyping(true);
+                        } else {
+                          setHasStartedTyping(false);
+                        }
+                      }}
+                      className="w-full bg-transparent text-sm text-slate-700 outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="hidden rounded-lg bg-[#235BA7] px-3 py-1.5 text-xs font-medium text-white md:inline-flex"
+                  >
+                    Search
+                  </button>
+                </form>
+              </div> */}
+
+              <div className="search-light-wrap min-w-0 flex-1 sm:ml-4 lg:ml-20">
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="search-light-form flex min-w-0 items-center gap-2 px-3 py-3 sm:px-4"
+                >
+                  <ScanQrCode className="mr-2 size-5 shrink-0 text-slate-600" />
+
+                  <span className="mr-2 h-6 w-px bg-slate-300" />
+
+                  <Search className="size-4 shrink-0 text-slate-400" />
+
+                  <div className="relative flex-1">
+                    {!searchText && !hasStartedTyping && (
+                      <div
+                        className="
+            pointer-events-none
+            absolute
+            inset-0
+            flex
+            items-center
+            gap-1.5
+            text-sm
+          "
+                      >
+                        {!searchFocused && currentSearchExample.category && (
+                          <>
+                            <span
+                              className={`
+                  ml-0
+                  rounded-md
+                  px-2
+                  py-0.5
+                  text-xs
+                  font-semibold
+                  ${currentSearchExample.color}
+                `}
+                            >
+                              {currentSearchExample.category}
+                            </span>
+
+                            <span className="text-slate-400">:</span>
+                          </>
+                        )}
+
+                        <span className="text-slate-400">
+                          {placeholderText}
+                        </span>
+                      </div>
+                    )}
+
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchText}
+                      onFocus={() => {
+                        setSearchFocused(true);
+
+                        // complete current suggestion
+                        setPlaceholderText(currentSearchExample.child);
+                      }}
+                      onBlur={() => {
+                        setSearchFocused(false);
+
+                        if (!searchText) {
+                          setHasStartedTyping(false);
+
+                          setPlaceholderText("");
+                          setIsDeleting(false);
+                        }
+                      }}
+                      onChange={(event) => {
+                        const value = event.target.value;
+
+                        setSearchText(value);
+                        setSearchFocused(true);
+
+                        if (value.length > 0) {
+                          setHasStartedTyping(true);
+                        } else {
+                          setHasStartedTyping(false);
+                        }
+                      }}
+                      className="
+          w-full
+          bg-transparent
+          text-sm
+          text-slate-700
+          outline-none
+        "
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="
+        hidden
+        rounded-lg
+        bg-[#235BA7]
+        px-3
+        py-1.5
+        text-xs
+        font-medium
+        text-white
+        transition
+        hover:bg-[#194891]
+        md:inline-flex
+      "
+                  >
+                    Search
+                  </button>
+                </form>
+              </div>
 
               {/* Search Image */}
 
-              <button
+              {/* <button
                 type="button"
                 className="group relative flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/20 bg-linear-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] px-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(25,72,145,0.28)] transition-all duration-300 hover:-translate-y-0.5 md:px-4"
               >
@@ -717,6 +1249,15 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
                 <span className="relative z-10 hidden whitespace-nowrap md:inline">
                   Search by image
                 </span>
+              </button> */}
+              <button
+                type="button"
+                onClick={() => setShowImageSearch(true)}
+                className="group relative flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/20 bg-linear-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] px-3 text-sm font-medium text-white shadow-lg transition hover:-translate-y-0.5 md:px-4"
+              >
+                <Camera className="relative z-10 size-5" />
+
+                <span>Search by image</span>
               </button>
 
               {/* Wishlist */}
@@ -749,12 +1290,384 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Page Content */}
 
-        <main className="pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-35">
+        <main
+          className={`${shouldShowPromoBanner ? "mt-10" : "0"}  pt-28 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-35`}
+        >
           {children}
         </main>
 
         <Footer />
       </div>
+
+      {/* Search By Image Modal */}
+      {showImageSearch && (
+        <div
+          className="
+      fixed
+      inset-0
+      z-[100]
+      flex
+      items-center
+      justify-center
+      bg-black/40
+      backdrop-blur-sm
+    "
+        >
+          <div
+            className="
+        w-[420px]
+        rounded-2xl
+        bg-white
+        p-6
+        shadow-2xl
+      "
+          >
+            {/* Header */}
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Search by Image</h2>
+
+              <button
+                onClick={() => {
+                  setShowImageSearch(false);
+                  setImagePreview(null);
+                  setFoundProducts(null);
+                }}
+              >
+                <X className="size-5 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Upload Area */}
+            {!imagePreview && (
+              <div
+                className="
+            flex
+            h-52
+            flex-col
+            items-center
+            justify-center
+            rounded-xl
+            border-2
+            border-dashed
+            border-gray-200
+            text-gray-400
+          "
+              >
+                <Camera size={40} />
+
+                <p className="mt-3 text-sm">Drop an image or tap upload</p>
+
+                <p className="text-xs text-gray-400">Supports product photos</p>
+
+                <div className="mt-5 flex gap-3">
+                  {/* Gallery */}
+                  <label
+                    className="
+                cursor-pointer
+                rounded-lg
+                border
+                px-5
+                py-2
+                text-sm
+                font-medium
+                text-gray-700
+                hover:bg-gray-100
+              "
+                  >
+                    Gallery
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+
+                  {/* Camera */}
+                  <button
+                    onClick={openCamera}
+                    className="
+                      cursor-pointer
+                      rounded-lg
+                      bg-[#235BA7]
+                      px-5
+                      py-2
+                      text-white
+                      "
+                  >
+                    <Camera size={15} className="inline mr-1" />
+                    Camera
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Preview */}
+            {imagePreview && (
+              <div>
+                <img
+                  src={imagePreview}
+                  className="
+              h-60
+              w-full
+              rounded-xl
+              object-cover
+            "
+                />
+
+                {imageSearching && (
+                  <div
+                    className="
+                mt-5
+                rounded-xl
+                bg-blue-50
+                p-4
+                text-center
+                "
+                  >
+                    <div
+                      className="
+                animate-spin
+                mx-auto
+                mb-3
+                h-6
+                w-6
+                rounded-full
+                border-2
+                border-blue-500
+                border-t-transparent
+                "
+                    />
+
+                    <p
+                      className="
+                text-sm
+                text-blue-600
+                font-medium
+                "
+                    >
+                      Searching similar products...
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Result */}
+            {foundProducts && (
+              <div
+                className="
+              mt-5
+              rounded-xl
+              bg-[#194891]/10 
+              p-4
+              text-center
+              "
+              >
+                <p
+                  className="
+              font-semibold
+              text-[#194891]
+              text-[12px]
+              "
+                >
+                  Found {foundProducts} similar products
+                </p>
+
+                <div
+                  className="
+              mt-4
+              flex
+              gap-3
+              justify-center
+              "
+                >
+                  {/* View Product */}
+                  <button
+                    className="
+              rounded-lg
+              bg-[#235BA7]
+              px-5
+              py-2
+              w-full
+              cursor-pointer
+              text-sm
+              font-medium
+              text-white
+              hover:bg-[#194891]
+              "
+                    onClick={() => {
+                      console.log("open product result");
+                    }}
+                  >
+                    View Products
+                  </button>
+                  {/* Reset */}
+                  <button
+                    onClick={resetImageSearch}
+                    className="
+              rounded-lg
+              border
+              border-gray-300
+              bg-white
+              px-5
+              py-2
+              text-sm
+              font-medium
+              text-gray-700
+              cursor-pointer
+              hover:bg-gray-100
+              "
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            )}
+            {cameraOpen && (
+              <div
+                className="
+      fixed
+      inset-0
+      z-[200]
+      flex
+      items-center
+      justify-center
+      bg-black/40
+      backdrop-blur-md
+    "
+              >
+                <div
+                  className="
+        w-[390px]
+        overflow-hidden
+        rounded-2xl
+        bg-white
+        shadow-2xl
+      "
+                >
+                  {/* Header */}
+                  <div
+                    className="
+          flex
+          items-center
+          justify-between
+          border-b
+          px-5
+          py-4
+        "
+                  >
+                    <div className="flex items-center gap-2">
+                      <Camera className="text-[#194891]" size={18} />
+
+                      <span className="font-semibold">Take a Photo</span>
+                    </div>
+
+                    <button onClick={closeCamera}>
+                      <X size={18} className="text-gray-400" />
+                    </button>
+                  </div>
+
+                  {/* Camera Preview */}
+                  <div
+                    className="
+          relative
+          bg-black
+        "
+                  >
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      className="
+            h-[300px]
+            w-full
+            object-cover
+          "
+                    />
+
+                    {/* Focus Box */}
+                    <div
+                      className="
+            absolute
+            left-1/2
+            top-1/2
+            h-36
+            w-44
+            -translate-x-1/2
+            -translate-y-1/2
+            rounded-xl
+            border-2
+            border-white/80
+          "
+                    />
+
+                    {/* Switch Camera */}
+                    <button
+                      className="
+            absolute
+            right-4
+            top-4
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-full
+            bg-black/40
+            text-white
+          "
+                    >
+                      <SwitchCamera />
+                    </button>
+                  </div>
+
+                  {/* Footer */}
+                  <div
+                    className="
+          flex
+          items-center
+          gap-3
+          px-5
+          py-4
+        "
+                  >
+                    <button
+                      onClick={takePhoto}
+                      className="
+            flex-[2]
+            rounded-xl
+            bg-[#194891]
+            py-3
+            text-sm
+            font-semibold
+            text-white
+          "
+                    >
+                      <Camera size={16} className="mr-2 inline" />
+                      Capture
+                    </button>
+                    <button
+                      onClick={closeCamera}
+                      className="
+            flex-1
+            rounded-xl
+            border
+            py-3
+            text-sm
+            font-medium
+            text-gray-600
+          "
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </LanguageProvider>
   );
 }

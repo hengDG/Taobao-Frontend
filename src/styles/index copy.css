@@ -1,0 +1,89 @@
+.search-comet-wrap {
+  position: relative;
+  border-radius: 16px;
+
+  padding: 2px;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  background: #dbeafe;
+
+  box-shadow:
+    0 4px 14px rgba(35, 91, 167, 0.08);
+}
+
+/* moving glow */
+.search-comet-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -180%;
+  border-radius: inherit;
+
+  background: conic-gradient(
+    from 0deg,
+
+    /* invisible area */
+    transparent 0deg,
+    transparent 220deg,
+
+    /* long soft tail */
+    rgba(35, 91, 167, 0.03) 230deg,
+    rgba(35, 91, 167, 0.08) 245deg,
+    rgba(35, 91, 167, 0.16) 260deg,
+    rgba(35, 91, 167, 0.28) 275deg,
+    rgba(35, 91, 167, 0.45) 290deg,
+
+    /* brighter area */
+    rgba(35, 91, 167, 0.65) 305deg,
+    rgba(59, 130, 246, 0.85) 320deg,
+    rgba(96, 165, 250, 1) 335deg,
+
+    /* bright head */
+    rgba(191, 219, 254, 1) 345deg,
+    #ffffff 350deg,
+
+    /* fade out */
+    rgba(96, 165, 250, 0.8) 355deg,
+    transparent 360deg
+  );
+
+  animation: search-comet-spin 3.5s linear infinite;
+
+  filter: blur(4px);
+}
+
+/* inner search bar background */
+.search-comet-wrap::after {
+  content: "";
+  position: absolute;
+
+  inset: 2px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #f8fbff 50%,
+    #eef5ff 100%
+  );
+
+  z-index: 0;
+}
+
+.search-comet-form {
+  position: relative;
+  z-index: 1;
+  border-radius: 14.5px;
+  background: transparent;
+}
+
+@keyframes search-comet-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
