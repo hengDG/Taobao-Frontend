@@ -1,4 +1,3 @@
-
 import {
   ChefHat,
   ChevronDown,
@@ -176,7 +175,7 @@ export default function CategoryMenu() {
   }
 
   return (
-    <div className="relative" onMouseLeave={closeMenu}>
+    <div className="relative " onMouseLeave={closeMenu}>
       {/* Main Categories */}
       <div className="flex flex-wrap gap-3">
         {categories.map((group) => {
@@ -231,7 +230,7 @@ export default function CategoryMenu() {
           );
         })}
       </div>
-
+      
       {/* Child Categories Dropdown */}
       {activeCategory && (activeCategory.children?.length ?? 0) > 0 && (
         <div

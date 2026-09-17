@@ -119,16 +119,10 @@ const ExploreProduct = ({ refreshKey = 0 }: ExploreProductProps) => {
       observer.disconnect();
     };
   }, [cursor, hasMore, fetchProducts]);
-
+  console.log("ExploreProduct render:", { products });
   return (
     <div
-      className="
-        mx-auto
-        w-full
-        max-w-8xl
-        px-0
-        py-2
-      "
+      className="w-full px-0 py-2 mx-auto max-w-8xl"
     >
       {loading && products.length === 0 && (
         <div className={PRODUCT_GRID}>
@@ -175,9 +169,7 @@ const ExploreProduct = ({ refreshKey = 0 }: ExploreProductProps) => {
           {hasMore && (
             <div
               ref={loadMoreRef}
-              className="
-                h-10
-                "
+              className="h-10 "
             />
           )}
         </>

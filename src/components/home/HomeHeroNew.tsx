@@ -258,7 +258,7 @@ export function HomeMarketplaceDashboard() {
     categories.find((category) => category.name === hoveredCategory) ?? null;
 
   return (
-    <section className="mx-aut  w-full space-y-2 px-3 sm:px-4 lg:px-0">
+    <section className="w-full px-3 space-y-2 mx-aut sm:px-4 lg:px-0">
       <CategoryMenu />
 
       {activeCategoryData && (
@@ -267,7 +267,7 @@ export function HomeMarketplaceDashboard() {
           onMouseEnter={() => setHoveredCategory(activeCategoryData.name)}
           onMouseLeave={() => setHoveredCategory(null)}
         >
-          <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#dfeeff] to-[#eef6ff] text-lg shadow-sm">
                 {activeCategoryData.name.charAt(0)}
@@ -291,10 +291,10 @@ export function HomeMarketplaceDashboard() {
               <button
                 key={child}
                 type="button"
-                className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3 text-left text-sm font-medium text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                className="flex items-center justify-between px-3 py-3 text-sm font-medium text-left transition border group rounded-2xl border-slate-100 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
               >
                 <span>{child}</span>
-                <span className="text-base text-slate-400 transition group-hover:text-blue-700">
+                <span className="text-base transition text-slate-400 group-hover:text-blue-700">
                   →
                 </span>
               </button>
@@ -304,33 +304,25 @@ export function HomeMarketplaceDashboard() {
       )}
 
       {/* TOP AREA */}
+      {/* <div className="space-y-5">
+        <p className="text-3xl changa-one-regular-italic">Alegreya Normal</p>
+
+        <p className="text-3xl changa-one-regular">Permanent Marker</p>
+
+        <p className="text-5xl font-courgette">Cambodia Festival</p>
+
+        <p className="text-5xl font-display">Jolly Lodger</p>
+
+        <p className="open-sans-variable">Libre Franklin</p>
+      </div> */}
       <div
-        className="
-    flex
-    flex-col
-    gap-2
-    lg:flex-row
-    lg:items-stretch
-  "
+        className="flex flex-col gap-2  lg:flex-row lg:items-stretch"
       >
         {" "}
+        
         {/* USER + TRACK COMBINED CARD */}
         <div
-          className="
-            relative
-            flex-1
-            min-w-0
-            overflow-hidden
-            rounded-2xl
-            border
-            border-blue-100
-            bg-cover
-            bg-center
-            bg-no-repeat
-            p-3
-            shadow-sm
-            sm:p-4
-          "
+          className="relative flex-1 min-w-0 p-3 overflow-hidden bg-center bg-no-repeat bg-cover border border-blue-100 shadow-sm  rounded-2xl sm:p-4"
           style={{
             backgroundImage: "url('/backgroundSlideImage.png')",
           }}
@@ -349,13 +341,13 @@ export function HomeMarketplaceDashboard() {
           {/* USER + TRACK CONTENT */}
           <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-[42%_58%] 2xl:grid-cols-[42%_58%]">
             {/* USER SECTION */}
-            <div className="border-b border-white/40 pb-4 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4 space-y-4">
+            <div className="pb-4 space-y-4 border-b border-white/40 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4">
               {/* USER INFO */}
               <div className="flex items-center gap-3">
                 <img
                   src="https://i.pravatar.cc/100"
                   alt="avatar"
-                  className="h-12 w-12 rounded-full border-2 border-white object-cover shadow-sm"
+                  className="object-cover w-12 h-12 border-2 border-white rounded-full shadow-sm"
                 />
 
                 <div>
@@ -375,7 +367,7 @@ export function HomeMarketplaceDashboard() {
               </div>
 
               {/* ORDER STATUS */}
-              <div className="mt-3 grid grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-3 gap-4 mt-3 text-center">
                 {[
                   {
                     number: "21",
@@ -403,7 +395,7 @@ export function HomeMarketplaceDashboard() {
               </div>
 
               {/* QUICK MENU */}
-              <div className="mt-2 grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3 mt-2">
                 {[
                   {
                     icon: <ShoppingBag size={15} />,
@@ -420,7 +412,7 @@ export function HomeMarketplaceDashboard() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-xl bg-gray-50 py-2 text-center text-gray-500"
+                    className="py-2 text-center text-gray-500 rounded-xl bg-gray-50"
                   >
                     <div className="flex justify-center">{item.icon}</div>
 
@@ -448,7 +440,7 @@ export function HomeMarketplaceDashboard() {
                         <img
                           src={order.image}
                           alt=""
-                          className="h-8 w-8 shrink-0 rounded-xl object-cover"
+                          className="object-cover w-8 h-8 shrink-0 rounded-xl"
                         />
 
                         {/* Order Information */}
@@ -476,7 +468,7 @@ export function HomeMarketplaceDashboard() {
 
             {/* TRACK SECTION */}
             <div className="w-full pt-1 sm:pr-5">
-              <div className="mb-5 flex items-center justify-between">
+              <div className="flex items-center justify-between mb-5">
                 <h3 className="text-sm font-bold">Track Your Orders</h3>
 
                 <button className="text-xs text-gray-400">View All</button>
@@ -503,7 +495,7 @@ export function HomeMarketplaceDashboard() {
                   <div key={index} className="flex items-center gap-3">
                     <img
                       src={order.image}
-                      className="h-12 w-12 rounded-xl object-cover"
+                      className="object-cover w-12 h-12 rounded-xl"
                     />
 
                     {/* update tracking to paid store china shipping cambodia delivered */}
@@ -559,13 +551,7 @@ export function HomeMarketplaceDashboard() {
   "
         >
           <div
-            className="
-      relative
-      aspect-square
-      w-full
-      overflow-hidden
-      rounded-2xl
-    "
+            className="relative w-full overflow-hidden  aspect-square rounded-2xl"
           >
             {slides.map((slide, index) => (
               <div
@@ -589,12 +575,7 @@ export function HomeMarketplaceDashboard() {
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className="
-              h-full
-              w-full
-              rounded-2xl
-              object-cover
-            "
+                    className="object-cover w-full h-full  rounded-2xl"
                   />
                 )}
               </div>
@@ -602,14 +583,7 @@ export function HomeMarketplaceDashboard() {
 
             {/* Slider Dots */}
             <div
-              className="
-        absolute
-        bottom-2
-        left-1/2
-        flex
-        -translate-x-1/2
-        gap-2
-      "
+              className="absolute flex gap-2 -translate-x-1/2  bottom-2 left-1/2"
             >
               {slides.map((slide, index) => (
                 <button
@@ -639,7 +613,7 @@ export function HomeMarketplaceDashboard() {
   "
         >
           {" "}
-          <div className="rounded-2xl bg-white/50 p-2 shadow-sm">
+          <div className="p-2 shadow-sm rounded-2xl bg-white/50">
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {categories.map((category) => (
                 <div

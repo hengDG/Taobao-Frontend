@@ -1,5 +1,11 @@
 import apiClient from "../api/client";
+import type { Language } from "@/contexts/LanguageContext";
 
+type TranslationKind = "title" | "sku";
+
+type TranslationResponse = {
+  translations: Record<string, string>;
+};
 import type {
   TaobaoHomeResponse,
   TaobaoProductsResponse,
@@ -50,13 +56,26 @@ export const productService = {
     return data;
   },
 
-  async getProductDetail(
-    productId: string,
-  ): Promise<TaobaoProductDetailResponse> {
-    const { data } = await apiClient.get(`/products/${productId}`);
+  // async getProductDetail(
+  //   productId: string,
+  // ): Promise<TaobaoProductDetailResponse> {
+  //   const { data } = await apiClient.get(`/products/${productId}`);
 
-    return data;
-  },
+  //   return data;
+  // },
+  async getProductDetail(
+  productId: string,
+  signal?: AbortSignal,
+): Promise<TaobaoProductDetailResponse> {
+  const { data } = await apiClient.get(
+    `/products/${productId}`,
+    {
+      signal,
+    },
+  );
+
+  return data;
+},
 
   async getSimilarProducts(
     productId: string,
@@ -118,10 +137,47 @@ export const productService = {
     return data;
   },
 
-  async getExploreProducts(cursor?: string): Promise<ExploreProductsResponse> {
+  // async getExploreProducts(cursor?: string): Promise<ExploreProductsResponse> {
+  //   const { data } = await apiClient.get("/explore", {
+  //     params: cursor ? { cursor } : undefined,
+  //   });
+
+  //   return data;
+  // },
+
+  async getExploreProducts(
+    cursor?: string,
+    lang: Language = "en",
+    signal?: AbortSignal,
+  ): Promise<ExploreProductsResponse> {
     const { data } = await apiClient.get("/explore", {
-      params: cursor ? { cursor } : undefined,
+      params: {
+        lang,
+        ...(cursor ? { cursor } : {}),
+      },
+      signal,
     });
+
+    return data;
+  },
+
+  async translateTexts(
+    sources: string[],
+    lang: Language,
+    kind: TranslationKind,
+    signal?: AbortSignal,
+  ): Promise<TranslationResponse> {
+    const { data } = await apiClient.post(
+      "/translations",
+      {
+        sources,
+        lang,
+        kind,
+      },
+      {
+        signal,
+      },
+    );
 
     return data;
   },

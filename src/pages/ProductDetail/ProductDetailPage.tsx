@@ -12,6 +12,7 @@ import type {
   ProductSku,
 } from "@/types/product";
 import ServerError from "../ErrorPage";
+import HomepageSectionList from "@/components/testing-homepage";
 
 // Types
 
@@ -276,8 +277,14 @@ function ProductDetailView({
 
   // Product data
 
+  const initialPriceFromQuery = new URLSearchParams(location.search).get(
+    "initialPrice",
+  );
+
   const initialPrice =
-    (location.state as ProductDetailLocationState | null)?.initialPrice ?? null;
+    (location.state as ProductDetailLocationState | null)?.initialPrice ??
+    initialPriceFromQuery ??
+    null;
 
   const productOptions = product.options ?? [];
 
@@ -555,35 +562,31 @@ function ProductDetailView({
   };
 
   const handleAddToCart = () => {
-  if (!validateOptions("adding to cart")) {
-    return;
-  }
+    if (!validateOptions("adding to cart")) {
+      return;
+    }
 
-  if (!currentSku) {
-    toast.error("Selected product option is unavailable.");
-    return;
-  }
+    if (!currentSku) {
+      toast.error("Selected product option is unavailable.");
+      return;
+    }
 
-  triggerFlyToCart();
+    triggerFlyToCart();
 
-  const cartProduct: ProductCardType = {
-    ...product,
+    const cartProduct: ProductCardType = {
+      ...product,
 
-    // price selected by user
-    priceText: currentSku.price?.usd ?? product.priceText,
+      // price selected by user
+      priceText: currentSku.price?.usd ?? product.priceText,
 
-    // image selected by user
-    imageUrl: currentSku.image || product.imageUrl,
+      // image selected by user
+      imageUrl: currentSku.image || product.imageUrl,
+    };
+
+    window.setTimeout(() => {
+      onAddToCart(cartProduct, selectedOptions, quantity);
+    }, 420);
   };
-
-  window.setTimeout(() => {
-    onAddToCart(
-      cartProduct,
-      selectedOptions,
-      quantity,
-    );
-  }, 420);
-};
 
   const handleBuyNow = () => {
     if (!validateOptions("continuing")) {
@@ -596,7 +599,7 @@ function ProductDetailView({
   console.log(selectedOptions);
 
   return (
-    <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-0">
+    <div className="px-4 mx-auto max-w-8xl sm:px-6 lg:px-0">
       <div className="grid gap-4 md:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] md:items-start">
         {/* LEFT */}
         <div
@@ -605,9 +608,9 @@ function ProductDetailView({
         >
           {/* Shop */}
           {shopSummary && (
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3 bg-white border shadow-sm rounded-2xl border-slate-200">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 font-bold text-orange-500">
+                <div className="flex items-center justify-center w-12 h-12 font-bold text-orange-500 rounded-xl bg-orange-50">
                   {shopSummary.name.charAt(0).toUpperCase()}
                 </div>
 
@@ -622,7 +625,7 @@ function ProductDetailView({
                     {shopSummary.name}
                   </button>
 
-                  <div className="mt-1 flex flex-wrap gap-3 text-xs text-slate-500">
+                  <div className="flex flex-wrap gap-3 mt-1 text-xs text-slate-500">
                     <span className="flex items-center gap-1">
                       <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
 
@@ -645,7 +648,7 @@ function ProductDetailView({
                 onClick={() =>
                   product.shopId && navigate(`/shop/${product.shopId}`)
                 }
-                className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="px-3 py-2 text-xs font-medium border rounded-lg border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
               >
                 View Store
               </button>
@@ -654,7 +657,7 @@ function ProductDetailView({
 
           {/* Gallery */}
           <div className="flex flex-col gap-3 px-2 sm:flex-row sm:px-4">
-            <div className="flex w-full shrink-0 flex-row gap-3 overflow-x-auto sm:w-18 sm:flex-col sm:overflow-visible">
+            <div className="flex flex-row w-full gap-3 overflow-x-auto shrink-0 sm:w-18 sm:flex-col sm:overflow-visible">
               {gallery.map((image, index) => (
                 <button
                   key={image}
@@ -671,7 +674,7 @@ function ProductDetailView({
                   <img
                     src={image}
                     alt={`${product.title.en} ${index + 1}`}
-                    className="h-16 w-full object-cover sm:h-20"
+                    className="object-cover w-full h-16 sm:h-20"
                   />
                 </button>
               ))}
@@ -705,7 +708,7 @@ function ProductDetailView({
         {/* RIGHT */}
         <div className="flex flex-col pt-2 md:sticky md:top-6 md:max-h-[calc(100vh-5rem)]">
           {/* Product */}
-          <div className="shrink-0 border-b border-slate-200 bg-white pb-3">
+          <div className="pb-3 bg-white border-b shrink-0 border-slate-200">
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <Store className="h-3.5 w-3.5" />
 
@@ -726,7 +729,7 @@ function ProductDetailView({
 
             {/* Price */}
             <div className="relative mt-3 overflow-hidden rounded-xl bg-gradient-to-r from-[#c00021] to-[#ff002b] px-4 py-3 shadow-md">
-              <div className="text-xs font-medium text-white/60 line-through">
+              <div className="text-xs font-medium line-through text-white/60">
                 {originalUsdPrice}
               </div>
 
@@ -786,10 +789,9 @@ function ProductDetailView({
                           <img
                             src={image}
                             alt={value.name}
-                            className="h-7 w-7 rounded-sm object-cover"
+                            className="object-cover rounded-sm h-7 w-7"
                           />
                         )}
-
                         <span>{value.name}</span>
                       </button>
                     );
@@ -799,19 +801,19 @@ function ProductDetailView({
             ))}
 
             {/* Quantity */}
-            <div className="mb-15 space-y-2">
+            <div className="space-y-2 mb-15">
               <p className="text-sm font-semibold text-slate-800">Quantity</p>
 
-              <div className="flex w-fit items-center rounded-full border border-slate-200 bg-slate-50 px-2">
+              <div className="flex items-center px-2 border rounded-full w-fit border-slate-200 bg-slate-50">
                 <button
                   type="button"
                   onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                  className="h-10 w-10 text-xl"
+                  className="w-10 h-10 text-xl"
                 >
                   −
                 </button>
 
-                <span className="w-10 text-center text-sm font-semibold">
+                <span className="w-10 text-sm font-semibold text-center">
                   {quantity}
                 </span>
 
@@ -822,7 +824,7 @@ function ProductDetailView({
                       Math.min(currentSku?.quantity ?? 99, value + 1),
                     )
                   }
-                  className="h-10 w-10 text-xl"
+                  className="w-10 h-10 text-xl"
                 >
                   ＋
                 </button>
@@ -831,14 +833,14 @@ function ProductDetailView({
           </div>
 
           {/* Actions */}
-          <div className="sticky bottom-0 z-10 border-t border-slate-200 bg-white/95 py-3 backdrop-blur-sm">
+          <div className="sticky bottom-0 z-10 py-3 border-t border-slate-200 bg-white/95 backdrop-blur-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={handleAddToCart}
                 className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#ff7a1a] to-[#ff5a00] px-4 py-3 text-sm font-semibold text-white sm:flex-1"
               >
-                <ShoppingCart className="h-4 w-4" />
+                <ShoppingCart className="w-4 h-4" />
                 Add to cart
               </button>
 
@@ -847,7 +849,7 @@ function ProductDetailView({
                 onClick={handleBuyNow}
                 className="flex w-full items-center cursor-pointer justify-center gap-2 rounded-full border border-[#ffb17a] bg-[#fff7f2] px-4 py-3 text-sm font-semibold text-[#d85b00] sm:w-auto"
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="w-4 h-4" />
                 Buy now
               </button>
 
@@ -932,13 +934,13 @@ function ProductDetailView({
             height: flyState.height,
           }}
         >
-          <div className="flex h-full w-full items-center gap-3 p-3">
+          <div className="flex items-center w-full h-full gap-3 p-3">
             {/* Image */}
             <div className="relative h-full w-[34%] shrink-0 overflow-hidden rounded-xl bg-slate-100">
               <motion.img
                 src={flyState.imageSrc}
                 alt={flyState.title}
-                className="h-full w-full object-cover"
+                className="object-cover w-full h-full"
                 animate={{
                   scale: [1, 1.05, 1],
                 }}
@@ -949,12 +951,12 @@ function ProductDetailView({
             </div>
 
             {/* Product info */}
-            <div className="min-w-0 flex-1">
-              <p className="line-clamp-2 text-xs font-semibold text-slate-700">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold line-clamp-2 text-slate-700">
                 {flyState.title}
               </p>
 
-              <div className="mt-2 flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2 mt-2">
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-[#ff5000]">
                     {usdPrice}
@@ -1000,48 +1002,96 @@ export default function ProductDetailPage({
 
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect(() => {
+  //   if (!sourceItemId) {
+  //     setError("Missing product id.");
+
+  //     setLoading(false);
+
+  //     return;
+  //   }
+
+  //   let active = true;
+
+  //   const loadProduct = async () => {
+  //     try {
+  //       setLoading(true);
+  //       setError(null);
+
+  //       const data = await productService.getProductDetail(sourceItemId);
+
+  //       if (!active) {
+  //         return;
+  //       }
+
+  //       setProduct(normalizeProductDetailData(data, sourceItemId));
+  //     } catch (error) {
+  //       if (!active) {
+  //         return;
+  //       }
+
+  //       setError(
+  //         error instanceof Error ? error.message : "Failed to load product.",
+  //       );
+  //     } finally {
+  //       if (active) {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   };
+
+  //   void loadProduct();
+
+  //   return () => {
+  //     active = false;
+  //   };
+  // }, [sourceItemId]);
+
   useEffect(() => {
     if (!sourceItemId) {
       setError("Missing product id.");
-
       setLoading(false);
-
       return;
     }
 
-    let active = true;
+    const controller = new AbortController();
 
     const loadProduct = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const data = await productService.getProductDetail(sourceItemId);
+        const data = await productService.getProductDetail(
+          sourceItemId,
+          controller.signal,
+        );
 
-        if (!active) {
+        if (controller.signal.aborted) {
           return;
         }
 
         setProduct(normalizeProductDetailData(data, sourceItemId));
-      } catch (error) {
-        if (!active) {
+      } catch (error: any) {
+        if (error?.name === "CanceledError" || error?.code === "ERR_CANCELED") {
           return;
         }
+
+        console.error("GET PRODUCT DETAIL ERROR:", error);
 
         setError(
           error instanceof Error ? error.message : "Failed to load product.",
         );
       } finally {
-        if (active) {
+        if (!controller.signal.aborted) {
           setLoading(false);
         }
       }
     };
 
-    void loadProduct();
+    loadProduct();
 
     return () => {
-      active = false;
+      controller.abort();
     };
   }, [sourceItemId]);
 
@@ -1051,12 +1101,12 @@ export default function ProductDetailPage({
 
   if (error || !product) {
     return (
-      <div className="mx-auto mt-5 max-w-2xl p-10">
+      <div className="max-w-2xl p-10 mx-auto mt-5">
         <ServerError onRetry={() => window.location.reload()} />
       </div>
     );
   }
-
+  console.log("product:", product);
   return (
     <>
       <ProductDetailView
@@ -1069,9 +1119,7 @@ export default function ProductDetailPage({
         }
       />
 
-      <div className="mt-0">
-        <ExploreProduct />
-      </div>
+      <div className="mt-0">{/* <ExploreProduct /> */}</div>
     </>
   );
 }

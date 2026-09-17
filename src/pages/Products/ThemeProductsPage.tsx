@@ -12,7 +12,7 @@ import type { TaobaoProduct } from "@/types/taobao.types";
 import ServerError from "@/pages/ErrorPage";
 
 export default function ThemeProductsPage() {
-//   const navigate = useNavigate();
+  //   const navigate = useNavigate();
   const location = useLocation();
   const { themeId } = useParams();
 
@@ -206,6 +206,7 @@ export default function ThemeProductsPage() {
                   `${product.image}-${index}`
                 }
                 product={product}
+                themeId={themeId}
               />
             ))}
 

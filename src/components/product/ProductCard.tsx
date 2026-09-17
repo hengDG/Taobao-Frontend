@@ -15,6 +15,8 @@ type ProductCardProps<T extends ProductCardData = ProductCardData> = {
   onSelect?: (product: T) => void;
   className?: string;
   priority?: boolean;
+
+  themeId?: string; // add
 };
 
 const SLIDE_INTERVAL_MS = 3000;
@@ -38,6 +40,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
   onSelect,
   className = "",
   priority = false,
+  themeId,
 }: ProductCardProps<T>) {
   const navigate = useNavigate();
 
@@ -196,29 +199,32 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
   // SELECT PRODUCT
 
   const handleSelect = () => {
+    const productId = isTaobaoProduct(product)
+      ? product.sourceItemId
+      : product.id;
+
     if (onViewDetail) {
       onViewDetail(product);
-      return;
     }
 
     if (onSelect) {
       onSelect(product);
-      return;
     }
-
-    const productId = isTaobaoProduct(product)
-      ? product.sourceItemId
-      : product.id;
 
     if (!productId) {
       return;
     }
 
-    navigate(`/products/${productId}`, {
-      state: {
-        initialPrice: usdPriceText || null,
-      },
-    });
+    const detailUrl = `/products/${encodeURIComponent(productId)}`;
+    const initialPriceQuery = usdPriceText
+      ? `?initialPrice=${encodeURIComponent(usdPriceText)}`
+      : "";
+
+    window.open(
+      `${detailUrl}${initialPriceQuery}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   // PRICE / DISCOUNT
@@ -246,7 +252,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       ref={cardRef}
       onClick={handleSelect}
       role="button"
-      tabIndex={0}
+      tabIndex={10}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -297,8 +303,8 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
           }}
           className="group/search absolute right-2 top-2 z-10 inline-flex items-center overflow-hidden rounded-full border border-white/80 bg-white/90 text-slate-600 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-sm transition-all duration-200 hover:bg-white"
         >
-          <span className="flex h-6 w-6 items-center justify-center">
-            <Search className="h-3 w-3" />
+          <span className="flex items-center justify-center w-6 h-6">
+            <Search className="w-3 h-3" />
           </span>
 
           <span className="max-w-0 overflow-hidden whitespace-nowrap text-[10px] font-semibold text-[#194891] opacity-0 transition-all duration-200 group-hover/search:max-w-[84px] group-hover/search:pr-2.5 group-hover/search:opacity-100">
@@ -308,13 +314,13 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       </div>
 
       {/* PRODUCT INFO */}
-      <div className="space-y-0 p-3 sm:p-2">
+      <div className="p-3 space-y-0 sm:p-2">
         {/* TITLE */}
         <h3 className="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800">
           <img
             src="/taobao icon.png"
             alt="Taobao"
-            className="mr-1 inline-block h-4 w-4 align-text-bottom object-contain"
+            className="inline-block object-contain w-4 h-4 mr-1 align-text-bottom"
           />
 
           {title}
@@ -379,7 +385,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
                 // </div>
                 <div
                   key={`${item.type}-${index}`}
-                  className="h-5 flex items-center"
+                  className="flex items-center h-5"
                 >
                   {item.type === "original" ? (
                     <div
