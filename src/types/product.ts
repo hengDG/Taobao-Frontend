@@ -6,11 +6,17 @@ export type LocalizedText = {
 export type ProductOptionValue = {
   valueId: string;
   name: string;
+  nameOriginal?: string | null;
+  nameStatus?: "ready" | "pending";
+  nameLang?: string | null;
 };
 
 export type ProductOption = {
   propId: string;
   name: string;
+  nameOriginal?: string | null;
+  nameStatus?: "ready" | "pending";
+  nameLang?: string | null;
   values: ProductOptionValue[];
 };
 

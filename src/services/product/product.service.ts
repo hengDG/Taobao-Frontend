@@ -64,19 +64,17 @@ export const productService = {
   //   return data;
   // },
   async getProductDetail(
-  productId: string,
-  signal?: AbortSignal,
-): Promise<TaobaoProductDetailResponse> {
-  const { data } = await apiClient.get(
-    `/products/${productId}`,
-    {
+    productId: string,
+    lang: Language = "en",
+    signal?: AbortSignal,
+  ): Promise<TaobaoProductDetailResponse> {
+    const { data } = await apiClient.get(`/products/${productId}`, {
+      params: { lang },
       signal,
-    },
-  );
+    });
 
-  return data;
-},
-
+    return data;
+  },
   async getSimilarProducts(
     productId: string,
     limit: number = 20,

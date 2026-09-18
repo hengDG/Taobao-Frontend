@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { AppShell } from "./components/app-shell/AppShell";
 import { Toaster } from "./components/ui/sonner";
-import HomePage from "./pages/Home/HomePage";
 import { CartPage, type CartLineItem } from "./pages/Cart/CartPage";
-import ProductDetailPage from "./pages/ProductDetail/ProductDetailPage";
-import ProductsPage from "./pages/Products/ProductsPage";
-import SimilarProductsPage from "./pages/Products/SimilarProductsPage";
-import ThemeProductsPage from "./pages/Products/ThemeProductsPage";
-import ShopPage from "./pages/Shop/ShopPage";
+
+const HomePage = lazy(() => import("./pages/Home/HomePage"));
+const ProductDetailPage = lazy(
+  () => import("./pages/ProductDetail/ProductDetailPage"),
+);
+const ProductsPage = lazy(() => import("./pages/Products/ProductsPage"));
+const SimilarProductsPage = lazy(
+  () => import("./pages/Products/SimilarProductsPage"),
+);
+const ThemeProductsPage = lazy(
+  () => import("./pages/Products/ThemeProductsPage"),
+);
+const ShopPage = lazy(() => import("./pages/Shop/ShopPage"));
 
 function CartRoute({
   items,
@@ -96,31 +103,39 @@ function App() {
   return (
     <AppShell cartCount={cartCount}>
       <Toaster />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route
-          path="/cart"
-          element={
-            <CartRoute
-              items={items}
-              onUpdateQuantity={handleUpdateQuantity}
-              onRemoveItem={handleRemoveItem}
-            />
-          }
-        />
-        <Route
-          path="/products/:sourceItemId/similar"
-          element={<SimilarProductsPage />}
-        />
-        <Route path="/themes/:themeId" element={<ThemeProductsPage />} />
-        <Route
-          path="/products/:sourceItemId"
-          element={<ProductDetailPage onAddToCart={handleAddToCart} />}
-        />
-        <Route path="/shop/:shopId" element={<ShopPage />} />
-        <Route path="*" element={<HomePage />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="flex min-h-[40vh] items-center justify-center text-sm text-slate-500">
+            Loading...
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route
+            path="/cart"
+            element={
+              <CartRoute
+                items={items}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+              />
+            }
+          />
+          <Route
+            path="/products/:sourceItemId/similar"
+            element={<SimilarProductsPage />}
+          />
+          <Route path="/themes/:themeId" element={<ThemeProductsPage />} />
+          <Route
+            path="/products/:sourceItemId"
+            element={<ProductDetailPage onAddToCart={handleAddToCart} />}
+          />
+          <Route path="/shop/:shopId" element={<ShopPage />} />
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+      </Suspense>
     </AppShell>
   );
 }

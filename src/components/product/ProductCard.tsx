@@ -40,7 +40,6 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
   onSelect,
   className = "",
   priority = false,
-  themeId,
 }: ProductCardProps<T>) {
   const navigate = useNavigate();
 
@@ -58,8 +57,16 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
     ? (product.themeLabel ?? "Fashion")
     : "Product";
 
-  const title = isTaobaoProduct(product)
-    ? (product.title ?? product.titleOriginal ?? "Untitled product")
+  const isPendingTitle =
+    isTaobaoProduct(product) &&
+    (product.titleStatus === "pending" ||
+      product.title === null ||
+      product.title === undefined);
+
+  const displayTitle = isTaobaoProduct(product)
+    ? product.titleStatus === "ready" && product.title
+      ? product.title
+      : ""
     : getLocalizedText(product.title, language);
 
   const usdPriceText = isTaobaoProduct(product)
@@ -270,7 +277,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       <div className="relative aspect-[4/4] w-full overflow-hidden bg-white">
         <img
           src={imageUrl}
-          alt={title || "Product image"}
+          alt={displayTitle || "Product image"}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
@@ -314,16 +321,26 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       </div>
 
       {/* PRODUCT INFO */}
-      <div className="p-3 space-y-0 sm:p-2">
+      <div className="p-3 space-y-1 sm:p-2">
         {/* TITLE */}
         <h3 className="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800">
-          <img
+          {/* <img
             src="/taobao icon.png"
             alt="Taobao"
             className="inline-block object-contain w-4 h-4 mr-1 align-text-bottom"
-          />
+          /> */}
 
-          {title}
+          {isPendingTitle ? (
+            <span className="flex flex-col w-full gap-1">
+              <span className="flex flex-row items-center w-full gap-2">
+                <span className="h-4 w-[10%] rounded-md bg-slate-200 animate-pulse" />
+                <span className="h-3 w-[90%] rounded-md bg-slate-200 animate-pulse" />
+              </span>
+              <span className="h-3 w-[70%] rounded-md bg-slate-200 animate-pulse" />
+            </span>
+          ) : (
+            displayTitle || "Untitled product"
+          )}
         </h3>
 
         <div>

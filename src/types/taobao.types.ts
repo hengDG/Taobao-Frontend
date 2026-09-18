@@ -1,10 +1,14 @@
+export type TitleStatus = "ready" | "pending";
+
 export type TaobaoProduct = {
   source?: string;
   itemId?: string;
   sourceItemId?: string;
   supplyProductId?: string | null;
-  title?: string;
-  titleOriginal?: string;
+  title?: string | null;
+  titleOriginal?: string | null;
+  titleLang?: string | null;
+  titleStatus?: TitleStatus;
   image?: string;
   images?: string[];
   categoryName?: string;
@@ -38,8 +42,10 @@ export type TaobaoExactProduct = {
   source?: string;
   sourceItemId?: string;
   supplyProductId?: string | null;
-  title?: string;
-  titleOriginal?: string;
+  title?: string | null;
+  titleOriginal?: string | null;
+  titleLang?: string | null;
+  titleStatus?: TitleStatus;
   image?: string;
   shopName?: string | null;
   shopRating?: number | null;
