@@ -23,12 +23,12 @@ export default function HomePage() {
     <>
       <HomeMarketplaceDashboard />
 
-      <div className="mx-auto mt-3 grid grid-cols-3 items-center px-2">
+      <div className="grid items-center grid-cols-3 px-2 mx-auto mt-18">
         {/* left spacer to balance the grid */}
         <div />
 
         <div className="flex justify-center">
-          <div className="flex w-fit items-center rounded-xl border border-slate-200 p-1 shadow-sm">
+          <div className="flex items-center p-1 border shadow-sm w-fit rounded-xl border-slate-200">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.key;
 
@@ -69,7 +69,7 @@ export default function HomePage() {
             className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#194891] hover:text-[#194891]"
             aria-label="Refresh product data"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="w-4 h-4" />
           </button>
         </div>
       </div>

@@ -135,7 +135,6 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       },
       {
         threshold: 0.1,
-
         // Start slightly before the card enters the screen
         rootMargin: "150px 0px",
       },
@@ -323,12 +322,12 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       {/* PRODUCT INFO */}
       <div className="p-3 space-y-1 sm:p-2">
         {/* TITLE */}
-        <h3 className="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800">
-          {/* <img
+        <h3 className="line-clamp-2 text-[13px] font-semibold leading-4 text-slate-800">
+          <img
             src="/taobao icon.png"
             alt="Taobao"
             className="inline-block object-contain w-4 h-4 mr-1 align-text-bottom"
-          /> */}
+          />
 
           {isPendingTitle ? (
             <span className="flex flex-col w-full gap-1">
@@ -483,17 +482,15 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
           </div>
 
           {/* PRICE */}
-          <div className="flex items-end justify-between gap-3">
-            <div className="flex items-center gap-1">
-              <div className="text-[16px] font-bold text-[#194891]">
-                {usdPriceText || "Price on request"}
+          <div className="flex items-end justify-between gap-0">
+            <div className="flex flex-col mt-0.5 items-start gap-0 leading-none">
+              <div className="text-[16px] font-bold leading-none text-[#194891]">
+                KHR {khrDisplayValue}
               </div>
 
-              {isTaobaoProduct(product) && khrDisplayValue ? (
-                <div className="mt-0.5 text-[11px] text-slate-400">
-                  {khrDisplayValue}
-                </div>
-              ) : null}
+              <div className="mt-0 text-[11px] leading-​3 text-slate-400">
+                USD {usdPriceText || "Price on request"}
+              </div>
             </div>
 
             {/* SOLD */}

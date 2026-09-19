@@ -1,4 +1,4 @@
-import { Star, Eye, ShoppingBag } from "lucide-react";
+import { Star, Eye, ShoppingBag, ChevronRight } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import image1 from "/slideImage/slide1.jpg";
 import image2 from "/slideImage/slide2.jpg";
@@ -304,264 +304,162 @@ export function HomeMarketplaceDashboard() {
       )}
 
       {/* TOP AREA */}
-      {/* <div className="space-y-5">
-        <p className="text-3xl changa-one-regular-italic">Alegreya Normal</p>
-
-        <p className="text-3xl changa-one-regular">Permanent Marker</p>
-
-        <p className="text-5xl font-courgette">Cambodia Festival</p>
-
-        <p className="text-5xl font-display">Jolly Lodger</p>
-
-        <p className="open-sans-variable">Libre Franklin</p>
-      </div> */}
+      {/* TOP AREA */}
       <div
-        className="flex flex-col gap-2  lg:flex-row lg:items-stretch"
+        className="
+    grid
+    gap-2
+    py-3
+
+    lg:h-[280px]
+    lg:grid-cols-[35fr_20fr_45fr]
+    lg:items-stretch
+  "
       >
-        {" "}
-        
-        {/* USER + TRACK COMBINED CARD */}
-        <div
-          className="relative flex-1 min-w-0 p-3 overflow-hidden bg-center bg-no-repeat bg-cover border border-blue-100 shadow-sm  rounded-2xl sm:p-4"
-          style={{
-            backgroundImage: "url('/backgroundSlideImage.png')",
-          }}
-        >
-          {/* Background overlay */}
-          <div className="
-  absolute
-  inset-0
-  bg-gradient-to-r
-  from-white/60
-  via-white/10
-  to-transparent
-  backdrop-blur-[2px]
-" />
-
-          {/* USER + TRACK CONTENT */}
-          <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-[42%_58%] 2xl:grid-cols-[42%_58%]">
-            {/* USER SECTION */}
-            <div className="pb-4 space-y-4 border-b border-white/40 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4">
-              {/* USER INFO */}
-              <div className="flex items-center gap-3">
-                <img
-                  src="https://i.pravatar.cc/100"
-                  alt="avatar"
-                  className="object-cover w-12 h-12 border-2 border-white rounded-full shadow-sm"
-                />
-
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#222]">VTS-55734</h3>
-
-                    <span className="rounded-full bg-[#F97908] px-1.5 py-0.5 text-[9px] font-bold text-white">
-                      VIP
-                    </span>
-                  </div>
-
-                  <div className="mt-1 flex gap-3 text-[11px] text-[#323232]">
-                    <span>Premium User</span>
-                    {/* <span>Shipping</span> */}
-                  </div>
-                </div>
-              </div>
-
-              {/* ORDER STATUS */}
-              <div className="grid grid-cols-3 gap-4 mt-3 text-center">
-                {[
-                  {
-                    number: "21",
-                    label: "Cart",
-                  },
-                  {
-                    number: "2",
-                    label: "To Pay",
-                  },
-                  {
-                    number: "0",
-                    label: "To Ship",
-                  },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <p className="text-sm font-bold text-gray-800">
-                      {item.number}
-                    </p>
-
-                    <span className="text-[10px] text-[#133458]">
-                      {item.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* QUICK MENU */}
-              <div className="grid grid-cols-3 gap-3 mt-2">
-                {[
-                  {
-                    icon: <ShoppingBag size={15} />,
-                    label: "Orders",
-                  },
-                  {
-                    icon: <Star size={15} />,
-                    label: "Favorites",
-                  },
-                  {
-                    icon: <Eye size={15} />,
-                    label: "Viewed",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="py-2 text-center text-gray-500 rounded-xl bg-gray-50"
-                  >
-                    <div className="flex justify-center">{item.icon}</div>
-
-                    <p className="mt-1 text-[10px]">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* ACTIVE ORDER SLIDER */}
-              <div className="mt-3">
-                {/* Slider Container */}
-                <div className="overflow-hidden rounded-xl">
-                  <div
-                    className={`flex ${enableTransition ? "transition-transform duration-500 ease-out" : ""}`}
-                    style={{
-                      transform: `translateX(-${activeOrder * 100}%)`,
-                    }}
-                  >
-                    {userOrders.map((order, index) => (
-                      <div
-                        key={index}
-                        className="flex min-w-full items-center gap-3 rounded-xl bg-gray-50 p-2.5 transition hover:bg-gray-100"
-                      >
-                        {/* Product Image */}
-                        <img
-                          src={order.image}
-                          alt=""
-                          className="object-cover w-8 h-8 shrink-0 rounded-xl"
-                        />
-
-                        {/* Order Information */}
-                        <div className="flex-1 overflow-hidden">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold text-[#F97908]">
-                              {order.status}
-                            </span>
-
-                            <span className="text-[11px] text-gray-400">
-                              {order.date}
-                            </span>
-                          </div>
-
-                          <p className="mt-1 truncate text-[10px] text-gray-600">
-                            {order.message}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* TRACK SECTION */}
-            <div className="w-full pt-1 sm:pr-5">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-sm font-bold">Track Your Orders</h3>
-
-                <button className="text-xs text-gray-400">View All</button>
-              </div>
-
-              <div className="space-y-7">
-                {[
-                  {
-                    image:
-                      "https://img.alicdn.com/imgextra/i1/2214183122092/O1CN011VvJPQ1RKBNZ61qun_!!0-item_pic.jpg",
-                    step: 1,
-                  },
-                  {
-                    image:
-                      "https://img.alicdn.com/imgextra/i1/132334451/O1CN01undF2r1ikc2VjbaER~crop,0,0,1842,1842~_!!132334451.jpg",
-                    step: 2,
-                  },
-                  {
-                    image:
-                      "https://img.alicdn.com/imgextra/i2/2215507736160/O1CN01fnRgKL1vNKht37F1E_!!2215507736160.jpg",
-                    step: 5,
-                  },
-                ].map((order, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <img
-                      src={order.image}
-                      className="object-cover w-12 h-12 rounded-xl"
-                    />
-
-                    {/* update tracking to paid store china shipping cambodia delivered */}
-                    <div className="flex-1">
-                      <div className="flex items-center">
-                        {[1, 2, 3, 4, 5, 6].map((step, i) => (
-                          <Fragment key={step}>
-                            <div
-                              className={`h-2 w-2 rounded-full ${
-                                step <= order.step
-                                  ? "bg-[#F97908]"
-                                  : "bg-gray-500"
-                              }`}
-                            />
-
-                            {i < 5 && (
-                              <div
-                                className={`h-[2px] flex-1 ${
-                                  step < order.step
-                                    ? "bg-[#F97908]"
-                                    : "bg-gray-400"
-                                }`}
-                              />
-                            )}
-                          </Fragment>
-                        ))}
-                      </div>
-
-                      <div className="mt-2 flex justify-between gap-1 text-[10px] text-gray-800">
-                        <span>Paid</span>
-                        <span>Store</span>
-                        <span>China</span>
-                        <span>Shipping</span>
-                        <span>Cambodia</span>
-                        <span>Done</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* AD */}
+        {/* ============================= */}
+        {/* 35% - HERO */}
+        {/* ============================= */}
         <div
           className="
-    w-full
-    shrink-0
+      relative
+      h-full
+      min-h-[250px]
+      overflow-hidden
+      rounded-2xl
+      px-6
 
-    lg:w-[240px]
-    xl:w-[260px]
-    2xl:w-[280px]
+      lg:min-h-0
+    "
+        >
+          <div className="relative z-10 flex flex-col h-full max-w-4xl">
+            {/* Small top information */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#dd8a16] text-[8px] font-bold text-white">
+                  V
+                </span>
+
+                <span className="-ml-1.5 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#177e1f] text-[8px] font-bold text-[#fbfbfb]">
+                  T
+                </span>
+
+                <span className="-ml-1.5 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#1A4891] text-[8px] font-bold text-white">
+                  S
+                </span>
+              </div>
+
+              <p className="text-[10px] font-medium tracking-wide text-[#194891] sm:text-xs">
+                40,000+ customers are already buying from China
+              </p>
+            </div>
+
+            {/* Main heading */}
+            <div className="mt-5">
+              <h1
+                className="
+            max-w-[900px]
+            font-serif
+            text-[42px]
+            font-bold
+            leading-[0.9]
+            tracking-[0.01em]
+            text-[#194891]
+
+            xl:text-[52px]
+            2xl:text-[70px]
+          "
+              >
+                Built{" "}
+                <span className="font-serif italic font-normal">For Speed</span>
+                <br />
+                Not Patience
+              </h1>
+            </div>
+
+            {/* Description */}
+            <div className="max-w-xl mt-4 italic">
+              <p className="text-[11px] font-medium leading-relaxed text-black/80 sm:text-sm">
+                Skip slow orders, confusing steps, and long waiting times. Your
+                products are only a few simple steps away.
+              </p>
+            </div>
+          </div>
+
+          <div className="absolute rounded-full pointer-events-none -bottom-24 -right-20 h-72 w-72 bg-white/10 blur-3xl" />
+        </div>
+
+        {/* ============================= */}
+        {/* 20% - AIRPLANE */}
+        {/* ============================= */}
+        {/* 25% - FLOATING PNG */}
+        <div
+          className="
+    relative
+    flex
+    h-full
+    min-h-[250px]
+    items-center
+    justify-center
+    overflow-hidden
+    rounded-2xl
+
+    lg:min-h-0
   "
         >
+          {/* Shadow */}
           <div
-            className="relative w-full overflow-hidden  aspect-square rounded-2xl"
-          >
-            {slides.map((slide, index) => (
-              <div
-                key={slide.id}
-                className={`
+            className="
+      absolute
+      bottom-[12%]
+      left-1/2
+      h-5
+      w-[48%]
+      -translate-x-1/2
+      rounded-[50%]
+      blur-xl
+      animate-floating-shadow
+    "
+          />
+
+          {/* Floating image */}
+          <img
+            src="/airplane-3d.png"
+            alt="airplane"
+            className="
+      relative
+      z-10
+      h-[100%]
+      w-[100%]
+      max-w-none
+      right-2
+      object-contain
+      animate-floating-image
+    "
+          />
+        </div>
+
+        {/* ============================= */}
+        {/* 40% - SLIDER */}
+        {/* ============================= */}
+        
+        <div
+          className="
+      relative
+      h-full
+      min-h-[350px]
+      overflow-hidden
+      rounded-2xl
+
+      lg:min-h-[320px]
+    "
+        >
+          {slides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`
           absolute
           inset-0
-          flex
-          items-center
-          justify-center
+          aspect-[16/9]
           transition-all
           duration-500
           ${
@@ -570,113 +468,34 @@ export function HomeMarketplaceDashboard() {
               : "translate-x-6 opacity-0"
           }
         `}
-              >
-                {slide.image && (
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="object-cover w-full h-full  rounded-2xl"
-                  />
-                )}
-              </div>
-            ))}
-
-            {/* Slider Dots */}
-            <div
-              className="absolute flex gap-2 -translate-x-1/2  bottom-2 left-1/2"
             >
-              {slides.map((slide, index) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => setActiveSlideIndex(index)}
-                  className={`
+              {slide.image && (
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="object-cover w-full h-full "
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Slider Dots */}
+          <div className="absolute flex gap-2 -translate-x-1/2 bottom-3 left-1/2">
+            {slides.map((slide, index) => (
+              <button
+                key={slide.id}
+                type="button"
+                onClick={() => setActiveSlideIndex(index)}
+                className={`
             h-1.5
+            cursor-pointer
             rounded-full
             transition-all
 
-        cursor-pointer
             ${index === activeSlideIndex ? "w-7 bg-white" : "w-1.5 bg-white/60"}
           `}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Category */}
-        <div
-          className="
-    w-full
-    shrink-0
-    lg:w-[300px]
-    2xl:w-[500px]
-  "
-        >
-          {" "}
-          <div className="p-2 shadow-sm rounded-2xl bg-white/50">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  onMouseEnter={() => setHoveredCategory(category.name)}
-                  onMouseLeave={() =>
-                    setHoveredCategory((current) =>
-                      current === category.name ? null : current,
-                    )
-                  }
-                  className="
-            rounded-[18px]
-            bg-gradient-to-b
-            from-[#9EC5FF]
-            via-[#D7E8FF]
-            to-[#F4F9FF]
-            p-[1px]
-            shadow-sm
-            transition
-            hover:-translate-y-0.5
-            hover:shadow-md
-          "
-                >
-                  <div
-                    className="
-              relative
-              flex
-              h-[80px]
-              items-start
-              overflow-hidden
-              rounded-[17px]
-              bg-gradient-to-bl
-              from-[#E8F2FF]
-              via-[#F7FBFF]
-              to-white
-              px-3
-              pt-3
-            "
-                  >
-                    <p className="relative z-10 max-w-[110px] text-[14px] font-semibold leading-[18px] text-[#1E293B]">
-                      {category.name}
-                    </p>
-
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="
-                absolute
-                2xl:bottom-[-13px]
-                2xl:right-[-6px]
-                2xl:h-[80px]
-                2xl:w-[80px]
-                bottom-[-10px]
-                right-[-5px]
-                h-17
-                w-17
-                object-contain
-              "
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+              />
+            ))}
           </div>
         </div>
       </div>
