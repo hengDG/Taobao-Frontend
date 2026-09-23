@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { ProductDetailSkeleton } from "@/components/ui/ProductSkeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import productService from "@/services/product/product.service";
-import type { ProductCard as ProductCardType } from "@/types/product";
+import type { ProductCard as ProductCardType } from "@/shared/types";
 
 import ServerError from "../ErrorPage";
 import { ProductDetailView } from "./ProductDetailView";
@@ -12,6 +12,7 @@ import {
   applyProductDetailTranslations,
   normalizeProductDetailData,
 } from "./productDetail.utils";
+import ExploreProduct from "@/components/product/ExploreProduct";
 
 export default function ProductDetailPage({
   onAddToCart,
@@ -313,6 +314,7 @@ export default function ProductDetailPage({
   console.log(product);
 
   return (
+    <>
     <ProductDetailView
       product={product}
       onSelectProduct={() => {
@@ -322,5 +324,11 @@ export default function ProductDetailPage({
         onAddToCart?.(selectedProduct, selectedOptions, quantity)
       }
     />
+    <span className="block mt-10">
+      <ExploreProduct  />
+    </span>
+    
+    </>
+    
   );
 }

@@ -8,8 +8,8 @@ import { getLocalizedText, useLanguage } from "@/contexts/LanguageContext";
 import productService from "@/services/product/product.service";
 import type {
   ProductCard as ProductCardType,
-//   ProductSku,
-} from "@/types/product";
+  //   ProductSku,
+} from "@/shared/types";
 
 import type {
   FlyState,

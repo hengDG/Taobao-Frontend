@@ -36,7 +36,7 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
         {/* left intentionally blank: logo moved to header for desktop */}
 
         {/* Navigation */}
-        <nav className="flex w-full flex-1 flex-col justify-center items-center gap-2">
+        <nav className="flex flex-col items-center justify-center flex-1 w-full gap-2">
           {items.map((item) => {
             const isActive = location.pathname === item.href;
             const isCart = item.icon === "cart";
@@ -63,7 +63,7 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
               >
                 {isCart && (
                   <span
-                    className="pointer-events-none absolute inset-0 rounded-2xl bg-white/10 opacity-0"
+                    className="absolute inset-0 opacity-0 pointer-events-none rounded-2xl bg-white/10"
                     data-cart-flash="true"
                   />
                 )}
@@ -94,9 +94,9 @@ export function AppSidebar({ items, cartCount = 0 }: AppSidebarProps) {
       </aside>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white px-4 py-2 lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 px-4 py-2 bg-white border-t border-gray-200 lg:hidden">
         <ul
-          className="mx-auto grid max-w-md gap-2"
+          className="grid max-w-md gap-2 mx-auto"
           style={{
             gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
           }}

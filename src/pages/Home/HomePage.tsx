@@ -23,7 +23,7 @@ export default function HomePage() {
     <>
       <HomeMarketplaceDashboard />
 
-      <div className="grid items-center grid-cols-3 px-2 mx-auto mt-18">
+      <div className="grid items-center grid-cols-3 px-2 mx-auto mt-2">
         {/* left spacer to balance the grid */}
         <div />
 

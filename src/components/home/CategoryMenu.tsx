@@ -14,7 +14,7 @@ import { useEffect, useRef, useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
 import productService from "@/services/product/product.service";
-import type { CategoryGroup } from "@/types/taobao.types";
+import type { CategoryChild, CategoryGroup } from "@/shared/types";
 
 // const categoryIconMap: Record<
 //   string,
@@ -177,7 +177,7 @@ export default function CategoryMenu() {
   return (
     <div className="relative " onMouseLeave={closeMenu}>
       {/* Main Categories */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         {categories.map((group) => {
           const active = activeCategory?.label === group.label;
           const hasChildren = (group.children?.length ?? 0) > 0;
@@ -188,9 +188,9 @@ export default function CategoryMenu() {
               key={group.label}
               type="button"
               onMouseEnter={() => openMenu(group)}
-              className={`flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold transition ${
+              className={`flex  cursor-pointer  items-center gap-1 rounded-t-lg px-2 pb-1 text-xs font-semibold transition ${
                 active
-                  ? "bg-[#194891]/10 text-[#194891]"
+                  ? "bg-[#f9f9fb] text-[#194891]"
                   : "bg-transparent text-slate-700 hover:bg-blue-50 hover:text-[#194891]"
               }`}
             >
@@ -203,7 +203,7 @@ export default function CategoryMenu() {
                 // </span>
                 <span
                   className={`
-                    flex h-6 w-6 shrink-0
+                    flex h-6 w-6 bg-re shrink-0
                     items-center justify-center
                     rounded-md
                     ${icon.color}
@@ -230,11 +230,27 @@ export default function CategoryMenu() {
           );
         })}
       </div>
-      
+
+      {/* Child Categories Dropdown */}
       {/* Child Categories Dropdown */}
       {activeCategory && (activeCategory.children?.length ?? 0) > 0 && (
         <div
-          className="absolute left-0 top-full z-50 mt-1 w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-xl"
+          className="
+          absolute
+          left-58
+          top-full
+          z-50
+          mt-0
+          w-[75%]
+          max-h-[420px]
+          overflow-y-auto
+          rounded-lg
+          border
+          border-slate-200
+          bg-white
+          p-6
+          shadow-2xl
+        "
           onMouseEnter={() => {
             if (closeTimer.current) {
               clearTimeout(closeTimer.current);
@@ -242,29 +258,102 @@ export default function CategoryMenu() {
           }}
           onMouseLeave={closeMenu}
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-x-0 gap-y-1 lg:grid-cols-6">
             {activeCategory.children?.map((child) => {
               const childPath = child.themeId
                 ? `/themes/${child.themeId}`
                 : (child.productsUrl ?? "#");
 
               return (
-                <Link
-                  key={child.label}
-                  to={childPath}
-                  state={{
-                    categoryLabel: child.label,
-                  }}
-                  className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-[11px] font-medium text-slate-700 transition hover:bg-blue-50 hover:text-[#194891]"
-                >
-                  <span>{child.label}</span>
+                <div key={child.label} className="min-w-0 group">
+                  {/* Parent Category */}
 
-                  {child.flag && (
-                    <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[9px] text-orange-600">
-                      {child.flag}
-                    </span>
-                  )}
-                </Link>
+                  <Link
+                    to={childPath}
+                    state={{
+                      categoryLabel: child.label,
+                    }}
+                    className="
+                          mb-3
+                          flex
+                          items-center
+                          gap-1
+                          text-sm
+                          font-mono
+                          text-slate-800
+                          transition
+                          hover:text-[#194891]
+                          "
+                  >
+                    {child.label}
+
+                    {child.flag === "restricted" && (
+                      <span
+                        className="
+                            rounded-full
+                            bg-red-100
+                            px-2
+                            py-[2px]
+                            text-[9px]
+                            font-semibold
+                            text-red-600
+                            "
+                      >
+                        Restricted
+                      </span>
+                    )}
+                  </Link>
+
+                  {/* Child Items */}
+
+                  <div className="space-y-1 ">
+                    {child.children?.map((item) => (
+                      <Link
+                        key={item.label}
+                        to={
+                          item.themeId
+                            ? `/themes/${item.themeId}`
+                            : (item.productsUrl ?? "#")
+                        }
+                        state={{
+                          categoryLabel: item.label,
+                        }}
+                        className="
+                                flex
+                                items-center
+                                justify-between
+                                rounded-md
+                                px-2
+                                py-1
+                                text-xs
+                                text-slate-600
+                                transition-all
+                                hover:bg-blue-50
+                                hover:text-[#194891]
+                                "
+                      >
+                        <span>{item.label}</span>
+
+                        {item.flag === "restricted" && (
+                          <span
+                            className="
+                                  ml-2
+                                  rounded
+                                  bg-red-50
+                                  px-1.5
+                                  py-0.5
+                                  text-[8px]
+                                  font-medium
+                                  text-red-500
+                                  "
+                          >
+                            ⚠
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               );
             })}
           </div>

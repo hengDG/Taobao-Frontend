@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { BadgePercent, Search } from "lucide-react";
 
 import { getLocalizedText, type Language } from "@/contexts/LanguageContext";
-import type { ProductCard as LocalizedProduct } from "@/types/product";
-import type { TaobaoProduct } from "@/types/taobao.types";
+import type { ProductCard as LocalizedProduct } from "@/shared/types";
+import type { TaobaoProduct } from "@/shared/types";
 
 export type ProductCardData = LocalizedProduct | TaobaoProduct;
 
@@ -323,11 +323,12 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
       <div className="p-3 space-y-1 sm:p-2">
         {/* TITLE */}
         <h3 className="line-clamp-2 text-[13px] font-semibold leading-4 text-slate-800">
+          {!isPendingTitle ? (
           <img
             src="/taobao icon.png"
             alt="Taobao"
             className="inline-block object-contain w-4 h-4 mr-1 align-text-bottom"
-          />
+          />):""}
 
           {isPendingTitle ? (
             <span className="flex flex-col w-full gap-1">
@@ -410,7 +411,7 @@ export function ProductCard<T extends ProductCardData = ProductCardData>({
                             items-center
                             gap-1
                             rounded-md
-                            px-2
+                            px-0
                             py-0.5
                             text-[11px]
                             font-bold

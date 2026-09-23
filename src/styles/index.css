@@ -8,7 +8,7 @@
 .search-light-wrap {
   position: relative;
 
-  border-radius: 16px;
+  border-radius: 50px;
 
   padding: 1.5px;
 
@@ -58,7 +58,7 @@
 
   z-index: 1;
 
-  border-radius: 14.5px;
+  border-radius:50px;
 
   background: linear-gradient(
     90deg,
@@ -78,6 +78,8 @@
     --search-angle: 360deg;
   }
 }
+
+
 
 
 

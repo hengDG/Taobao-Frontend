@@ -1,11 +1,6 @@
 import apiClient from "../api/client";
 import type { Language } from "@/contexts/LanguageContext";
 
-type TranslationKind = "title" | "sku";
-
-type TranslationResponse = {
-  translations: Record<string, string>;
-};
 import type {
   TaobaoHomeResponse,
   TaobaoProductsResponse,
@@ -13,7 +8,13 @@ import type {
   ExploreProductsResponse,
   ByLinkProductResponse,
   CategoryGroup,
-} from "@/types/taobao.types";
+} from "@/shared/types";
+
+type TranslationKind = "title" | "sku";
+
+type TranslationResponse = {
+  translations: Record<string, string>;
+};
 
 export const productService = {
   async getCategories(): Promise<CategoryGroup[]> {

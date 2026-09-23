@@ -45,27 +45,27 @@ import { extractProductUrl } from "@/utils/extractProductUrl";
 
 const sidebarItems: SidebarItem[] = [
   {
-    label: "Home",
+    label: "",
     href: "/",
     icon: "home",
   },
   {
-    label: "Chat",
+    label: "",
     href: "/chat",
     icon: "chat",
   },
   {
-    label: "Cart",
+    label: "",
     href: "/cart",
     icon: "cart",
   },
   {
-    label: "Track",
+    label: "",
     href: "/track",
     icon: "track",
   },
   {
-    label: "Profile",
+    label: "",
     href: "/profile",
     icon: "profile",
   },
@@ -616,9 +616,68 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
 
         {/* Header */}
 
-        <header className="fixed top-0 left-0 right-0 z-20 px-3 pb-2 border-b border-gray-200/20 bg-white/60 backdrop-blur-md sm:px-4 lg:px-20">
+        <header className="fixed top-0 left-0 right-0 z-20 px-3 sm:px-4 bg-white/60 backdrop-blur-md">
+          {" "}
           {/* Utility Bar */}
+          {/* <div
+            className={[
+              "overflow-hidden  border-gray-200 bg-transparent transition-all duration-300 ease-out",
 
+              showUtilityBar ? "max-h-10 opacity-100" : "max-h-0 opacity-0",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "mx-auto flex w-[98%] items-center justify-between gap-3 text-xs text-slate-500 transition-all duration-300",
+
+                showUtilityBar ? "py-2" : "py-0",
+              ].join(" ")}
+            >
+
+              <div className="flex items-center gap-4 whitespace-nowrap">
+                <span className="hidden items-center gap-1.5 md:inline-flex">
+                  Welcome to E-Taobao from VTS Company, Lyheng
+                </span>
+
+                <span className="hidden items-center gap-1.5 md:inline-flex">
+                  <HelpCircle className="size-3.5" />
+                  Support
+                </span>
+              </div>
+
+              <div className="items-center hidden gap-4 whitespace-nowrap sm:flex">
+                <span className="inline-flex items-center gap-1.5">
+                  <Phone className="size-4" />
+                  Contact Us
+                </span>
+
+
+                <button
+                  type="button"
+                  onClick={() => setLanguage(nextLanguage)}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2 py-1 text-xs text-slate-700 transition hover:bg-slate-100"
+                  aria-label={`Switch language to ${
+                    languageMeta[nextLanguage].label
+                  }`}
+                >
+                  <img
+                    src={currentLanguage.flagSrc}
+                    alt={currentLanguage.alt}
+                    width={18}
+                    height={12}
+                    className="rounded-xs"
+                  />
+
+                  <span>{currentLanguage.label}</span>
+                </button>
+
+                <span className="inline-flex items-center gap-1.5">
+                  <Smartphone className="size-3.5" />
+                  Get App
+                </span>
+              </div>
+            </div>
+          </div> */}
           {/* Utility Bar */}
           <div
             className={[
@@ -628,15 +687,15 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
           >
             <div
               className="
-      mx-auto
-      flex
-      h-8
-      w-[95%]
-      items-center
-      justify-between
-      text-[10px]
-      text-slate-600
-    "
+                mx-auto
+                flex
+                h-8
+                w-[95%]
+                items-center
+                justify-between
+                text-[10px]
+                text-slate-600
+              "
             >
               {/* LEFT */}
               <div className="flex items-center gap-5 whitespace-nowrap">
@@ -773,7 +832,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
               </div>
             </div>
           </div>
-
           {/* Promo Banner */}
           <div
             className={[
@@ -849,235 +907,163 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
               </button>
             </div>
           </div>
-
           {/* Main Header */}
+          {/* Main Header */}
+          <div className="pt-2">
+            <div
+              className="
+      mx-auto
+      flex
+      w-full
+      max-w-[1500px]
+      items-center
+      gap-4
+      px-4
+      sm:px-6
+      lg:px-8
+      justify-between
+    "
+            >
+              {/* Logo */}
+              <Link to="/" className="shrink-0">
+                <img
+                  src="/vtslogo.jpg"
+                  alt="Logo"
+                  width={isCompact ? 90 : 110}
+                  height={isCompact ? 90 : 110}
+                  className="hidden transition-all duration-300 rounded-xl lg:block"
+                />
 
-          <div className="pt-1 lg:pl-20">
-            <div className="mx-auto flex w-[95%] justify-between  items-center gap-2 sm:gap-5">
-              {/* Mobile Logo */}
-
-              <Link to="/">
                 <img
                   src="/vtslogo.jpg"
                   alt="Logo"
                   width={64}
                   height={64}
-                  className="transition-all duration-200 shrink-0 rounded-xl lg:hidden"
+                  className=" rounded-xl lg:hidden"
                 />
               </Link>
 
-              {/* Desktop Logo (moved from sidebar) */}
-              <img
-                src="/vtslogo.jpg"
-                alt="Logo"
-                width={isCompact ? 106 : 116}
-                height={isCompact ? 106 : 116}
-                className="hidden transition-all duration-200 shrink-0 rounded-xl lg:inline-flex lg:mr-4"
-              />
-
-              <div className="flex w-[95%] gap-10 justify-end">
-                <div className="w-[65%] search-light-wrap sm:ml-0 lg:ml-0">
-                  <form
-                    onSubmit={handleSearchSubmit}
-                    className="flex items-center min-w-0 gap-2 px-3 py-2 search-light-form sm:px-4"
-                  >
-                    <ScanQrCode className="mr-2 size-5 shrink-0 text-slate-600" />
-
-                    <span className="w-px h-6 mr-2 bg-slate-300" />
-
-                    <Search className="size-4 shrink-0 text-slate-400" />
-
-                    <div className="relative flex-1">
-                      {!searchText && !hasStartedTyping && (
-                        <div
-                          className="
-                      pointer-events-none
-                      absolute
-                      inset-0
-                      flex
-                      items-center
-                      gap-1.5
-                      text-sm
-                    "
-                        >
-                          {!searchFocused && currentSearchExample.category && (
-                            <>
-                              <span
-                                className={`
-                  ml-0
-                  rounded-md
-                  px-2
-                  py-0.5
-                  text-xs
-                  font-semibold
-                  ${currentSearchExample.color}
-                `}
-                              >
-                                {currentSearchExample.category}
-                              </span>
-
-                              <span className="text-slate-400">:</span>
-                            </>
-                          )}
-
-                          <span className="text-slate-400">
-                            {placeholderText}
-                          </span>
-                        </div>
-                      )}
-
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchText}
-                        onFocus={() => {
-                          setSearchFocused(true);
-
-                          // complete current suggestion
-                          setPlaceholderText(currentSearchExample.child);
-                        }}
-                        onBlur={() => {
-                          setSearchFocused(false);
-
-                          if (!searchText) {
-                            setHasStartedTyping(false);
-
-                            setPlaceholderText("");
-                            setIsDeleting(false);
-                          }
-                        }}
-                        onChange={(event) => {
-                          const value = event.target.value;
-
-                          setSearchText(value);
-                          setSearchFocused(true);
-
-                          if (value.length > 0) {
-                            setHasStartedTyping(true);
-                          } else {
-                            setHasStartedTyping(false);
-                          }
-                        }}
-                        className="w-full text-sm bg-transparent outline-none text-slate-700"
-                      />
-                    </div>
-
-                    {/* <button
-                      type="submit"
-                      className="
-                          hidden
-                          rounded-full
-                          bg-[#235BA7]
-                          px-5
-                          py-1.5
-                          text-xs
-                          font-medium
-                          text-white
-                          transition
-                          hover:bg-[#194891]
-                          md:inline-flex
-                        "
-                    >
-                      Search
-                    </button> */}
-                    <span className="w-px h-6 mr-2 bg-slate-300" />
-
-                    <Camera
-                      onClick={() => setShowImageSearch(true)}
-                      className="size-4 shrink-0 text-slate-400"
-                    />
-                  </form>
-                </div>
-
-                {/* Search Image */}
-
-                {/* <button
-                type="button"
-                className="group relative flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/20 bg-linear-to-br from-[#194891] via-[#245ca8] to-[#3b82d0] px-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(25,72,145,0.28)] transition-all duration-300 hover:-translate-y-0.5 md:px-4"
-              >
-                <Camera className="relative z-10 size-5" />
-
-                <span className="relative z-10 hidden whitespace-nowrap md:inline">
-                  Search by image
-                </span>
-              </button> */}
-
-                {/* left button */}
-                <div className="items-center hidden gap-2 mr-20 shrink-0 lg:flex">
-                  <button
-                    type="button"
-                    className="grid transition cursor-pointer size-10 shrink-0 place-items-center rounded-xl hover:bg-slate-100"
-                  >
-                    <Heart className="size-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="grid transition cursor-pointer size-10 shrink-0 place-items-center rounded-xl hover:bg-slate-100"
-                  >
-                    <ShoppingCart className="size-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="grid transition cursor-pointer size-10 shrink-0 place-items-center rounded-xl hover:bg-slate-100"
-                  >
-                    <PackageCheck className="size-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="
-                          flex
-                          h-9
-                          cursor-pointer
-                          items-center
-                          gap-3
-                          rounded-full
-                          bg-[#194891]
-                          pl-1
-                          pr-5
-                          text-white
-                          shadow-sm
-                          transition
-                          hover:bg-[#235BA7]
-                        "
-                  >
-                    {/* User Icon */}
-                    <div className="grid rounded-full size-7 shrink-0 place-items-center bg-white/20">
-                      <UserRound className="text-white size-4" />
-                    </div>
-
-                    {/* User Info */}
-                    <div className="hidden leading-tight text-left sm:block">
-                      <p className="text-xs font-semibold text-white ">Dyna Lyheng</p>
-
-                      <p
-                        className="
-                            text-[10px]
-                            text-white/70
-                          "
-                      >
-                        Customer
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* Notification */}
-
-                  {/* <button
-                  type="button"
-                  className="grid transition cursor-pointer size-10 shrink-0 place-items-center rounded-xl hover:bg-slate-100"
+              {/* Search */}
+              <div className="hidden w-[70%]   lg:block">
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="
+          flex
+          h-12
+          w-full
+          items-center
+          gap-3
+          rounded-2xl
+          border
+          border-slate-200
+          bg-white/70
+          px-4
+          shadow-sm
+          backdrop-blur-md
+          transition
+          focus-within:border-[#194891]/40
+          focus-within:bg-white
+          focus-within:shadow-md
+        "
                 >
-                  <Bell className="size-5" />
-                </button> */}
-                </div>
+                  <ScanQrCode className=" size-5 shrink-0 text-slate-500" />
+
+                  <span className="w-px h-5 bg-slate-300" />
+
+                  <Search className=" size-5 shrink-0 text-slate-400" />
+
+                  <div className="relative flex-1 min-w-0">
+                    {!searchText && !hasStartedTyping && (
+                      <div className="absolute inset-0 flex items-center text-sm pointer-events-none ">
+                        <span className="truncate text-slate-400">
+                          {placeholderText}
+                        </span>
+                      </div>
+                    )}
+
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchText}
+                      onFocus={() => {
+                        setSearchFocused(true);
+                        setPlaceholderText(currentSearchExample.child);
+                      }}
+                      onBlur={() => {
+                        setSearchFocused(false);
+
+                        if (!searchText) {
+                          setPlaceholderText("");
+                          setHasStartedTyping(false);
+                        }
+                      }}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        setSearchText(value);
+                        setSearchFocused(true);
+                        setHasStartedTyping(value.length > 0);
+                      }}
+                      className="w-full h-full text-sm bg-transparent outline-none "
+                    />
+                  </div>
+
+                  {/* Camera */}
+                  <button
+                    type="button"
+                    onClick={() => setShowImageSearch(true)}
+                    className="
+            rounded-lg
+            p-2
+            text-slate-400
+            transition
+            hover:bg-blue-50
+            hover:text-[#194891]
+          "
+                  >
+                    <Camera className="size-5" />
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="
+            rounded-xl
+            bg-[#235BA7]
+            px-5
+            py-2
+            text-xs
+            font-semibold
+            text-white
+            transition
+            hover:bg-[#194891]
+          "
+                  >
+                    Search
+                  </button>
+                </form>
               </div>
 
-              {/* <img
-                src="/gipgip.gif"
-                alt="Logo"
-                width={isCompact ? 40 : 85}
-                height={isCompact ? 40 : 85}
-                className="absolute bottom-0 hidden transition-all duration-200 shrink-0 rounded-xl right-30 lg:inline-flex lg:mr-4"
-              /> */}
+              {/* Right Actions */}
+              <div className="items-center hidden gap-8 shrink-0 lg:flex">
+                <button className="header-action">
+                  <ShoppingCart className="size-5" />
+                </button>
+
+                <button className="header-action">
+                  <Heart className="size-5" />
+                </button>
+
+                <button
+                  onClick={() => navigate("/track")}
+                  className="header-action"
+                >
+                  <PackageCheck className="size-5" />
+                </button>
+
+                <button className="header-action">
+                  <UserRound className="size-5" />
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -1085,7 +1071,21 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
         {/* Page Content */}
 
         <main
-          className={`${shouldShowPromoBanner ? "mt-9" : "0"}  pt-26 pb-20 lg:pb-0 mx-auto lg:max-w-7xl xl:max-w-full  lg:px-4 xl:px-35`}
+          className={`
+            ${shouldShowPromoBanner ? "mt-10" : "0"}
+            pt-28
+            pb-20
+            lg:pb-0
+            mx-auto
+            w-full
+            max-w-[1600px]
+            px-4
+            sm:px-6
+            md:px-8
+            lg:px-10
+            xl:px-14
+            2xl:px-18
+          `}
         >
           {children}
         </main>
@@ -1094,242 +1094,6 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
       </div>
 
       {/* Search By Image Modal */}
-      {showImageSearch && (
-        <div
-          className="
-      fixed
-      inset-0
-      z-[100]
-      flex
-      items-center
-      justify-center
-      bg-black/40
-      backdrop-blur-sm
-    "
-        >
-          <div
-            className="
-        w-[420px]
-        rounded-2xl
-        bg-white
-        p-6
-        shadow-2xl
-      "
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold">Search by Image</h2>
-
-              <button
-                onClick={() => {
-                  setShowImageSearch(false);
-                  setImagePreview(null);
-                  setFoundProducts(null);
-                }}
-              >
-                <X className="text-gray-400 size-5" />
-              </button>
-            </div>
-
-            {/* Upload Area */}
-            {!imagePreview && (
-              <div className="flex flex-col items-center justify-center text-gray-400 border-2 border-gray-200 border-dashed h-52 rounded-xl">
-                <Camera size={40} />
-
-                <p className="mt-3 text-sm">Drop an image or tap upload</p>
-
-                <p className="text-xs text-gray-400">Supports product photos</p>
-
-                <div className="flex gap-3 mt-5">
-                  {/* Gallery */}
-                  <label className="px-5 py-2 text-sm font-medium text-gray-700 border rounded-lg cursor-pointer hover:bg-gray-100">
-                    Gallery
-                    <input
-                      type="file"
-                      accept="image/*"
-                      hidden
-                      onChange={handleImageUpload}
-                    />
-                  </label>
-
-                  {/* Camera */}
-                  <button
-                    onClick={openCamera}
-                    className="
-                      cursor-pointer
-                      rounded-lg
-                      bg-[#235BA7]
-                      px-5
-                      py-2
-                      text-white
-                      "
-                  >
-                    <Camera size={15} className="inline mr-1" />
-                    Camera
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Preview */}
-            {imagePreview && (
-              <div>
-                <img
-                  src={imagePreview}
-                  className="object-cover w-full h-60 rounded-xl"
-                />
-
-                {imageSearching && (
-                  <div className="p-4 mt-5 text-center rounded-xl bg-blue-50">
-                    <div className="w-6 h-6 mx-auto mb-3 border-2 border-blue-500 rounded-full animate-spin border-t-transparent" />
-
-                    <p className="text-sm font-medium text-blue-600 ">
-                      Searching similar products...
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Result */}
-            {foundProducts && (
-              <div
-                className="
-              mt-5
-              rounded-xl
-              bg-[#194891]/10 
-              p-4
-              text-center
-              "
-              >
-                <p
-                  className="
-              font-semibold
-              text-[#194891]
-              text-[12px]
-              "
-                >
-                  Found {foundProducts} similar products
-                </p>
-
-                <div className="flex justify-center gap-3 mt-4 ">
-                  {/* View Product */}
-                  <button
-                    className="
-              rounded-lg
-              bg-[#235BA7]
-              px-5
-              py-2
-              w-full
-              cursor-pointer
-              text-sm
-              font-medium
-              text-white
-              hover:bg-[#194891]
-              "
-                    onClick={() => {
-                      console.log("open product result");
-                    }}
-                  >
-                    View Products
-                  </button>
-                  {/* Reset */}
-                  <button
-                    onClick={resetImageSearch}
-                    className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                  >
-                    Reset
-                  </button>
-                </div>
-              </div>
-            )}
-            {cameraOpen && (
-              <div
-                className="
-      fixed
-      inset-0
-      z-[200]
-      flex
-      items-center
-      justify-center
-      bg-black/40
-      backdrop-blur-md
-    "
-              >
-                <div
-                  className="
-        w-[390px]
-        overflow-hidden
-        rounded-2xl
-        bg-white
-        shadow-2xl
-      "
-                >
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-5 py-4 border-b ">
-                    <div className="flex items-center gap-2">
-                      <Camera className="text-[#194891]" size={18} />
-
-                      <span className="font-semibold">Take a Photo</span>
-                    </div>
-
-                    <button onClick={closeCamera}>
-                      <X size={18} className="text-gray-400" />
-                    </button>
-                  </div>
-
-                  {/* Camera Preview */}
-                  <div className="relative bg-black ">
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      className="
-            h-[300px]
-            w-full
-            object-cover
-          "
-                    />
-
-                    {/* Focus Box */}
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2 border-2 left-1/2 top-1/2 h-36 w-44 rounded-xl border-white/80" />
-
-                    {/* Switch Camera */}
-                    <button className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full right-4 top-4 bg-black/40">
-                      <SwitchCamera />
-                    </button>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="flex items-center gap-3 px-5 py-4 ">
-                    <button
-                      onClick={takePhoto}
-                      className="
-            flex-[2]
-            rounded-xl
-            bg-[#194891]
-            py-3
-            text-sm
-            font-semibold
-            text-white
-          "
-                    >
-                      <Camera size={16} className="inline mr-2" />
-                      Capture
-                    </button>
-                    <button
-                      onClick={closeCamera}
-                      className="flex-1 py-3 text-sm font-medium text-gray-600 border rounded-xl"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </LanguageProvider>
   );
 }

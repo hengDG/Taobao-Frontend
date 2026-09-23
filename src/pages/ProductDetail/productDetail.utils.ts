@@ -1,7 +1,7 @@
 import type {
   ProductCard as ProductCardType,
   ProductSku,
-} from "@/types/product";
+} from "@/shared/types";
 
 const formatCny = (cents: number) =>
   new Intl.NumberFormat("zh-CN", {
@@ -229,8 +229,8 @@ export const normalizeProductDetailData = (
   const primaryImage = data?.image ?? images[0] ?? firstSku?.image ?? "";
 
   const rawTitle = typeof data?.title === "string" ? data.title.trim() : "";
-//   const originalTitle =
-//     typeof data?.titleOriginal === "string" ? data.titleOriginal.trim() : "";
+  //   const originalTitle =
+  //     typeof data?.titleOriginal === "string" ? data.titleOriginal.trim() : "";
 
   const titleNeedsCurrentLanguage =
     !rawTitle ||
